@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import TaiwanMapComponent from "./components/TaiwanMap/TaiwanMapComponent";
 import FilteredTaiwanMapComponent from "./components/FilteredTaiwanMap/FilteredTaiwanMapComponent";
-import HaplotypeList from "./components/HaplotypeList";
+
 import GeneTable from "./components/GeneTable/GeneTable";
 import GeneSelector from "./components/GeneSelector";
 import HaplotypeNetwork from "./components/HaplotypeNetwork";
