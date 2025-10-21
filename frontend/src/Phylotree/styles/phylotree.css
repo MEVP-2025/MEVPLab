@@ -1,0 +1,93 @@
+path.rp-branch {
+  transition: all 0.2s;
+  fill: none;
+  shape-rendering: crispEdges;
+}
+
+text.rp-label {
+  font-family: Courier;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.rp-branch-tracer {
+  stroke: #bbb;
+  stroke-dasharray: 3,4;
+  stroke-width: 1px;
+}
+
+path.rp-branch:hover {
+  stroke-width: 10px;
+}
+
+.phylotree-application {
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* Center align items horizontally */
+  margin-top: 15px;
+}
+
+.size-control-and-export {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 6px
+}
+
+.width-control {
+  margin-bottom: 6px;
+}
+
+.export-container {
+  display: flex;
+  margin: 10px; /* Adjust spacing as needed */
+}
+
+.export-container button {
+  border-radius: 3px;
+  padding: 1px 10px;
+  border: 1px solid #767676;
+  background-color: #EFEFEF;
+  cursor: pointer;
+  margin-left: 15px;
+}
+
+.export-container button:hover{
+  border: 1px solid #505050;
+  background-color: #E5E5E5;
+}
+
+.button-group-container {
+  margin: 10px;
+}
+
+.search-container input{
+  border-radius: 5px;
+  margin-left: 40px;
+}
+
+.search-container button{
+  border-radius: 5px;
+  margin-left: 10px;
+}
+
+.search-results-count{
+  margin-left: 10px;
+}
+
+.search-container button:hover{
+  background-color: #E5E5E5;
+}
+
+circle {
+  fill: #ffffff;
+  cursor: pointer;
+  stroke: grey;
+  stroke-width: 1.2;
+  z-index: 10;
+  transition: 0.2s;
+}
+
+circle.hovered {
+  fill: grey;
+}

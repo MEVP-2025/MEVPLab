@@ -1,0 +1,162 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 20px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f9f9f9;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* ===== 按鈕群組 ===== */
+.button-group {
+  display: flex;
+  
+  gap: 12px;
+  padding: 12px;
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.button-group button {
+  padding: 8px 16px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.button-group button:hover {
+  background-color: #0056b3;
+}
+
+/* ===== 區塊 Section 區隔 ===== */
+.section {
+  max-width: 100%;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  background: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.05);
+}
+
+.section.hidden {
+  display: none;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ===== Flex 排版 ===== */
+.flex-container {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+/* 表格列 / 左右水平區塊 */
+.tables-row {
+  display: flex;
+  gap: 20px;
+  width: 90%;
+  align-items: flex-start;
+}
+
+/* 地圖外框 */
+.map-box {
+  min-width: 55%;
+  
+  flex: 2; /* 平均分配空間，或改 flex:2 / flex:1 調整比例 */
+  overflow: auto; /* 內容超出時可以滾動 */
+
+}
+
+/* 左側的 HaplotypeList  */
+.haplotype-section {
+  flex: 3; /* 左側佔比 3 */
+  max-width: 15%;
+
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  overflow: auto;
+
+}
+
+/* 右側的 GeneTable 區塊 */
+.gene-section {
+  flex: 1; /* 右側佔比 1 */
+  
+  min-width: 40%;
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  overflow: auto;
+}
+
+/* 右側的 GeneSelector 區塊 */
+.geneselector-section {
+  flex: 1; /* 右側佔比 1 */
+  min-width: 40%;
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  overflow: auto;
+}
+
+
+/* ===== 分頁區塊 ===== */
+.pagination {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center; /* 置中按鈕 */
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-top: 1px solid #eee;
+}
+
+.pagination button {
+  padding: 6px 12px;
+  border: none;
+  background-color: #28a745;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.pagination button:disabled {
+  background-color: #f8f8f8;
+  cursor: not-allowed;
+}
+
+/* ===== RWD ===== */
+@media (max-width: 768px) {
+  .flex-container,
+  .tables-row {
+    flex-direction: column; /* 小螢幕改為垂直排列 */
+  }
+
+  .gene-section,
+  .haplotype-section {
+    width: 100%;
+    min-width: 0;
+  }
+}

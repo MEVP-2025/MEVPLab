@@ -1,0 +1,49 @@
+.navbar{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: #ebebebaa;
+  padding: 0.3% 2%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-logo {
+  height: 50px;
+  width: 50px;
+  margin: 5px 25px 5px 0px;
+}
+
+/* .navbar-brand{
+  color: rgb(43, 43, 43);
+  font-size: 22px;
+  font-weight: 500;
+  margin-right: 25px;
+} */
+
+.navbar a{
+  font-size: 18px;
+  color: gray
+}
+
+.file-upload{
+  margin-left: 25px;
+}
+
+.file-upload label{
+  margin: 0px 5px;
+}
+
+.custom-upload-label {
+  display: block;
+  width: 100%;
+  cursor: pointer;
+  color: #808080;
+}
+
+.custom-upload-label:hover {
+  color: rgb(43, 43, 43);
+}
+
+.file-name{
+  color: #0056b3;
+}
