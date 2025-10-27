@@ -1,0 +1,228 @@
+/* 將這些樣式添加到你的 globals.css 中，替換原有的 theme-toggle-btn 樣式 */
+
+/* ========================================
+   主題切換開關樣式 - SVG 版本
+   ======================================== */
+
+.app .theme-toggle-container {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 100;
+}
+
+.theme-toggle-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  padding: 10px 16px;
+  border-radius: 28px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border: 1px solid var(--border);
+  transition: all 0.3s ease;
+}
+
+.theme-toggle-wrapper:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  transform: translateY(-1px);
+}
+
+.theme-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  color: var(--detail);
+}
+
+.theme-icon svg {
+  transition: all 0.3s ease;
+}
+
+/* 太陽圖標樣式 */
+.sun-icon {
+  opacity: 1;
+  color: #f39c12;
+}
+
+/* 月亮圖標樣式 */
+.moon-icon {
+  opacity: 0.4;
+  color: #7f8c8d;
+}
+
+/* 暗色主題時的圖標透明度 */
+html[data-theme="dark"] .sun-icon {
+  opacity: 0.4;
+  color: #7f8c8d;
+}
+
+html[data-theme="dark"] .moon-icon {
+  opacity: 1;
+  color: #3498db;
+}
+
+/* ========================================
+   切換開關本體
+   ======================================== */
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 56px;
+  height: 28px;
+  cursor: pointer;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #ddd;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 28px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 24px;
+  width: 24px;
+  left: 2px;
+  bottom: 2px;
+  background: white;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  z-index: 2;
+}
+
+.slider-icon {
+  position: absolute;
+  top: 50%;
+  left: 6px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 3;
+}
+
+/* 選中狀態（暗色主題） */
+input:checked + .slider {
+  background: var(--primary);
+}
+
+input:checked + .slider:before {
+  transform: translateX(28px);
+}
+
+input:checked + .slider .slider-icon {
+  transform: translateX(28px) translateY(-50%);
+  color: white;
+}
+
+/* Hover 效果 */
+.toggle-switch:hover .slider {
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.15), 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.toggle-switch:hover .slider:before {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+/* 焦點可訪問性 */
+.toggle-switch input:focus + .slider {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* 活躍狀態 */
+.toggle-switch:active .slider:before {
+  width: 28px;
+}
+
+input:checked + .slider:active:before {
+  transform: translateX(24px);
+}
+
+/* ========================================
+   響應式設計
+   ======================================== */
+
+@media (max-width: 768px) {
+  .app .theme-toggle-container {
+    top: 10px;
+    left: 10px;
+  }
+  
+  .theme-toggle-wrapper {
+    gap: 8px;
+    padding: 8px 12px;
+  }
+  
+  .theme-icon svg {
+    height: 20px;
+    width: 20px;
+  }
+  
+  .toggle-switch {
+    width: 44px;
+    height: 24px;
+  }
+  
+  .slider:before {
+    height: 20px;
+    width: 20px;
+  }
+  
+  .slider-icon {
+    left: 4px;
+  }
+  
+  .slider-icon svg {
+    height: 12px;
+    width: 12px;
+  }
+  
+  input:checked + .slider:before {
+    transform: translateX(20px);
+  }
+  
+  input:checked + .slider .slider-icon {
+    transform: translateX(20px) translateY(-50%);
+  }
+}
+
+/* ========================================
+   動畫優化
+   ======================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .slider,
+  .slider:before,
+  .slider-icon,
+  .theme-icon,
+  .theme-toggle-wrapper {
+    transition: none;
+  }
+}
+
+/* 移除舊的按鈕樣式（如果還存在的話） */
+.theme-toggle-btn {
+  display: none;
+}

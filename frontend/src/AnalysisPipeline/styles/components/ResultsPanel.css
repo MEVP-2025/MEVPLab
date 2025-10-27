@@ -1,0 +1,101 @@
+.results-section {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.species-results {
+  display: flex;
+  flex-direction: column;
+  /* gap: 10px; */
+}
+
+.results-summary {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+/* Species Header */
+.species-summary .line {
+  width: 100%;
+  border-top: 2px solid #aaa;
+  margin: 20px 0;
+}
+
+.species-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* padding-top: 20px; */
+}
+
+.species-header h3 {
+  margin: 10px 0px 10px 15px
+}
+
+.species-header .species-actions{
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-left: 30px;
+}
+
+.species-header .btn{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  padding: 12px 15px;
+}
+
+/* Files Summary */
+.results-files-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--surface-alt);
+  padding: 20px 30px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  margin-top: 10px;
+}
+
+.results-files-summary .file-category h4 {
+  margin-bottom: 10px;
+}
+
+.results-files-summary .files-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.results-files-summary .files-list .file-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 25px;
+  background: var(--surface);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+
+.results-files-summary .files-list .file-item .result-file-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.results-files-summary .files-list .file-item .file-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.results-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}

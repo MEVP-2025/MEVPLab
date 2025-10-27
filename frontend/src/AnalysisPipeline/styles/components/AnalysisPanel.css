@@ -1,0 +1,257 @@
+/* ========================================
+   ANALYSIS SECTION
+   ======================================== */
+
+.analysis-section {
+  margin-bottom: 30px;
+}
+
+.analysis-section p {
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
+}
+
+.species-selection-container .steps {
+  margin: 20px 0;
+}
+
+.species-selection-container .detail {
+  margin-left: 25px;
+}
+
+.input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 10px 40px;
+  background: var(--surface-alt);
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  width: fit-content;
+}
+
+/* species-selection */
+.species-list {
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  gap: 20px;
+}
+
+.species-option {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 10px 0;
+}
+
+.species-checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.inline-configuration .quality-control {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* minimum length threshold */
+.minimum-length-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.maximum-length-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Identity */
+.input-container .identity-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Number of copies */
+.input-container .copies-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Files Summary */
+.files-summary {
+  background: var(--surface-alt);
+  padding: 20px;
+  border-radius: 8px;
+  margin: 30px 0;
+  border: 1px solid var(--border);
+}
+
+.files-summary h3 {
+  margin-bottom: 15px;
+  color: var(--text);
+}
+
+.files-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.files-list .file-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+/* Analysis Actions */
+.analysis-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+/* Analysis Status */
+.analysis-status {
+  text-align: center;
+  padding: 40px 30px;
+  background: var(--surface-alt);
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.status-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  font-size: 1.1em;
+  font-weight: 500;
+  color: var(--primary);
+}
+
+/* Analysis Logs */
+.analysis-logs {
+  background: var(--code-bg);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 30px;
+}
+
+.logs-header {
+  background: var(--log-bg);
+  padding: 10px 20px;
+  border-bottom: 1px solid #34495e;
+}
+
+.logs-header h3 {
+  color: var(--surface);
+  margin: 0;
+  font-size: 1.1em;
+}
+
+.logs-container {
+  max-height: 400px;
+  overflow-y: auto;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.log-entry {
+  display: flex;
+  gap: 15px;
+  padding: 6px 20px;
+  border-bottom: 1px solid #2c3e50;
+  /* color: #ecf0f1; */
+}
+
+.log-entry:last-child {
+  border-bottom: none;
+}
+
+.log-timestamp {
+  color: var(--detail);
+  font-size: 12px;
+  min-width: 80px;
+  flex-shrink: 0;
+}
+
+.log-message {
+  flex: 1;
+  word-break: break-word;
+}
+
+/* Log Types */
+.log-info .log-message {
+  color: #ecf0f1;
+}
+
+.log-success .log-message {
+  color: #2ecc71;
+}
+
+.log-warning .log-message {
+  color: var(--warning);
+}
+
+.log-error .log-message {
+  color: var(--danger);
+}
+
+/* Requirements Notice */
+.requirements-notice {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 30px;
+}
+
+.requirements-notice h4 {
+  color: #856404;
+  margin-bottom: 10px;
+}
+
+.requirements-notice p {
+  color: #856404;
+  margin: 0;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 768px) {
+  .analysis-actions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .analysis-actions .btn {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .logs-container {
+    max-height: 300px;
+  }
+
+  .log-entry {
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .log-timestamp {
+    min-width: auto;
+  }
+}

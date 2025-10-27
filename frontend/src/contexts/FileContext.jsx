@@ -102,9 +102,7 @@ export function FileProvider({ children }) {
     };
     reader.readAsArrayBuffer(file);
   };
-  // ... (複製你原本 App.jsx 中的所有檔案處理函式) ...
 
-  // 3. 定義要共享出去的 value
   const value = {
     // state
     phylotreeContent,
