@@ -1,7 +1,6 @@
 // src/App.jsx
 import { useState } from 'react'
 import AnalysisPanel from './components/AnalysisPanel'
-import DockerCheckPanel from './components/DockerCheckPanel'
 import FileUpload from './components/FileUpload'
 import ResultsPanel from './components/ResultsPanel'
 import './styles/components.css'
@@ -37,12 +36,13 @@ const AnalysisPipelineApp = () => {
 
   return (
     <div className="analysis-main">
-      {!dockerReady && (
+      {/* {!dockerReady && (
         <DockerCheckPanel onDockerReady={handleDockerReady} />
-      )}
+      )} */}
 
       {/* Step 1: File Upload */}
-      {dockerReady && !uploadedFiles && (
+      {/* {dockerReady && !uploadedFiles && ( */}
+      {!uploadedFiles && (
         <FileUpload onFilesUploaded={handleFilesUploaded} />
       )}
 
