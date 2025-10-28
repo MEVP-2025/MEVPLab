@@ -39,7 +39,6 @@ function MainNavbar({ theme, toggleTheme }) {
         <DropdownLink to="/haplotype" header="Haplotype Network" />
       </NavDropdown>
 
-      {/* 2. 檔案上傳 (這部分直接從「視覺化 App」的 Navbar 複製過來) */}
       <div className="file-upload">
         <NavDropdown title="File">
           {/* Upload Newick */}

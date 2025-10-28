@@ -1,3 +1,15 @@
+outputs/
+uploads/
+
+# node.js binaries
+node-binaries/
+resources/
+
+# build files
+dist/
+
+package-lock.json
+
 # Logs
 logs
 *.log

@@ -3,24 +3,24 @@ import { useEffect, useState } from 'react';
 import { HashRouter, Route, Routes } from 'react-router-dom';
 import { FileProvider } from './contexts/FileContext';
 
-// 匯入你的新 "Pages"
-// import AnalysisPipelinePage from './pages/AnalysisPipelinePage.jsx';
+// Pages
+import AnalysisPipelinePage from './pages/AnalysisPipelinePage.jsx';
 import HaplotypePage from './pages/HaplotypeNetworkPage.jsx';
 import PhylotreePage from './pages/PhylotreePage.jsx';
 import SequenceAlignmentPage from './pages/SequenceAlignmentPage.jsx';
 
-// 匯入你的 UI 元件
+// UI
 import TitleBar from './bar-components/TitleBar.jsx';
 // import FloatingChatManager from './Chat/FloatingChatManager';
-import Navbar from './components/Navbar.jsx'; // 我們將在下一步建立
+import Navbar from './components/Navbar.jsx';
 
 // import css
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css';
 import './styles/components/Navbar.css';
-// import './App.css'; // 來自 MEVP (你可能需要合併 CSS)
-// import './styles/components.css'; // 來自 Toolkit
-// import './styles/globals.css'; // 來自 Toolkit
-// import './styles/themeToggle.css'; // 來自 Toolkit
+// import './styles/components.css'; // Toolkit
+// import './styles/globals.css'; // Toolkit
+// import './styles/themeToggle.css'; // Toolkit
 
 const App = () => {
   const [theme, setTheme] = useState('light');
@@ -52,7 +52,7 @@ const App = () => {
 
           <main className="app-main">
             <Routes>
-              {/* <Route path="/" element={<AnalysisPipelinePage />} /> */}
+              <Route path="/" element={<AnalysisPipelinePage />} />
 
               <Route path="/phylotree" element={<PhylotreePage />} />
               <Route path="/haplotype" element={<HaplotypePage />} />

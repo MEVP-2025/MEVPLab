@@ -1,0 +1,85 @@
+{
+  "name": "mevp-lab",
+  "version": "1.0.0",
+  "description": "DNA Barcode Analysis Tool",
+  "main": "electron/main.js",
+  "author": "uiskskkekekk",
+  "license": "MIT",
+  "scripts": {
+    "electron": "electron .",
+    "electron:dev": "concurrently \"npm run backend:dev\" \"npm run frontend:dev\" \"wait-on http://localhost:5174 http://localhost:3001 && electron .\"",
+    "prepare-node": "node scripts/download-node.js && node scripts/extract-node.js",
+    "build": "npm run prepare-node && npm run frontend:build && npm run backend:install",
+    "dist": "npm run build && electron-builder",
+    "dist:all": "npm run build && electron-builder -mwl",
+    "frontend:dev": "cd frontend && npm run dev",
+    "frontend:build": "cd frontend && npm run build",
+    "backend:dev": "cd backend-toolkit && npm run dev",
+    "backend:install": "cd backend-toolkit && npm install",
+    "postinstall": "cd frontend && npm install && cd ../backend-toolkit && npm install"
+  },
+  "build": {
+    "appId": "com.mevp.mevp-lab",
+    "productName": "MEVPLab",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron/**/*",
+      "frontend/dist/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "resources/node",
+        "to": "node"
+      },
+      {
+        "from": "backend-toolkit",
+        "to": "backend-toolkit",
+        "filter": [
+          "**/*",
+          "!uploads/**/*",
+          "!outputs/**/*",
+          "!logs/**/*"
+        ]
+      },
+      {
+        "from": "backend-toolkit/node_modules",
+        "to": "backend-toolkit/node_modules"
+      }
+    ],
+    "mac": {
+      "icon": "icon/MEVP.png",
+      "category": "public.app-category.utilities",
+      "target": [
+        "dmg"
+      ],
+      "identity": null
+    },
+    "win": {
+      "icon": "icon/MEVP.ico",
+      "target": [
+        "nsis"
+      ],
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "installerIcon": "icon/MEVP.ico",
+      "uninstallerIcon": "icon/MEVP.ico",
+      "uninstallDisplayName": "dna barcode toolkit uninstaller",
+      "license": "license.md",
+      "allowToChangeInstallationDirectory": true
+    },
+    "linux": {
+      "icon": "icon/MEVP.png",
+      "target": [
+        "AppImage"
+      ]
+    }
+  },
+  "devDependencies": {
+    "electron": "^38.2.2",
+    "electron-builder": "^26.0.12"
+  }
+}

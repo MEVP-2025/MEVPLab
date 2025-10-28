@@ -12,7 +12,6 @@ export default function HaplotypePage() {
     eDnaTagsContent,
   } = useFileContext();
 
-  // 這是你原來在「視覺化 App」的 Route element 中做的邏輯
   const initialFileContent =
     selectedHaplotypeIndex !== null
       ? haplotypeFiles[selectedHaplotypeIndex].content

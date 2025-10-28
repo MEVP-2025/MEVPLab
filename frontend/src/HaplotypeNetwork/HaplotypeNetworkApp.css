@@ -52,11 +52,11 @@
   display: none;
 }
 
-.main-content {
+/* .main-content {
   display: flex;
   flex-direction: column;
   gap: 20px;
-}
+} */
 
 /* ===== Flex 排版 ===== */
 .flex-container {
