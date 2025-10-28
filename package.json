@@ -1,5 +1,5 @@
 {
-  "name": "dna-barcode-toolkit",
+  "name": "mevp-lab",
   "version": "1.0.0",
   "description": "DNA Barcode Analysis Tool",
   "main": "electron/main.js",
@@ -19,8 +19,8 @@
     "postinstall": "cd frontend && npm install && cd ../backend-toolkit && npm install"
   },
   "build": {
-    "appId": "com.mevp.dna-barcode-toolkit",
-    "productName": "DNA Barcode Toolkit",
+    "appId": "com.mevp.mevp-lab",
+    "productName": "MEVPLab",
     "directories": {
       "output": "dist"
     },
