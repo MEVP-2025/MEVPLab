@@ -15,7 +15,11 @@ const HaplotypeNetwork = ({ width = 800, height = 800 }) => {
   // 載入資料
   useEffect(() => {
     setData(null); // 清空，顯示 loading
+<<<<<<< Updated upstream
     fetch(`http://localhost:3000/api/haplotypes/${apiPath}`)
+=======
+    fetch(`/api/api/haplotypes/${apiPath}`)
+>>>>>>> Stashed changes
       .then((res) => res.json())
       .then(setData)
       .catch(() => setData({ error: true }));

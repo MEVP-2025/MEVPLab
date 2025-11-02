@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from "react";
+<<<<<<< Updated upstream
 import "/frontend/src/HaplotypeNetwork/components/GeneTable/GeneTable.css";
+=======
+import "../GeneTable.css";
+>>>>>>> Stashed changes
 
 // 生成基因的颜色，保证每个基因都有独特的颜色
 const generateColors = (num) =>
@@ -29,7 +33,11 @@ const FormattedGeneFATable = ({
   useEffect(() => {
     const fetchFormattedGenes = async () => {
       try {
+<<<<<<< Updated upstream
         const response = await fetch("http://localhost:3000/api/sequences/formattedCounts");
+=======
+        const response = await fetch("/api/api/sequences/formattedCounts");
+>>>>>>> Stashed changes
         const data = await response.json();
         setFormattedGenes(data.formattedGenes);
       } catch (error) {

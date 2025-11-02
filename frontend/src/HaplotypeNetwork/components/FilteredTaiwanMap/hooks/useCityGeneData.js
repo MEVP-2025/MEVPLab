@@ -1,5 +1,9 @@
 import { useState, useEffect, useMemo } from "react";
+<<<<<<< Updated upstream
 import { generateCityCoordinates } from "/frontend/src/HaplotypeNetwork/data/cityCoordinates3.js";
+=======
+import { generateCityCoordinates } from "../../../data/cityCoordinates3.js";
+>>>>>>> Stashed changes
 
 export default function useCityGeneData({ cityGeneData, totalCityGeneData, selectedGenes, mapPage, safeImgW, safeImgH, conW, conH }) {
   const [cityCoordinates3, setCityCoordinates3] = useState([]);

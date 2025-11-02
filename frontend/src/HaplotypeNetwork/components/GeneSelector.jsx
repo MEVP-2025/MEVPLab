@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 import React, { useState, useMemo } from "react";
+=======
+import  { useState } from "react";
+>>>>>>> Stashed changes
 import { FixedSizeList as List } from "react-window";
 import "../components/AppStyles.css";
 
@@ -136,10 +140,17 @@ const filterResults = (results, selectedGene) => {
   setActiveSimilarityGroup([]); // 重置选中的相似组
 
   try {
+<<<<<<< Updated upstream
     const res = await fetch("http://localhost:3000/api/sequences/sequences");
     const { sequences } = await res.json();
 
     const response = await fetch("http://localhost:3000/api/sequences/compare", {
+=======
+    const res = await fetch("/api/api/sequences/sequences");
+    const { sequences } = await res.json();
+
+    const response = await fetch("/api/api/sequences/compare", {
+>>>>>>> Stashed changes
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ targetName: selectedGene, sequences }),

@@ -1,6 +1,10 @@
 import React, { memo } from "react";
 import { PieChart, Pie, Cell } from "recharts";
+<<<<<<< Updated upstream
 import "/frontend/src/HaplotypeNetwork/components/AppStyles.css";
+=======
+import "../AppStyles.css";
+>>>>>>> Stashed changes
 
 // ---------- 子元件：城市圓餅圖 ----------
 const CityPieChart = memo(

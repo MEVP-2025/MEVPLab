@@ -1,6 +1,11 @@
 import React from "react";
+<<<<<<< Updated upstream
 import "/frontend/src/HaplotypeNetwork/components/GeneTable/GeneTable.css";
 import { riverToCityMap } from "/frontend/src/HaplotypeNetwork/data/riverToCityMap.js";
+=======
+import "..//GeneTable.css";
+// import { riverToCityMap } from "../../data/riverToCityMap.js";
+>>>>>>> Stashed changes
 
 // InformationTable.jsx
 

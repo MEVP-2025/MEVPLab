@@ -1,5 +1,9 @@
 import React, { useState, useMemo, useCallback } from "react";
+<<<<<<< Updated upstream
 import "/frontend/src/HaplotypeNetwork/components/GeneTable/GeneTable.css";
+=======
+import "./GeneTable.css";
+>>>>>>> Stashed changes
 
 import GeneTableControls from "./GeneTableControls";
 import GeneTableContent from "./GeneTableContent";

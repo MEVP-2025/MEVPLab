@@ -138,13 +138,21 @@ const HaplotypeNetworkApp = ({
       fileWorker.onmessage = async (event) => {
         const { sequences } = event.data;
         try {
+<<<<<<< Updated upstream
           await fetch("http://localhost:3000/api/sequences/uploadSequences", {
+=======
+          await fetch("/api/api/sequences/uploadSequences", {
+>>>>>>> Stashed changes
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ sequences }),
           });
 
+<<<<<<< Updated upstream
           const res = await fetch("http://localhost:3000/api/sequences/Sequences");
+=======
+          const res = await fetch("/api/api/sequences/Sequences");
+>>>>>>> Stashed changes
           const data = await res.json();
 
           const generatedColors = generateColors(data.geneNames.length);
