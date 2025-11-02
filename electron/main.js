@@ -15,6 +15,7 @@ const isDev = !app.isPackaged;
 
 let mainWindow;
 let AnalysisBackendProcess;
+let VizBackendProcess;
 
 // create the main application window
 function createWindow() {
@@ -39,7 +40,15 @@ function createWindow() {
   });
 
   if (isDev) {
-    mainWindow.loadURL("http://localhost:5173");
+    // mainWindow.loadURL("http://localhost:5173");
+    // In dev, clear renderer cache to avoid loading stale built files
+    mainWindow.webContents.session
+      .clearCache()
+      .catch((e) => console.warn("Failed to clear cache:", e))
+      .finally(() => {
+        mainWindow.loadURL("http://localhost:5173");
+      });
+
     mainWindow.webContents.openDevTools();
   } else {
     mainWindow.loadFile(path.join(__dirname, "../frontend/dist/index.html"));
@@ -228,6 +237,92 @@ function stopAnalysisBackend() {
   });
 }
 
+// -- Start Viz backend (backend-viz)
+function startVizBackend() {
+  return new Promise((resolve, reject) => {
+    const platform = process.platform;
+    const arch = process.arch;
+
+    const platformKey = `${platform}-${arch}`;
+
+    let nodeBinary;
+    if (platform === "win32") {
+      nodeBinary = path.join(
+        process.resourcesPath,
+        "node",
+        platformKey,
+        "node.exe"
+      );
+    } else {
+      nodeBinary = path.join(
+        process.resourcesPath,
+        "node",
+        platformKey,
+        "bin",
+        "node"
+      );
+    }
+
+    const serverScript = path.join(
+      process.resourcesPath,
+      "backend-viz",
+      "server.js"
+    );
+
+    console.log("Using Node.js binary for viz backend:", nodeBinary);
+    console.log("Viz server script:", serverScript);
+
+    const enhancedEnv = createEnhancedEnvironment();
+    // ensure different port for viz backend (default 3000)
+    enhancedEnv.PORT = "3000";
+
+    VizBackendProcess = spawn(nodeBinary, [serverScript], {
+      cwd: path.join(process.resourcesPath, "backend-viz"),
+      env: enhancedEnv,
+      stdio: ["pipe", "pipe", "pipe"],
+    });
+
+    VizBackendProcess.stdout.on("data", (data) => {
+      console.log(`Viz Backend: ${data.toString().trim()}`);
+    });
+
+    VizBackendProcess.stderr.on("data", (data) => {
+      console.error(`Viz Backend Error: ${data.toString().trim()}`);
+    });
+
+    VizBackendProcess.on("error", (error) => {
+      console.error("Failed to start viz backend:", error);
+      reject(error);
+    });
+
+    setTimeout(() => {
+      if (VizBackendProcess && !VizBackendProcess.killed) {
+        console.log("Viz backend process started");
+        resolve();
+      } else {
+        reject(new Error("Viz backend failed to start"));
+      }
+    }, 3000);
+  });
+}
+
+function stopVizBackend() {
+  return new Promise((resolve) => {
+    if (VizBackendProcess && !VizBackendProcess.killed) {
+      console.log("Terminating viz backend process...");
+      VizBackendProcess.once("exit", () => {
+        console.log("Viz backend process terminated.");
+        VizBackendProcess = null;
+        resolve();
+      });
+      VizBackendProcess.kill("SIGTERM");
+    } else {
+      VizBackendProcess = null;
+      resolve();
+    }
+  });
+}
+
 function cleanFolderContents(folderPath) {
   try {
     if (fs.existsSync(folderPath)) {
@@ -252,6 +347,8 @@ app.whenReady().then(async () => {
     // Start backend server first
     if (!isDev) {
       await startAnalysisBackend();
+      // also start the viz backend
+      await startVizBackend();
     }
 
     createWindow();
@@ -286,6 +383,11 @@ app.on("before-quit", () => {
     AnalysisBackendProcess.kill("SIGTERM");
   }
 
+  if (VizBackendProcess && !VizBackendProcess.killed) {
+    console.log("Terminating viz backend process...");
+    VizBackendProcess.kill("SIGTERM");
+  }
+
   if (!isDev) {
     const homedir = os.homedir();
 
@@ -299,8 +401,11 @@ app.on("before-quit", () => {
 
 ipcMain.handle("reinitialize-backend", async () => {
   try {
+    // restart both backends (if present)
     await stopAnalysisBackend();
+    await stopVizBackend();
     await startAnalysisBackend();
+    await startVizBackend();
 
     return { success: true };
   } catch (error) {
