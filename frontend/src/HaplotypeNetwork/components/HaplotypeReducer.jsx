@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const HaplotypeReducer = () => {
   const [hapFasta, setHapFasta] = useState(null);
@@ -29,7 +29,7 @@ const HaplotypeReducer = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:3000/reduceHaplotypes", {
+      const response = await fetch("http://localhost:3000/api/haplotypes/reduceHaplotypes", {
         method: "POST",
         body: formData,
       });
