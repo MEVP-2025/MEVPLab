@@ -8,6 +8,8 @@ resources/
 # build files
 dist/
 
+reduce_bin/
+
 package-lock.json
 
 # Logs
