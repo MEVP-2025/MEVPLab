@@ -127,10 +127,10 @@ const filterResults = (results, selectedGene) => {
   setActiveSimilarityGroup([]); // 重置选中的相似组
 
   try {
-    const res = await fetch("http://localhost:3000/sequences");
+    const res = await fetch("http://localhost:3000/api/sequences/Sequences");
     const { sequences } = await res.json();
 
-    const response = await fetch("http://localhost:3000/compare", {
+    const response = await fetch("http://localhost:3000/api/sequences/compare", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ targetName: selectedGene, sequences }),
