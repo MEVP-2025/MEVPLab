@@ -1,7 +1,43 @@
+// routes/hoplotypes.js
 const express = require("express");
 const router = express.Router();
 const storage = require("../services/storageService");
 const { hammingDistance } = require("../utils/hamming");
+
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
+const { spawn } = require("child_process");
+
+const uploadDir = path.join(__dirname, "..", "uploads");
+fs.mkdirSync(uploadDir, { recursive: true });
+const upload = multer({ dest: uploadDir });
+
+function getExecutablePath() {
+  const platform = process.platform; // 'win32', 'darwin', 'linux'
+  let exeName = "reduce_hap_size_py3";
+  let platformSubdir = "";
+
+  if (platform === "win32") {
+    exeName += ".exe";
+    platformSubdir = "win32";
+  } else if (platform === "darwin") {
+    platformSubdir = "darwin";
+  } else {
+    platformSubdir = "linux";
+  }
+
+  const isDev = process.env.NODE_ENV !== "production";
+
+  let basePath;
+  if (isDev) {
+    basePath = path.join(__dirname, "..", "reduce_bin");
+  } else {
+    basePath = path.join(process.resourcesPath, "reduce_bin");
+  }
+
+  return path.join(basePath, platformSubdir, exeName);
+}
 
 function buildMST(nodes, distFn) {
   const allEdges = [];
@@ -38,6 +74,83 @@ function buildMST(nodes, distFn) {
   }
   return { mst, allEdges };
 }
+
+router.post(
+  "/reduceHaplotypes",
+  upload.fields([{ name: "hapFastaFile" }, { name: "excelFile" }]),
+  (req, res, next) => {
+    try {
+      const reduceSize = parseInt(req.body.reduceSize, 10);
+      const outputFilename = req.body.outputFilename;
+      if (!Number.isInteger(reduceSize) || reduceSize <= 0)
+        return res.status(400).json({ error: "Invalid reduceSize" });
+      if (!outputFilename)
+        return res.status(400).json({ error: "Missing outputFilename" });
+
+      const hapFastaPath = req.files.hapFastaFile?.[0]?.path;
+      const excelPath = req.files.excelFile?.[0]?.path;
+      if (!hapFastaPath || !excelPath)
+        return res
+          .status(400)
+          .json({ error: "Please upload FASTA and Excel files" });
+
+      const outputsDir = path.join(__dirname, "..", "outputs");
+      fs.mkdirSync(outputsDir, { recursive: true });
+      const outputPath = path.join(outputsDir, outputFilename);
+
+      const executablePath = getExecutablePath();
+
+      if (!fs.existsSync(executablePath)) {
+        console.error("Executable path not found, path:", executablePath);
+        return res
+          .status(500)
+          .json({ error: "Server error, require reduce_hap_size_py3。" });
+      }
+
+      const args = [hapFastaPath, String(reduceSize), excelPath, outputPath];
+
+      const proc = spawn(executablePath, args);
+
+      let stdout = "";
+      let stderr = "";
+      proc.stdout.on("data", (d) => {
+        stdout += d.toString();
+      });
+      proc.stderr.on("data", (d) => {
+        stderr += d.toString();
+      });
+
+      proc.on("close", (code) => {
+        if (code !== 0) {
+          console.error("Python script failed", code, stderr);
+          return res
+            .status(500)
+            .json({ error: "Script error", details: stderr || stdout });
+        }
+
+        res.download(outputPath, outputFilename, (err) => {
+          // best-effort cleanup
+          try {
+            fs.unlinkSync(hapFastaPath);
+          } catch (e) {}
+          try {
+            fs.unlinkSync(excelPath);
+          } catch (e) {}
+          try {
+            fs.unlinkSync(path.join(outputsDir, "asv.fa"));
+          } catch (e) {}
+          try {
+            fs.unlinkSync(path.join(outputsDir, "asv.list"));
+          } catch (e) {}
+
+          if (err) return next(err);
+        });
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 router.get("/HaplotypeNetwork", (req, res) => {
   const geneCounts = storage.getGeneCounts();

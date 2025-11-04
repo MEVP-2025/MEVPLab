@@ -6,13 +6,12 @@ import textwrap
 import os
 
 # ---------- 新增：自動把 .msa.asv.fa 拆成 .fa 和 .list ----------
-def split_fasta_to_list_and_fa(original_fa):
-    outputs_dir = "src/HaplotypeNetwork/gene-compare-backend/outputs"
-    os.makedirs(outputs_dir, exist_ok=True)
+def split_fasta_to_list_and_fa(original_fa, target_outputs_dir):
+    os.makedirs(target_outputs_dir, exist_ok=True)
 
     # 固定名稱
-    fa_file = os.path.join(outputs_dir, "asv.fa")
-    list_file = os.path.join(outputs_dir, "asv.list")
+    fa_file = os.path.join(target_outputs_dir, "asv.fa")
+    list_file = os.path.join(target_outputs_dir, "asv.list")
 
     seq_dict = {}   # uniq_ID -> sequence
     id_mapping = {} # uniq_ID -> list of original IDs
@@ -78,8 +77,11 @@ reduce_size = int(sys.argv[2])   # 例如 30
 excel_file = sys.argv[3]         # eDNA.xlsx
 output_file = sys.argv[4]        # Zpl.reduce.fa
 
+target_outputs_dir = os.path.dirname(output_file)
+os.makedirs(target_outputs_dir, exist_ok=True)
+
 # Step 1: 自動拆成 .list 和 .fa
-list_file, fasta_file = split_fasta_to_list_and_fa(original_fa)
+list_file, fasta_file = split_fasta_to_list_and_fa(original_fa, target_outputs_dir)
 print(f"Created {list_file} and {fasta_file} from {original_fa}")
 
 # Step 2: 從 Excel 取得唯一樣站

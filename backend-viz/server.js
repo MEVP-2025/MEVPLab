@@ -15,7 +15,7 @@ app.use(express.json({ limit: "100mb" }));
 // mount routes
 app.use("/api/sequences", require("./routes/sequences"));
 app.use("/api/haplotypes", require("./routes/haplotypes"));
-app.use("/api/files", require("./routes/files"));
+// app.use("/api/files", require("./routes/files"));
 
 // global error handler
 app.use((err, req, res, next) => {

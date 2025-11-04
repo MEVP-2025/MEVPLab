@@ -46,6 +46,10 @@
       {
         "from": "backend-toolkit/node_modules",
         "to": "backend-toolkit/node_modules"
+      },
+      {
+        "from": "backend-viz/reduce_bin",
+        "to": "reduce_bin"
       }
     ],
     "mac": {
