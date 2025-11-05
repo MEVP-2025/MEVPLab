@@ -135,22 +135,22 @@ function pythonPathForPlatform() {
   const platform = process.platform; // 'darwin' | 'win32' | 'linux'
   const arch = process.arch; // 'x64' | 'arm64' ...
   const platformKey = `${platform}-${arch}`;
-  const base = path.join(process.resourcesPath, 'python', platformKey);
+  const base = path.join(process.resourcesPath, "python", platformKey);
 
   // Windows typically has python.exe at root of the package dir
-  if (platform === 'win32') {
-    const candidate = path.join(base, 'python.exe');
+  if (platform === "win32") {
+    const candidate = path.join(base, "python.exe");
     if (fs.existsSync(candidate)) return candidate;
     // fallback: maybe in Scripts or similar
     return null;
   }
 
   // macOS / linux: expect bin/python3
-  const candidate = path.join(base, 'bin', 'python3');
+  const candidate = path.join(base, "bin", "python3");
   if (fs.existsSync(candidate)) return candidate;
 
   // fallback: maybe named 'python'
-  const candidate2 = path.join(base, 'bin', 'python');
+  const candidate2 = path.join(base, "bin", "python");
   if (fs.existsSync(candidate2)) return candidate2;
 
   return null;
@@ -180,10 +180,10 @@ function createEnhancedEnvironment() {
     const pythonCmd = pythonPathForPlatform();
     if (pythonCmd && fs.existsSync(pythonCmd)) {
       env.PYTHON_CMD = pythonCmd;
-      console.log('Using packaged Python at', pythonCmd);
+      console.log("Using packaged Python at", pythonCmd);
     }
   } catch (e) {
-    console.warn('Failed to detect packaged python:', e && e.message);
+    console.warn("Failed to detect packaged python:", e && e.message);
   }
 
   return env;

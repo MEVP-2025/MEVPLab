@@ -1,7 +1,7 @@
 {
   "name": "mevp-lab",
   "version": "1.0.0",
-  "description": "DNA Barcode Analysis Tool",
+  "description": "MEVPLab",
   "main": "electron/main.js",
   "author": "uiskskkekekk",
   "license": "MIT",
