@@ -30,10 +30,12 @@ function MainNavbar({ theme, toggleTheme }) {
 
   return (
     <nav className="navbar">
-      <img src="./MEVP_logo.png" alt="MEVP Logo" className="navbar-logo" />
+      <Link to='/'>
+        <img src="./MEVP_logo.png" alt="MEVP Logo" className="navbar-logo" />
+      </Link>
 
       <NavDropdown title="Tools">
-        <DropdownLink to="/" header="Analysis Pipeline" />
+        <DropdownLink to="/analysis" header="Analysis Pipeline" />
         <DropdownLink to="/phylotree" header="Phylotree" />
         <DropdownLink to="/sequence-alignment" header="Sequence Alignment" />
         <DropdownLink to="/haplotype" header="Haplotype Network" />

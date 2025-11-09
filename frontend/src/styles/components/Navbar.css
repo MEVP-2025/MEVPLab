@@ -12,6 +12,7 @@
   height: 50px;
   width: 50px;
   margin: 5px 25px 5px 0px;
+  cursor: pointer;
 }
 
 /* .navbar-brand{

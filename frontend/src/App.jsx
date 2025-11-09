@@ -1,11 +1,12 @@
 // src/App.jsx
 import { useEffect, useState } from 'react';
-import { HashRouter, Route, Routes } from 'react-router-dom';
+import { HashRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { FileProvider } from './contexts/FileContext';
 
 // Pages
 import AnalysisPipelinePage from './pages/AnalysisPipelinePage.jsx';
 import HaplotypePage from './pages/HaplotypeNetworkPage.jsx';
+import HomePage from './pages/HomePage.jsx';
 import PhylotreePage from './pages/PhylotreePage.jsx';
 import SequenceAlignmentPage from './pages/SequenceAlignmentPage.jsx';
 
@@ -22,9 +23,12 @@ import './styles/components/Navbar.css';
 // import './styles/globals.css'; // Toolkit
 // import './styles/themeToggle.css'; // Toolkit
 
-const App = () => {
+const AppContent = () => {
   const [theme, setTheme] = useState('light');
   const isMac = window.electronAPI?.platform === 'darwin';
+
+  const location = useLocation();
+  const isHomePage = location.pathname === "/";
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme')
@@ -43,28 +47,34 @@ const App = () => {
   }
 
   return (
-    <HashRouter>
-      <FileProvider>
-        <div className="main-content">
-          {isMac && <TitleBar />}
+    <FileProvider>
+      <div className="main-content">
+        { isMac && <TitleBar /> }
 
-          <Navbar theme={theme} toggleTheme={toggleTheme} />
+        { !isHomePage && <Navbar theme={theme} toggleTheme={toggleTheme} /> }
 
-          <main className="app-main">
-            <Routes>
-              <Route path="/" element={<AnalysisPipelinePage />} />
+        <main className="app-main">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/analysis" element={<AnalysisPipelinePage />} />
+            <Route path="/phylotree" element={<PhylotreePage />} />
+            <Route path="/haplotype" element={<HaplotypePage />} />
+            <Route path="/sequence-alignment" element={<SequenceAlignmentPage />} />
+          </Routes>
+        </main>
 
-              <Route path="/phylotree" element={<PhylotreePage />} />
-              <Route path="/haplotype" element={<HaplotypePage />} />
-              <Route path="/sequence-alignment" element={<SequenceAlignmentPage />} />
-            </Routes>
-          </main>
-
-          {/* <FloatingChatManager /> */}
-        </div>
-      </FileProvider>
-    </HashRouter>
+        {/* <FloatingChatManager /> */}
+      </div>
+    </FileProvider>
   );
 };
+
+const App = () => {
+  return (
+    <HashRouter>
+      <AppContent />
+    </HashRouter>
+  )
+}
 
 export default App;

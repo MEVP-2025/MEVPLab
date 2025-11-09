@@ -1,0 +1,230 @@
+.home-main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 31.5px;
+  gap: 10vh;
+  min-height: calc(100vh - 31.5px);
+  background-image: url('./GenoFlow-Gradient.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: 50% 25%;
+  /* background-attachment: fixed; */
+}
+
+.home-main .title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--text);
+  gap: 10px;
+  margin-top: 10vh;
+  user-select: none;
+}
+.title .genoflow-logo {
+  height: 100px;
+  width: 100px;
+
+  background-color: var(--text);
+
+  mask-image: url('./GenoFlow.png');
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+
+  -webkit-mask-image: url('./GenoFlow.png');
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+}
+.title h1 {
+  font-size: 4.5em;
+  font-weight: 700;
+}
+
+.entry {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 80px;
+  width: 100%;
+  padding: 0 20px;
+}
+
+.entry .entry-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 400px;
+  max-width: 350px;
+  background-color: var(--platform);
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  flex-basis: 350px;
+  flex-grow: 1;
+
+  cursor: pointer;
+  text-decoration: none;
+
+  transition: transform 0.5s ease, box-shadow 0.5s ease;
+
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+}
+.entry-box:hover {
+  transform: translateY(-10px) scale(1.03);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+.entry .entry-title {
+  font-size: 1.6em;
+  font-weight: 800;
+  margin: 20px 0 0 0;
+  color: var(--text);
+  z-index: 3;
+}
+
+.card-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  background-size: cover;
+  background-position: center;
+  z-index: 1;
+
+  filter: grayscale(100%);
+  
+  transition: opacity 0.5s ease;
+}
+.analysis-entry .card-image {
+  background-image: url('./DNA.png');
+}
+.visualization-entry .card-image {
+  background-image: url('./VIZ.png');
+}
+.entry-box:hover .card-image {
+  opacity: 0;
+}
+
+.entry .entry-description {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: var(--text);
+  padding: 20px;
+  
+  z-index: 2;
+  
+  opacity: 0; 
+  transition: opacity 0.5s ease-in-out;
+}
+.entry-box:hover .entry-description {
+  opacity: 1;
+}
+.entry-description ul {
+  padding-left: 0;
+  text-align: left;
+  margin: 20px 0 0 20px;
+}
+.entry-description li {
+  margin-bottom: 15px;
+}
+
+
+
+
+
+
+/* --- Contact Us --- */
+
+.connect-us {
+  width: 100%;
+  text-align: center;
+  margin-top: 5vh;
+  background-color: var(--platform);
+  padding: 40px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.connect-us h2 {
+  font-size: 2.5em;
+  font-weight: 700;
+  margin-bottom: 20px;
+  
+  color: var(--text);
+}
+
+.contact-list {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  flex-wrap: wrap;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.contact-person {
+  flex-basis: 300px;
+  flex-grow: 1;
+
+  background-color: var(--background);
+
+  border: 1px solid var(--border);
+  box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+  
+  border-radius: 10px;
+  padding: 20px;
+  transition: transform 0.5s ease;
+}
+
+.contact-person:hover {
+  transform: translateY(-5px);
+}
+
+.person-name {
+  font-size: 1.2em;
+  font-weight: 600;
+  margin: 0 0 5px 0;
+  
+  color: var(--text);
+}
+
+.contact-person a {
+  color: var(--text-alt);
+  text-decoration: none;
+  font-size: 1em;
+}
+
+.contact-person a:hover {
+  text-decoration: underline;
+}
+
+
+/* --- Footer --- */
+.home-footer {
+  width: 100%;
+  padding: 20px;
+  text-align: center;
+  
+  background-color: var(--platform); 
+  border-top: 1px solid var(--border);
+}
+
+.home-footer p {
+  margin: 0;
+  font-size: 1em;
+  color: var(--text-alt);
+  user-select: none;
+}

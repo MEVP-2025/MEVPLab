@@ -1,3 +1,11 @@
+:root {
+    --background: #f5f6fa;
+    --platform: #f8f9fa;
+    --border: #e9ecef;
+    --text: #2c3e50;
+    --text-alt: #7f8c8d;
+}
+
 .main-content {
     display: flex;
     flex-direction: column;
