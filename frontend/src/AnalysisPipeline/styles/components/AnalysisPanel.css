@@ -32,6 +32,10 @@
   width: fit-content;
 }
 
+/* .input-container h3 {
+  font-size: 1.5rem;
+} */
+
 /* species-selection */
 .species-list {
   display: flex;
