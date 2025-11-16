@@ -1,6 +1,6 @@
 // src/pages/PhylotreePage.jsx
 import { useFileContext } from '../contexts/FileContext'; // Hook
-import SequencealignmentAPP from '../SequenceAlignment/SequencealignmentAPP.jsx';
+import SequencealignmentAPP from '../features/SequenceAlignment/SequencealignmentAPP.jsx';
 
 export default function SequenceAlignmentPage() {
   const { haplotypeFiles, selectedHaplotypeIndex } = useFileContext();

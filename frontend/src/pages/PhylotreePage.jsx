@@ -1,6 +1,6 @@
 // src/pages/PhylotreePage.jsx
 import { useFileContext } from '../contexts/FileContext'; // Hook
-import PhylotreeApplication from '../Phylotree/PhylotreeApplication.jsx';
+import PhylotreeApplication from '../features/Phylotree/PhylotreeApplication.jsx';
 
 export default function PhylotreePage() {
   const { phylotreeContent } = useFileContext();

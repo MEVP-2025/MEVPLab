@@ -1,6 +1,6 @@
 // src/pages/HaplotypePage.jsx
 import { useFileContext } from '../contexts/FileContext'; // Hook
-import HaplotypeNetworkApp from '../HaplotypeNetwork/HaplotypeNetworkApp';
+import HaplotypeNetworkApp from '../features/HaplotypeNetwork/HaplotypeNetworkApp';
 
 export default function HaplotypePage() {
   const {
