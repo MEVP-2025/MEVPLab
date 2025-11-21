@@ -15,16 +15,16 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  background: var(--surface);
+  background: var(--card);
   padding: 10px 16px;
   border-radius: 28px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   border: 1px solid var(--border);
   transition: all 0.3s ease;
 }
 
 .theme-toggle-wrapper:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transform: translateY(-1px);
 }
 
@@ -33,7 +33,7 @@
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  color: var(--detail);
+  color: var(--muted-foreground);
 }
 
 .theme-icon svg {
@@ -44,23 +44,24 @@
 .sun-icon {
   opacity: 1;
   color: #f39c12;
+  /* Keep sun color */
 }
 
 /* 月亮圖標樣式 */
 .moon-icon {
   opacity: 0.4;
-  color: #7f8c8d;
+  color: var(--muted-foreground);
 }
 
 /* 暗色主題時的圖標透明度 */
 html[data-theme="dark"] .sun-icon {
   opacity: 0.4;
-  color: #7f8c8d;
+  color: var(--muted-foreground);
 }
 
 html[data-theme="dark"] .moon-icon {
   opacity: 1;
-  color: #3498db;
+  color: var(--primary);
 }
 
 /* ========================================
@@ -88,10 +89,10 @@ html[data-theme="dark"] .moon-icon {
   left: 0;
   right: 0;
   bottom: 0;
-  background: #ddd;
+  background: var(--input);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   border-radius: 28px;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow: hidden;
 }
 
@@ -102,10 +103,10 @@ html[data-theme="dark"] .moon-icon {
   width: 24px;
   left: 2px;
   bottom: 2px;
-  background: white;
+  background: var(--background);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   border-radius: 50%;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   z-index: 2;
 }
 
@@ -117,36 +118,36 @@ html[data-theme="dark"] .moon-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #666;
+  color: var(--muted-foreground);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 3;
 }
 
 /* 選中狀態（暗色主題） */
-input:checked + .slider {
+input:checked+.slider {
   background: var(--primary);
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
   transform: translateX(28px);
 }
 
-input:checked + .slider .slider-icon {
+input:checked+.slider .slider-icon {
   transform: translateX(28px) translateY(-50%);
-  color: white;
+  color: var(--primary-foreground);
 }
 
 /* Hover 效果 */
 .toggle-switch:hover .slider {
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.15), 0 0 0 3px rgba(52, 152, 219, 0.1);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 0 0 3px var(--ring);
 }
 
 .toggle-switch:hover .slider:before {
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 /* 焦點可訪問性 */
-.toggle-switch input:focus + .slider {
+.toggle-switch input:focus+.slider {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
@@ -156,7 +157,7 @@ input:checked + .slider .slider-icon {
   width: 28px;
 }
 
-input:checked + .slider:active:before {
+input:checked+.slider:active:before {
   transform: translateX(24px);
 }
 
@@ -169,41 +170,41 @@ input:checked + .slider:active:before {
     top: 10px;
     left: 10px;
   }
-  
+
   .theme-toggle-wrapper {
     gap: 8px;
     padding: 8px 12px;
   }
-  
+
   .theme-icon svg {
     height: 20px;
     width: 20px;
   }
-  
+
   .toggle-switch {
     width: 44px;
     height: 24px;
   }
-  
+
   .slider:before {
     height: 20px;
     width: 20px;
   }
-  
+
   .slider-icon {
     left: 4px;
   }
-  
+
   .slider-icon svg {
     height: 12px;
     width: 12px;
   }
-  
-  input:checked + .slider:before {
+
+  input:checked+.slider:before {
     transform: translateX(20px);
   }
-  
-  input:checked + .slider .slider-icon {
+
+  input:checked+.slider .slider-icon {
     transform: translateX(20px) translateY(-50%);
   }
 }
@@ -213,6 +214,7 @@ input:checked + .slider:active:before {
    ======================================== */
 
 @media (prefers-reduced-motion: reduce) {
+
   .slider,
   .slider:before,
   .slider-icon,

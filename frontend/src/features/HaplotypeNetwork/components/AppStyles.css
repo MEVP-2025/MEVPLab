@@ -4,6 +4,7 @@
 .flex {
   display: flex;
 }
+
 .flex-row {
   flex-direction: row;
 }
@@ -15,9 +16,11 @@
 .flex-gap-10 {
   gap: 10px;
 }
+
 .flex-gap-5 {
   gap: 5px;
 }
+
 .flex-center {
   justify-content: center;
   align-items: center;
@@ -32,20 +35,29 @@
   width: 95%;
   margin-bottom: 8px;
   padding: 4px;
+  background: var(--input);
+  color: var(--foreground);
+  border: 1px solid var(--border);
 }
 
 /* 地圖容器 */
 .map-container {
-  position: relative; /* 相對定位 */
-  width:100px; /* 設置容器寬度 */
-  height: 100px; /* 設置容器高度 */
+  position: relative;
+  /* 相對定位 */
+  width: 100px;
+  /* 設置容器寬度 */
+  height: 100px;
+  /* 設置容器高度 */
 }
 
 /* 地圖容器 */
 .map-containerFiltered {
-  position: relative; /* 相對定位 */
-  width: 300px; /* 設置容器寬度 */
-  height: 300px; /* 設置容器高度 */
+  position: relative;
+  /* 相對定位 */
+  width: 300px;
+  /* 設置容器寬度 */
+  height: 300px;
+  /* 設置容器高度 */
 }
 
 .map-container svg {
@@ -58,9 +70,12 @@
 /* 使地圖圖片居中 */
 .map-container img {
   position: absolute;
-  top: 50%; /* 垂直居中 */
-  left: 50%; /* 水平居中 */
-  transform: translate(-50%, -50%); /* 使用 transform 使圖片正確居中 */
+  top: 50%;
+  /* 垂直居中 */
+  left: 50%;
+  /* 水平居中 */
+  transform: translate(-50%, -50%);
+  /* 使用 transform 使圖片正確居中 */
 }
 
 /* 背景灰色的 div，大小與地圖一致 */
@@ -68,10 +83,14 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 800px;  /* 設置背景寬度與地圖一致 */
-  height: 1000px; /* 設置背景高度與地圖一致 */
-  background-color: rgb(21, 21, 21); /* 設置背景顏色為灰色 */
-  z-index: 0; /* 確保背景在其他元素之下 */
+  width: 800px;
+  /* 設置背景寬度與地圖一致 */
+  height: 1000px;
+  /* 設置背景高度與地圖一致 */
+  background-color: var(--muted);
+  /* 設置背景顏色為灰色 */
+  z-index: 0;
+  /* 確保背景在其他元素之下 */
 }
 
 /* PieChart 圓餅圖容器 */
@@ -89,14 +108,14 @@
   position: absolute;
   bottom: 5px;
   left: 5px;
-  background-color: rgba(191, 191, 193, 0.85);
+  background-color: var(--popover);
   padding: 4px 8px;
   border-radius: 5px;
   font-size: 15px;
   font-family: monospace;
-  color: rgb(250, 46, 5);
+  color: var(--primary);
   user-select: none;
-  
+
 }
 
 
@@ -106,10 +125,12 @@
 .gene-control-panel {
   width: 300px;
 }
+
 .gene-checkbox {
   display: block;
   padding: 4px 6px;
 }
+
 .gene-checkbox span {
   margin-left: 5px;
 }
@@ -120,6 +141,7 @@
   gap: 5px;
   margin-bottom: 8px;
 }
+
 .pagination-controls {
   display: flex;
   justify-content: center;
@@ -137,9 +159,15 @@
 
 
 .small-input {
-  width: 100px;   /* 輸入框寬度 */
-  font-size: 20px; /* 字體小一點 */
-  padding: 2px 4px; /* 內距縮小 */
+  width: 100px;
+  /* 輸入框寬度 */
+  font-size: 20px;
+  /* 字體小一點 */
+  padding: 2px 4px;
+  /* 內距縮小 */
+  background: var(--input);
+  color: var(--foreground);
+  border: 1px solid var(--border);
 }
 
 
@@ -152,6 +180,8 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  background: var(--primary);
+  color: var(--primary-foreground);
 }
 
 /* 滑動區塊 */

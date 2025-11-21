@@ -1,6 +1,7 @@
 :root {
   --char-width: 15px;
-  --char-gap: 4px; /* 控制字元與 checkbox 間距 */
+  --char-gap: 4px;
+  /* 控制字元與 checkbox 間距 */
 }
 
 /* 容器基本樣式 */
@@ -8,6 +9,7 @@
   font-family: 'Courier New', monospace;
   padding: 5px;
   user-select: none;
+  color: var(--foreground);
 }
 
 /* 搜尋區塊 */
@@ -20,32 +22,39 @@
   flex: 1;
   padding: 8px;
   font-size: 16px;
+  background-color: var(--input);
+  color: var(--foreground);
+  border: 1px solid var(--border);
 }
 
 .search-container button {
   margin-left: 10px;
   padding: 8px;
   cursor: pointer;
+  background-color: var(--secondary);
+  color: var(--foreground);
+  border: 1px solid var(--border);
 }
 
 /* 主內容容器 */
 .alignment-wrapper {
   display: flex;
   height: 630px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border);
   overflow: hidden;
 }
 
 /* 左側 List（序列 ID） */
 .left-list {
-  border-right: 1px solid #ececec;
+  border-right: 1px solid var(--border);
   overflow-x: hidden;
   user-select: none;
+  background-color: var(--card);
 }
 
 .shared-scroll-wrapper {
   overflow-y: scroll;
-  border-right: 1px solid #ececec;
+  border-right: 1px solid var(--border);
 }
 
 .sequence-id-cell {
@@ -57,9 +66,10 @@
   text-align: right;
   white-space: nowrap;
   font-weight: bold;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border);
   box-sizing: border-box;
   font-size: 16px;
+  color: var(--foreground);
 }
 
 /* 右側序列容器 */
@@ -70,15 +80,16 @@
   position: relative;
   scrollbar-width: auto;
   -ms-overflow-style: auto;
+  background-color: var(--background);
 }
 
 .sequence-scroll-wrapper::-webkit-scrollbar {
   height: 5px;
-  background: #f0f0f0;
+  background: var(--muted);
 }
 
 .sequence-scroll-wrapper::-webkit-scrollbar-thumb {
-  background: #999;
+  background: var(--muted-foreground);
   border-radius: 5px;
 }
 
@@ -90,8 +101,8 @@
 /* checkbox header 對齊字元寬度 */
 .right-header {
   display: flex;
-  background-color: #f0f0f0;
-  border-bottom: 1px solid #ccc;
+  background-color: var(--muted);
+  border-bottom: 1px solid var(--border);
   height: 20px;
   box-sizing: border-box;
   padding-left: 10px;
@@ -131,7 +142,7 @@
   height: 60px;
   display: flex;
   align-items: center;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border);
   box-sizing: border-box;
   font-family: 'Courier New', monospace;
 }
@@ -155,17 +166,40 @@
 
 /* 被選取的字元框線 */
 .pos-selected {
-  outline: 2px solid rgb(5, 3, 0);
+  outline: 2px solid var(--primary);
   cursor: pointer;
 }
 
 /* 顏色標記 */
-.bg-a { background-color: lightpink; }
-.bg-t { background-color: lightblue; }
-.bg-c { background-color: mediumpurple; }
-.bg-g { background-color: lemonchiffon; }
-.bg-large { background-color: lightgray; }
-.bg-other { background-color: rgb(0, 0, 0); }
+.bg-a {
+  background-color: lightpink;
+  color: black;
+}
+
+.bg-t {
+  background-color: lightblue;
+  color: black;
+}
+
+.bg-c {
+  background-color: mediumpurple;
+  color: black;
+}
+
+.bg-g {
+  background-color: lemonchiffon;
+  color: black;
+}
+
+.bg-large {
+  background-color: lightgray;
+  color: black;
+}
+
+.bg-other {
+  background-color: var(--foreground);
+  color: var(--background);
+}
 
 /* 基因序列編輯輸入框（保留供擴充） */
 .sequence-input {
@@ -175,7 +209,7 @@
   width: 100%;
   font-size: 16px;
   padding: 0;
-  color: black;
+  color: var(--foreground);
   font-family: 'Courier New', Courier, monospace;
 }
 
@@ -185,4 +219,8 @@
   padding: 2px 4px;
   margin-left: 8px;
   cursor: pointer;
+  background-color: var(--destructive);
+  color: var(--destructive-foreground, white);
+  border: none;
+  border-radius: 4px;
 }
