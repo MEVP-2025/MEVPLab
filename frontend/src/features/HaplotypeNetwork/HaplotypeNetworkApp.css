@@ -15,8 +15,8 @@
   
   gap: 12px;
   padding: 12px;
-  background: #e1e1e1;
-  border: 1px solid #060606;
+  background: #ffffff;
+  border: 1px solid #ddd;
   border-radius: 10px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
@@ -25,12 +25,15 @@
   padding: 8px 16px;
   border: none;
   background-color: #007bff;
-  color: rgb(253, 253, 253);
+  color: white;
   border-radius: 6px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
+.button-group button:hover {
+  background-color: #0056b3;
+}
 
 /* ===== 區塊 Section 區隔 ===== */
 .section {
