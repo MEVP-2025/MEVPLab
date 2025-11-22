@@ -1,7 +1,7 @@
 // src/data/mapImages.js 
-import TW1 from "../../assets/haplotype/TW.png"; 
-import TW2 from "../../assets/haplotype/japan-map.png"; 
-import TW3 from "../../assets/haplotype/world-map.png";
+import TW1 from "../../../assets/haplotype/TW.png";
+import TW2 from "../../../assets/haplotype/japan-map.png";
+import TW3 from "../../../assets/haplotype/world-map.png";
 
 export const mapImages = [
   {

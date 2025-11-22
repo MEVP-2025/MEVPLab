@@ -145,10 +145,11 @@
   border-radius: 8px;
   overflow: hidden;
   margin-bottom: 30px;
+  border: 1px solid var(--border);
 }
 
 .logs-header {
-  background: var(--card);
+  background: var(--secondary);
   padding: 10px 20px;
   border-bottom: 1px solid var(--border);
 }
