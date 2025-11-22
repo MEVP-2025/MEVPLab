@@ -379,9 +379,9 @@ app.whenReady().then(async () => {
   try {
     // Start backend server first
     if (!isDev) {
-      await startAnalysisBackend();
-      // also start the viz backend
-      await startVizBackend();
+      // await startAnalysisBackend();
+      // await startVizBackend();
+      await Promise.all([startAnalysisBackend(), startVizBackend()]);
     }
 
     createWindow();

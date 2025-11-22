@@ -24,7 +24,6 @@ const storage = multer.diskStorage({
     cb(null, uploadDir);
   },
   filename: (req, file, cb) => {
-    // 直接使用原始檔名
     cb(null, file.originalname);
   },
 });
@@ -50,10 +49,10 @@ const fileFilter = (req, file, cb) => {
 const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
-  limits: {
-    fileSize: parseInt(process.env.MAX_FILE_SIZE) || 1073741824, // 1GB default
-    files: 5, // Maximum 5 files at once
-  },
+  // limits: {
+  //   fileSize: parseInt(process.env.MAX_FILE_SIZE) || 1073741824,
+  //   files: 5, // Maximum 5 files at once
+  // },
 });
 
 // 清空資料夾的 middleware

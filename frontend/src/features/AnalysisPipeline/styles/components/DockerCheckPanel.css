@@ -23,13 +23,13 @@
 
 .panel-header h2 {
   margin: 0 0 0.5rem;
-  color: var(--text);
+  color: var(--foreground);
   font-size: 1.8rem;
 }
 
 .panel-header p {
   margin: 0;
-  color: var(--detail);
+  color: var(--muted-foreground);
 }
 
 .check-status {
@@ -74,21 +74,21 @@
 }
 
 .status-item.success {
-  background: color-mix(in srgb, var(--success) 20%, var(--surface) 80%);
+  background: color-mix(in srgb, var(--success) 20%, var(--card) 80%);
   color: var(--success);
-  border-color: color-mix(in srgb, var(--success) 50%, var(--surface) 50%);
+  border-color: color-mix(in srgb, var(--success) 50%, var(--card) 50%);
 }
 
 .status-item.error {
-  background: color-mix(in srgb, var(--danger) 20%, var(--surface) 80%);
+  background: color-mix(in srgb, var(--danger) 20%, var(--card) 80%);
   color: var(--danger);
-  border-color: color-mix(in srgb, var(--danger) 50%, var(--surface) 50%);
+  border-color: color-mix(in srgb, var(--danger) 50%, var(--card) 50%);
 }
 
 .status-item.warning {
-  background: color-mix(in srgb, var(--warning) 20%, var(--surface) 80%);
+  background: color-mix(in srgb, var(--warning) 20%, var(--card) 80%);
   color: var(--warning);
-  border-color: color-mix(in srgb, var(--warning) 50%, var(--surface) 50%);
+  border-color: color-mix(in srgb, var(--warning) 50%, var(--card) 50%);
 }
 
 .status-icon {
@@ -99,11 +99,11 @@
 .status-label {
   flex: 1;
   font-weight: 500;
-  color: var(--text-primary);
+  color: var(--foreground);
 }
 
 .status-value {
-  color: var(--text-secondary);
+  color: var(--muted-foreground);
   font-size: 0.9rem;
 }
 
@@ -116,10 +116,10 @@
 
 .instruction-toggle {
   padding: 0.75rem 2.5rem;
-  background: var(--bg);
+  background: var(--background);
   border: 2px solid var(--border);
   border-radius: 8px;
-  color: var(--text);
+  color: var(--foreground);
   font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -127,28 +127,28 @@
 
 .instruction-toggle:hover {
   /* background-color: var(--border); */
-  background: color-mix(in srgb, var(--bg) 85%, var(--text) 15%);
-  color: var(--text);
+  background: color-mix(in srgb, var(--background) 85%, var(--foreground) 15%);
+  color: var(--foreground);
 }
 
 .instructions-panel {
   margin-top: 1.5rem;
   padding: 1.5rem;
-  background: var(--bg-secondary);
+  background: var(--secondary);
   border-radius: 8px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
 }
 
 .instructions-content h3 {
   margin: 0 0 1rem;
-  color: var(--text-primary);
+  color: var(--foreground);
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
 .instructions-content p {
-  color: var(--text-secondary);
+  color: var(--muted-foreground);
   line-height: 1.6;
   margin-bottom: 1rem;
 }
@@ -166,7 +166,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 1rem;
-  background: var(--surface-alt);
+  background: var(--secondary);
   border: 2px solid #5490e8;
   border-radius: 8px;
   color: #5490e8;
@@ -192,14 +192,14 @@
 
 .instruction-steps h4 {
   margin: 1rem 0 0.5rem;
-  color: var(--text-primary);
+  color: var(--foreground);
   font-size: 1rem;
 }
 
 .instruction-steps ol {
   margin: 0.5rem 0;
   padding-left: 1.5rem;
-  color: var(--text-secondary);
+  color: var(--muted-foreground);
 }
 
 .instruction-steps li {
@@ -208,12 +208,12 @@
 }
 
 .instruction-steps code {
-  background: var(--bg-tertiary);
+  background: var(--muted);
   padding: 0.2rem 0.5rem;
   border-radius: 4px;
   font-family: 'Courier New', monospace;
   font-size: 0.9rem;
-  color: #e83e8c;
+  color: var(--primary);
 }
 
 .panel-actions {
@@ -235,25 +235,25 @@
 }
 
 .recheck-button {
-  background: var(--bg);
-  color: var(--text);
+  background: var(--background);
+  color: var(--foreground);
   border: 2px solid var(--border);
 }
 
 .recheck-button:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--bg) 85%, var(--text) 15%);
-  border-color: var(--text);
+  background: color-mix(in srgb, var(--background) 85%, var(--foreground) 15%);
+  border-color: var(--foreground);
 }
 
 .next-button {
   /* background: linear-gradient(135deg, #2496ed 0%, #1a7bc4 100%); */
-  background: var(--primary );
-  color: var(--surface);
+  background: var(--primary);
+  color: var(--primary-foreground);
 }
 
 .next-button:hover:not(:disabled) {
   /* background: linear-gradient(135deg, #1a7bc4 0%, #15629e 100%); */
-  background: color-mix(in srgb, var(--primary) 60%, var(--bg) 40%);
+  background: color-mix(in srgb, var(--primary) 60%, var(--background) 40%);
 
 }
 

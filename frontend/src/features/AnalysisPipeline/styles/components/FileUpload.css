@@ -24,13 +24,13 @@
 
 .file-drop-zone:hover {
   border-color: var(--primary);
-  background-color: var(--surface-alt);
+  background-color: var(--secondary);
 }
 
 .file-drop-zone:has(.drop-active) {
   color: var(--success);
   border-color: var(--success);
-  background-color: color-mix(in srgb, var(--success) 10%, var(--surface) 90%);
+  background-color: color-mix(in srgb, var(--success) 10%, var(--card) 90%);
 }
 
 .drop-active p {
@@ -45,7 +45,7 @@
 }
 
 .drop-idle {
-  color: var(--detail);
+  color: var(--muted-foreground);
 }
 
 .drop-idle p {
@@ -54,7 +54,7 @@
 }
 
 .drop-idle small {
-  color: var(--detail);
+  color: var(--muted-foreground);
   font-size: 0.9em;
 }
 
@@ -64,7 +64,7 @@
 }
 
 .selected-files .file-item {
-  background: var(--surface-alt);
+  background: var(--secondary);
   border: 1px solid var(--border);
   margin-bottom: 10px;
 }
@@ -79,7 +79,7 @@
 
 .upload-progress span {
   font-weight: 500;
-  color: var(--detail);
+  color: var(--muted-foreground);
   min-width: 40px;
 }
 
@@ -111,14 +111,14 @@
   color: var(--success);
   /* background: #d5f4e6;
   border-color: #a9dfbf; */
-  background: color-mix(in srgb, var(--success) 14%, var(--surface) 86%);
-  border-color: color-mix(in srgb, var(--success) 50%, var(--surface) 50%);
+  background: color-mix(in srgb, var(--success) 14%, var(--card) 86%);
+  border-color: color-mix(in srgb, var(--success) 50%, var(--card) 50%);
 }
 
 .file-status .missing {
   color: var(--danger);
-  background: color-mix(in srgb, var(--danger) 20%, var(--surface) 80%);
-  border-color: color-mix(in srgb, var(--danger) 50%, var(--surface) 50%);
+  background: color-mix(in srgb, var(--danger) 20%, var(--card) 80%);
+  border-color: color-mix(in srgb, var(--danger) 50%, var(--card) 50%);
 }
 
 /* Detect Species */
@@ -129,8 +129,10 @@
 }
 
 .progress-bar {
-  flex: 1; /* 讓進度條佔據剩餘空間 */
-  margin: 0; /* 移除上下 margin，因為已經用 gap 控制間距 */
+  flex: 1;
+  /* 讓進度條佔據剩餘空間 */
+  margin: 0;
+  /* 移除上下 margin，因為已經用 gap 控制間距 */
 }
 
 .detecting-icon {
@@ -147,20 +149,20 @@
   .file-drop-zone {
     padding: 40px 20px;
   }
-  
+
   .upload-actions {
     align-items: stretch;
   }
-  
+
   .upload-actions .btn {
     width: 100%;
   }
-  
+
   .file-status {
     flex-direction: column;
     gap: 10px;
   }
-  
+
   .file-status span {
     text-align: center;
   }

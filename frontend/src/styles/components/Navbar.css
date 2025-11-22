@@ -1,11 +1,12 @@
-.navbar{
+.navbar {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  background-color: #ebebebaa;
-  padding: 0.3% 2%;
+  background-color: var(--card);
+  padding: 0.4% 1.2%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-top: 31.5px;
+  border-bottom: 1px solid var(--border);
 }
 
 .navbar-logo {
@@ -16,22 +17,22 @@
 }
 
 /* .navbar-brand{
-  color: rgb(43, 43, 43);
+  color: var(--foreground);
   font-size: 22px;
   font-weight: 500;
   margin-right: 25px;
 } */
 
-.navbar a{
+.navbar a {
   font-size: 18px;
-  color: gray
+  color: var(--muted-foreground);
 }
 
-.file-upload{
+.file-upload {
   margin-left: 25px;
 }
 
-.file-upload label{
+.file-upload label {
   margin: 0px 5px;
 }
 
@@ -39,13 +40,13 @@
   display: block;
   width: 100%;
   cursor: pointer;
-  color: #808080;
+  color: var(--muted-foreground);
 }
 
 .custom-upload-label:hover {
-  color: rgb(43, 43, 43);
+  color: var(--foreground);
 }
 
-.file-name{
-  color: #0056b3;
+.file-name {
+  color: var(--primary);
 }

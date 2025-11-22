@@ -29,7 +29,9 @@
     "phylotree": "1",
     "d3": "^5.7.0",
     "d3-react-axis": "0.0.3",
-    "d3-shape": "^3.2.0"
+    "d3-shape": "^3.2.0",
+    "marked": "^5.1.1",
+    "dompurify": "^3.0.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",

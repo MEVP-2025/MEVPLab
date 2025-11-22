@@ -25,29 +25,29 @@
 
 .analysis-main .btn-primary {
   background: var(--primary);
-  color: var(--surface);
+  color: var(--primary-foreground);
 }
 
 .analysis-main .btn-primary:hover:not(:disabled) {
-  background: var(--primary-600);
+  background: color-mix(in srgb, var(--primary) 90%, black 10%);
 }
 
 .analysis-main .btn-secondary {
-  background: var(--detail);
-  color: var(--surface);
+  background: var(--secondary);
+  color: var(--secondary-foreground);
 }
 
 .analysis-main .btn-secondary:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--detail) 80%, black 20%);
+  background: color-mix(in srgb, var(--secondary) 80%, black 20%);
 }
 
 .analysis-main .btn-danger {
-  background: var(--danger);
-  color: var(--surface);
+  background: var(--destructive);
+  color: var(--destructive-foreground);
 }
 
 .analysis-main .btn-danger:hover:not(:disabled) {
-  background: color-mix(in srgb, var(--danger) 85%, black 15%);
+  background: color-mix(in srgb, var(--destructive) 85%, black 15%);
 }
 
 .analysis-main .btn-outline {
@@ -58,7 +58,7 @@
 
 .analysis-main .btn-outline:hover:not(:disabled) {
   background: var(--primary);
-  color: var(--surface);
+  color: var(--primary-foreground);
 }
 
 .analysis-main .btn-sm {
@@ -79,9 +79,9 @@
 
 /* Upload Alerts */
 .analysis-main .alert.error {
-  background: color-mix(in srgb, var(--danger) 10%, var(--surface) 90%);
-  color: var(--danger);
-  border: 1px solid color-mix(in srgb, var(--danger) 20%, var(--surface) 80%);
+  background: color-mix(in srgb, var(--destructive) 10%, var(--card) 90%);
+  color: var(--destructive);
+  border: 1px solid color-mix(in srgb, var(--destructive) 20%, var(--card) 80%);
 }
 
 .analysis-main .alert button {
@@ -105,7 +105,7 @@
 
 .analysis-main .progress-fill {
   height: 100%;
-  background: var(--progress-fill);
+  background: var(--primary);
   /*linear-gradient(90deg, var(--progress-fill), var(--success)); */
   transition: width 0.3s ease;
 }
@@ -148,19 +148,19 @@
 
 .analysis-main .file-name {
   font-weight: 500;
-  color: var(--text);
+  color: var(--foreground);
 }
 
 .analysis-main .file-size,
 .analysis-main .file-type {
   font-size: 0.9em;
-  color: var(--detail);
+  color: var(--muted-foreground);
 }
 
 /* Upload File Remove Button */
 .analysis-main .remove-btn {
-  background: var(--danger);
-  color: var(--surface);
+  background: var(--destructive);
+  color: var(--destructive-foreground);
   border: none;
   border-radius: 50%;
   width: 32px;
@@ -172,7 +172,7 @@
 }
 
 .analysis-main .remove-btn:hover {
-  background: color-mix(in srgb, var(--danger) 85%, black 15%);
+  background: color-mix(in srgb, var(--destructive) 85%, black 15%);
 }
 
 /* input type = "number" */
@@ -181,6 +181,8 @@
   border: 1px solid var(--border);
   border-radius: 4px;
   font-size: 1em;
+  background: var(--input);
+  color: var(--foreground);
 }
 
 .analysis-main input[type='text'] {
@@ -188,5 +190,6 @@
   border: 1px solid var(--border);
   border-radius: 4px;
   font-size: 1em;
-  ;
+  background: var(--input);
+  color: var(--foreground);
 }

@@ -1,6 +1,7 @@
 // src/components/Navbar.jsx
 import NavDropdown from 'react-bootstrap/NavDropdown';
 import { Link } from 'react-router-dom';
+import logo from '../assets/MEVP_logo.png';
 import { useFileContext } from '../contexts/FileContext';
 import ThemeToggle from './ThemeToggle.jsx';
 
@@ -31,7 +32,7 @@ function MainNavbar({ theme, toggleTheme }) {
   return (
     <nav className="navbar">
       <Link to='/'>
-        <img src="./MEVP_logo.png" alt="MEVP Logo" className="navbar-logo" />
+        <img src={logo} alt="MEVP Logo" className="navbar-logo" />
       </Link>
 
       <NavDropdown title="Tools">
