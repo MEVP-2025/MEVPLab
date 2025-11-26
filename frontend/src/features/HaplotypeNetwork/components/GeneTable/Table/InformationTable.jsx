@@ -1,5 +1,5 @@
 import React from "react";
-import "..//GeneTable.css";
+import "../../styles/GeneTable.css";
 // import { riverToCityMap } from "../../data/riverToCityMap.js";
 
 // InformationTable.jsx

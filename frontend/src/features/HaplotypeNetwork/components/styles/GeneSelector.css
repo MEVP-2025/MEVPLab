@@ -1,0 +1,115 @@
+/* styles.css */
+
+/* 設定整體容器的樣式 */
+.container {
+  overflow-x: auto;
+  padding: 10px;
+  width: 100%;
+}
+
+/* 設定外層的flex排列 */
+.flex-container {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+/* 內部欄位設定 */
+.flex-column-container {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 220px;
+  margin-right: 10px;
+}
+
+/* 搜尋框樣式 */
+.search-input {
+  margin-bottom: 10px;
+  padding: 5px;
+  border: 1px solid var(--muted-foreground);
+  border-radius: 4px;
+  width: 100%;
+}
+
+/* 缩减按钮样式 */
+.reduction-button {
+  margin-bottom: 10px;
+  padding: 5px 10px;
+  border: 1px solid var(--muted-foreground);
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+/* 基因列表項目 */
+.gene-list-item {
+  padding: 4px 10px;
+  color: var(--primary);
+  cursor: pointer;
+  border-radius: 4px;
+  margin: 2px 0;
+  max-width: 250px;
+  word-wrap: break-word;
+  white-space: normal;
+}
+
+/* 选中时基因项的样式 */
+.gene-list-item.selected {
+  box-shadow: 0 0 5px 5px var(--success);
+}
+
+/* 基因名的背景颜色 */
+.gene-list-item span {
+  background-color: var(--background);
+  padding: 0 5px;
+  border-radius: 4px;
+}
+
+/* 分頁控制 */
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* 比較範圍的選擇按鈕 */
+.button-group {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 8px;
+}
+
+/* 輸入範圍 */
+.range-input {
+  width: 60px;
+}
+
+/* 結果顯示區域 */
+.results-container {
+  margin-top: 10px;
+  border: 1px solid var(--primary);
+  padding-top: 10px;
+  padding-left: 10px;
+}
+
+/* 比較中狀態的文本 */
+.comparing-text {
+  margin-top: 10px;
+  color: var(--success);
+}
+
+/* 無結果狀態 */
+.no-results {
+  margin-top: 10px;
+  color: var(--destructive);
+}
+
+
+.pagination-controls button{
+  padding: 6px 12px;
+  border: none;
+  background-color: var(--success);
+  color: oklch(1 0 0);
+  border-radius: 6px;
+  cursor: pointer;
+}

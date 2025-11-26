@@ -1,6 +1,6 @@
 import { memo } from "react";
 import { Cell, Pie, PieChart } from "recharts";
-import "../AppStyles.css";
+import "../styles/TaiwanMapComponent.css"; 
 
 // ---------- 子元件：城市圓餅圖 ----------
 const CityPieChart = memo(
@@ -40,13 +40,13 @@ const CityPieChart = memo(
             top: "-25px",
             width: "50px",
             height: "20px", // 小格子的高度
-            backgroundColor: "white", // 背景顏色可以根據需要調整
+            backgroundColor: "var(--background)", // 背景顏色可以根據需要調整
             textAlign: "center",
             lineHeight: "20px", // 使文字垂直居中
             fontSize: "10px", // 字體大小
             fontWeight: "bold",
-            borderRadius: "3px", // 圓角
-            boxShadow: "0 2px 5px rgba(0,0,0,0.3)", // 加一些陰影效果
+            borderRadius: "3px var(--primary)", // 圓角
+            boxShadow: "0 2px 5px var(--primary)", // 加一些陰影效果
           }}
         >
           {city}
@@ -75,7 +75,7 @@ const CityPieChart = memo(
             {data.map((entry, index) => (
               <Cell
                 key={`cell-${city}-${index}`}
-                fill={geneColors[entry.name] || "#ffffffff"}
+                fill={geneColors[entry.name] || "var(--primary)"}
               />
             ))}
           </Pie>

@@ -53,21 +53,14 @@ const GeneTableContent = ({
       (viewMode === "total" && Array.isArray(displayedHeaders) && displayedHeaders.length > 0) && Array.isArray(locations) && locations.length > 0;
       
     setIsConfigured(isAllConfigured);
-  }, [paginatedGenes, locations, tagMapping, ednaMapping, displayedHeaders, viewMode]);
+  }, [genes, locations, tagMapping, ednaMapping, displayedHeaders, viewMode]);
 
 
 
   // 定義顯示資料缺失的提示函式
   const renderUploadWarning = () => (
-    <div style={{
-      padding: 16, 
-      backgroundColor: "#ffcc00", 
-      color: "#333", 
-      borderRadius: 8, 
-      marginBottom: 16,
-      fontSize: "16px",
-      fontWeight: "bold"
-    }}>
+    <div className ="GeneTable-warning-box"
+    >
       <p>⚠️ Complete the following settings：</p>
       <ul>
         {viewMode === "" && (
@@ -83,6 +76,7 @@ const GeneTableContent = ({
         )}
         {viewMode === "formatted" && (
           <>
+            {(!genes || Array.isArray(genes) && genes.length === 0) && <li> Upload Fa File</li>}
             {(!locations || Array.isArray(locations) && locations.length === 0)&& <li> Upload eDNA Sample Station (xlsx)</li>}
           </>
         )}

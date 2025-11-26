@@ -10,6 +10,8 @@ import useCityGeneData from "./hooks/useCityGeneData";
 import useExportMap from "./hooks/useExportMap";
 import useGeneSelection from "./hooks/useGeneSelection";
 
+import "../styles/TaiwanMapComponent.css";
+
 const TaiwanMapComponent = ({
   genes,
   cityGeneData,
@@ -28,7 +30,9 @@ const TaiwanMapComponent = ({
   const [selectedGenes, setSelectedGenes] = useState([]);
   const [cityVisibility, setCityVisibility] = useState({});
 
-   const [filteredGeneList, setFilteredGeneList] = useState([]);
+  const [filteredGeneList, setFilteredGeneList] = useState([]);
+
+  const [fileName, setFileName] = useState("Map"); // 管理檔名狀態
 
   const onFilteredGenesChange = (filteredGenes) => {
     setFilteredGeneList(filteredGenes);
@@ -130,24 +134,13 @@ const TaiwanMapComponent = ({
   });
 
   // ===== Export Map =====
-  const handleExportPNG = useExportMap(filteredCityGeneData, geneColors, selectedGenes);
+  const handleExportPNG = useExportMap(filteredCityGeneData, geneColors, selectedGenes, fileName);
 
   // ===== Render =====
   return (
-  <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+  <div className="map-container">
     {/* MapControls - The controls component on top */}
-    <div
-      style={{
-        minWidth: "100%",
-       
-        background: "#ffffff",
-        padding: "15px",
-        boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
-        overflow: "auto",
-        border: "2px solid #ccc",
-        borderRadius: "12px",
-      }}
-    >
+    <div className="map-controls">
       <MapControls
         imgW={imgW}
         imgH={imgH}
@@ -176,18 +169,7 @@ const TaiwanMapComponent = ({
     
     <div style={{ display: "flex", gap: "10px",minWidth: "100%", }}>
       {/* MapMainView - The main map view on the bottom */}
-      <div
-        style={{
-          minWidth: "60%",
-          flex: 2,
-          background: "#ffffffff",
-          padding: "6px",
-          boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
-          overflow: "auto",
-          border: "8px solid #e9e4e4ff",
-          borderRadius: "12px",
-        }}
-      >
+      <div className="map-main-view-Filtered">
         <MapMainView
           conW={conW}
           conH={conH}
@@ -205,10 +187,12 @@ const TaiwanMapComponent = ({
           handleExportPNG={handleExportPNG}
           mapLoaded={mapLoaded}
            filteredGeneList={filteredGeneList}
+           setFileName={setFileName}
         />
       </div>
 
       {/* GeneList */}
+      <div className="map-main-view-List">
         <GeneList
           
           genes={genes}
@@ -227,7 +211,7 @@ const TaiwanMapComponent = ({
            isReduced={isReduced}
            setIsReduced={setIsReduced}
         />
-
+      </div>
     </div>  
   </div>
 );

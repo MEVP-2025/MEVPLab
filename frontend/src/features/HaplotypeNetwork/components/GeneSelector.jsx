@@ -1,9 +1,10 @@
-import  { useState } from "react";
+import  { useState, useEffect } from "react";
 import { FixedSizeList as List } from "react-window";
-import "./AppStyles.css";
+import "./styles/GeneSelector.css";
 
 const GeneSelector = ({
   genes,
+  eDnaSampleContent,
   selectedGene,
   setSelectedGene,
   showAllGenes,
@@ -12,6 +13,7 @@ const GeneSelector = ({
   onSimilarityResults,
   isReduced, 
   setIsReduced,
+
 }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [customMin, setCustomMin] = useState(0);
@@ -70,9 +72,6 @@ const filterResults = (results, selectedGene) => {
     return reduceGeneName(result.name) !== reduceGeneName(selectedGene); // 過濾掉選中的基因
   });
 };
-
-
-
 
 
   // 分頁設定
@@ -167,173 +166,161 @@ const filterResults = (results, selectedGene) => {
   }
 };
 
+   const [isConfigured, setIsConfigured] = useState(false); // 用來判斷是否完成設定
+
+   useEffect(() => {
+       // 根據不同的 viewMode 設定所需的檔案是否完成
+       const isAllConfigured = 
+          Array.isArray(genes) && genes.length > 0 && 
+          Array.isArray(eDnaSampleContent) && eDnaSampleContent.length > 0; 
+       setIsConfigured(isAllConfigured);
+     }, [genes, eDnaSampleContent]);
+
 
   return (
-    <div 
-      style=
-      {{ 
-        overflowX: "auto",
-          padding: 10,
-          width: "100%",
-         
-        }}>
-      <div className="flex flex-gap-20 align-start" >
-        <div className="flex flex-column flex-gap-5" style={{ minWidth: "220px", marginRight: "10px" }}>
-          <div
-            className="gene-selector-header"
-            onClick={() => { resetSelection(); showAllGenes(); }}
-            style={{ cursor: 'pointer', color: 'blue' }}
-          >
-            Select genes
-          </div>
+    <div className="container">
 
-          <input
-            type="text"
-            placeholder="Search genes..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            style={{
-              marginBottom: "10px",
-              padding: "5px",
-              border: "1px solid #aaa",
-              borderRadius: "4px",
-              width: "100%",
-            }}
-          />
+      {/* 如果沒有完成設定，顯示提示 */}
+      {!isConfigured && (
+        <div className="MapMainView-warning-box">
+          <p>⚠️ Complete the following settings：</p>
+          <ul>
+            {(!genes || Array.isArray(genes) && genes.length === 0) && <li> Upload Fa File</li>}
+            {(!eDnaSampleContent || Array.isArray(eDnaSampleContent) && eDnaSampleContent.length === 0) && <li> Upload eDNA Sample Station (xlsx)</li>}
+          </ul>
+        </div>
+      )}
 
-          {/* 缩减按钮 */}
-          <button onClick={() => setIsReduced(!isReduced)} 
-            style=
-            {{ 
-              marginBottom: "10px",
-              backgroundColor: isReduced ? "#ffcccb" : "#d0f0c0",
-              padding: "5px 10px",
-              border: "1px solid #aaa",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}>
-            {isReduced ? "Cancel reduction" : "Enable reduction"}
-          </button>
-
-          
-            {/* 渲染基因列表 */}
-            {currentGenes.map((gene) => (
+       {/* 如果設定完成，顯示原本的內容 */}
+      {isConfigured && (
+        <>
+          <div className="flex-container">
+            <div className="flex-column-container">
               <div
-                key={gene.name}
-                onClick={() => handleSelect(gene.name)}
-                className="gene-list-item"
-                style={{
-                  backgroundColor: getGeneColor(gene.name), // 保持基因颜色背景不变
-                  border: "1px solid #aaa",
-                  padding: "4px 10px",
-                  color: "#000",
-                  cursor: "pointer",
-                  borderRadius: "4px",
-                  margin: "2px 0",
-                  boxShadow: selectedGene === gene.name ? "0 0 5px 5px #1d1d1dff" : "none", // 选中时添加边框
-                  maxWidth: "250px", // 限制最大寬度，避免長文字超出
-                  wordWrap: "break-word", // 允許文字換行
-                  whiteSpace: "normal", // 允許文字換行
+                className="gene-selector-header"
+                onClick={() => { resetSelection(); showAllGenes(); }}
+              >
+                Select genes
+              </div>
+
+              <input
+                type="text"
+                placeholder="Search genes..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="search-input"  // 使用CSS類別
+              />
+
+              {/* 缩减按钮 */}
+              <button 
+                onClick={() => setIsReduced(!isReduced)} 
+                className={`reduction-button ${isReduced ? 'reduced' : ''}`}  // 使用CSS類別
+                style=
+                {{ 
+                  backgroundColor: isReduced ? "var(--chart-1) " : "#d0f0c0",
                 }}
               >
-                <span
-                  style={{
-                    backgroundColor: "#fff", // 基因名的背景颜色
-                    padding: "0 5px",
-                    borderRadius: "4px",
+                {isReduced ? "Cancel reduction" : "Enable reduction"}
+              </button>
+
+              {/* 渲染基因列表 */}
+              {currentGenes.map((gene) => (
+                <div
+                  key={gene.name}
+                  onClick={() => handleSelect(gene.name)}
+                  className={`gene-list-item ${selectedGene === gene.name ? 'selected' : ''}`}  // 添加選中樣式
+                  style={{ backgroundColor: getGeneColor(gene.name) }}  
+                >
+                  <span className="gene-name">
+                    {reduceGeneName(gene.name)} {/* 顯示縮減後的基因名稱 */}
+                  </span>
+                </div>
+              ))}
+
+              <div className="pagination-controls">
+                <button onClick={() => handlePageChange("prev")} disabled={currentPage === 0}>Prev</button>
+                <span>{currentPage + 1} / {totalPages}</span>
+                <button onClick={() => handlePageChange("next")} disabled={currentPage === totalPages - 1}>Next</button>
+              </div>
+            </div>
+
+            <div className="flex-column-container" style={{ flex: 1 }}>
+              <strong>Select comparison range：</strong>
+
+              <div className="button-group">
+                <button onClick={() => filterBySimilarity(100, 100)}>100%</button>
+                <button onClick={() => filterBySimilarity(90, 99.99)}>90%~99.99%</button>
+                <button onClick={() => filterBySimilarity(80, 89.99)}>80%~89.99%</button>
+              </div>
+
+              <div className="flex flex-gap-10 align-center">
+                <span>Range：</span>
+                <input
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={customMin}
+                  onChange={(e) => setCustomMin(Number(e.target.value))}
+                  className="range-input"
+                />
+                <span>~</span>
+                <input
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={customMax}
+                  onChange={(e) => setCustomMax(Number(e.target.value))}
+                  className="range-input"
+                />
+                <button
+                  onClick={() => {
+                    if (customMin <= customMax) {
+                      filterBySimilarity(customMin, customMax);
+                    } else {
+                      alert("請確認相似度範圍有效（最小 <= 最大）");
+                    }
                   }}
                 >
-                  {reduceGeneName(gene.name)} {/* 显示缩减后的基因名称 */}
-                </span>
-              </div>
-            ))}
-
-
-          <div className="pagination-controls">
-            <button onClick={() => handlePageChange("prev")} disabled={currentPage === 0}>Prev</button>
-            <span>{currentPage + 1}  / {totalPages} </span>
-            <button onClick={() => handlePageChange("next")} disabled={currentPage === totalPages - 1}>Next</button>
-          </div>
-        </div>
-
-        <div className="flex-column flex-gap-10" style={{ flex: 1 }}>
-          <strong>Select comparison range：</strong>
-
-          <div className="button-group">
-            <button onClick={() => filterBySimilarity(100, 100)}>100% </button>
-            <button onClick={() => filterBySimilarity(90, 99.99)}>90%~99.99%</button>
-            <button onClick={() => filterBySimilarity(80, 89.99)}>80%~89.99%</button>
-          </div>
-
-          <div className="flex flex-gap-10 align-center">
-            <span>Range：</span>
-            <input
-              type="number"
-              min={0}
-              max={100}
-              value={customMin}
-              onChange={(e) => setCustomMin(Number(e.target.value))}
-              style={{ width: "60px" }}
-            />
-            <span>~</span>
-            <input
-              type="number"
-              min={0}
-              max={100}
-              value={customMax}
-              onChange={(e) => setCustomMax(Number(e.target.value))}
-              style={{ width: "60px" }}
-            />
-            <button
-              onClick={() => {
-                if (customMin <= customMax) {
-                  filterBySimilarity(customMin, customMax);
-                } else {
-                  alert("請確認相似度範圍有效（最小 <= 最大）");
-                }
-              }}
-            >
-              Search
-            </button>
-          </div>
-
-          {progress && <p style={{ marginTop: "10px", color: "blue" }}>Comparing...</p>}
-
-          {results.length > 0 && (
-            <div style={{ marginTop: "10px", borderTop: "1px solid #ccc", paddingTop: "10px" }}>
-              <strong>results：</strong>
-              <List height={400} width={400} itemCount={currentResults.length} itemSize={35}>
-              {({ index, style }) => {
-                const { name, similarity } = currentResults[index];
-                return (
-                  <div key={name} style={style}>
-                    <span style={{ color: geneColors[name] || "#000" }}>{reduceGeneName(name)}</span> — {similarity.toFixed(1)}%
-                  </div>
-                );
-              }}
-            </List>
-              <div className="pagination">
-                <button onClick={() => handleResultsPageChange("prev")} disabled={resultsPage === 0}>Prev</button>
-                <span> {resultsPage + 1}  /  {resultsTotalPages} </span>
-                <button
-                  onClick={() => handleResultsPageChange("next")}
-                  disabled={resultsPage >= resultsTotalPages - 1}
-                >
-                  Next
+                  Search
                 </button>
               </div>
-            </div>
-          )}
 
-          {results.length === 0 && selectedGene && progress === null && (
-            <div style={{ marginTop: "10px", color: "gray" }}>
-              No similar genes
+              {progress && <p className="comparing-text">Comparing...</p>}
+
+              {results.length > 0 && (
+                <div className="results-container">
+                  <strong>results：</strong>
+                  <List height={400} width={400} itemCount={currentResults.length} itemSize={35}>
+                    {({ index, style }) => {
+                      const { name, similarity } = currentResults[index];
+                      return (
+                        <div key={name} style={style}>
+                          <span style={{ color: geneColors[name] || "#000" }}>{reduceGeneName(name)}</span> — {similarity.toFixed(1)}%
+                        </div>
+                      );
+                    }}
+                  </List>
+                  <div className="pagination-controls">
+                    <button onClick={() => handleResultsPageChange("prev")} disabled={resultsPage === 0}>Prev</button>
+                    <span> {resultsPage + 1} / {resultsTotalPages} </span>
+                    <button
+                      onClick={() => handleResultsPageChange("next")}
+                      disabled={resultsPage >= resultsTotalPages - 1}
+                    >
+                      Next
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {results.length === 0 && selectedGene && progress === null && (
+                <div className="no-results">No similar genes</div>
+              )}
             </div>
-          )}
-        </div>
-      </div>
+          </div>
+        </>
+      )}
     </div>
-      
   );
 };
 

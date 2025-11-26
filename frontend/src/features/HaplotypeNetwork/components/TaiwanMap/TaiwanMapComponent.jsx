@@ -8,6 +8,8 @@ import useMouseLatLon from "./hooks/useMouseLatLon";
 import useCityGeneData from "./hooks/useCityGeneData";
 import useExportMap from "./hooks/useExportMap";
 
+import "../styles/TaiwanMapComponent.css"; 
+
 const TaiwanMapComponent = ({
   genes,
   cityGeneData,
@@ -100,20 +102,9 @@ const TaiwanMapComponent = ({
 
   // ===== Render =====
   return (
-  <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+  <div className="map-container">
     {/* MapControls - The controls component on top */}
-    <div
-      style={{
-        minWidth: "100%",
-       
-        background: "#ffffff",
-        padding: "15px",
-        boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
-        overflow: "auto",
-        border: "2px solid #ccc",
-        borderRadius: "12px",
-      }}
-    >
+    <div className="map-controls">
       <MapControls
         imgW={imgW}
         imgH={imgH}
@@ -139,21 +130,8 @@ const TaiwanMapComponent = ({
       />
     </div>
 
-    
-
     {/* MapMainView - The main map view on the bottom */}
-    <div
-      style={{
-        minWidth: "100%",
-        flex: 2,
-        background: "#ffffffff",
-        padding: "6px",
-        boxShadow: "0 2px 6px rgba(0,0,0,0.05)",
-        overflow: "auto",
-        border: "8px solid #e9e4e4ff",
-        borderRadius: "12px",
-      }}
-    >
+    <div className="map-main-view">
       <MapMainView
         conW={conW}
         conH={conH}

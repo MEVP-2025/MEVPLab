@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../GeneTable.css";
+import "../../styles/GeneTable.css";
 
 const CVSTable = ({
   displayedHeaders,

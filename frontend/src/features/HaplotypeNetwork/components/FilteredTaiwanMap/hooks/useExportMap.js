@@ -1,6 +1,6 @@
 import { saveAs } from "file-saver";
 
-export default function useExportMap(filteredCityGeneData, geneColors, selectedGenes) {
+export default function useExportMap(filteredCityGeneData, geneColors, selectedGenes, fileName) {
   return async function handleExportPNG() {
     const mapContainer = document.getElementById("map-container");
     if (!mapContainer) return;
@@ -47,7 +47,7 @@ export default function useExportMap(filteredCityGeneData, geneColors, selectedG
     });
 
     canvas.toBlob((blob) => {
-      if (blob) saveAs(blob, "taiwan-map-with-haplotype-list.png");
+      if (blob) saveAs(blob, `${fileName}.png`); // 使用傳入的檔名
     });
   };
 }

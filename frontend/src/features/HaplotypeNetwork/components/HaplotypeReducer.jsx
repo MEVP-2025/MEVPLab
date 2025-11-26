@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import "./styles/HaplotypeReducer.css";
 
 const HaplotypeReducer = () => {
   const [hapFasta, setHapFasta] = useState(null);
@@ -58,11 +59,11 @@ const HaplotypeReducer = () => {
   };
 
   return (
-    <div style={{  padding: "1rem", border: "1px solid #ccc" }}>
+    <div className="HaplotypeReducer-container">
       <h3> Haplotype Reduce tool</h3>
       <form onSubmit={handleSubmit}>
         {/* FASTA file */}
-        <div style={{ marginBottom: "10px" }}>
+        <div className="HaplotypeReducer-input-container">
           <label>FASTA (.msa.asv.fa): </label>
           <input
             id="fastaFile"
@@ -71,26 +72,16 @@ const HaplotypeReducer = () => {
             style={{ display: "none" }}
             onChange={(e) => setHapFasta(e.target.files[0])}
           />
-          <label
-            htmlFor="fastaFile"
-            style={{
-              background: "#616161ff",
-              color: "white",
-              padding: "6px 12px",
-              borderRadius: "4px",
-              cursor: "pointer",
-              marginLeft: "8px",
-            }}
-          >
+          <label htmlFor="fastaFile" className="HaplotypeReducer-file-label">
             Choose File
           </label>
-          <span style={{ marginLeft: "8px" }}>
+          <span className="HaplotypeReducer-file-name">
             {hapFasta ? hapFasta.name : "No file "}
           </span>
         </div>
 
         {/* Excel file */}
-        <div style={{ marginBottom: "10px" }}>
+        <div className="HaplotypeReducer-input-container">
           <label>Sample station Excel (.xlsx): </label>
           <input
             id="excelFile"
@@ -99,26 +90,16 @@ const HaplotypeReducer = () => {
             style={{ display: "none" }}
             onChange={(e) => setExcelFile(e.target.files[0])}
           />
-          <label
-            htmlFor="excelFile"
-            style={{
-              background: "#616161ff",
-              color: "white",
-              padding: "6px 12px",
-              borderRadius: "4px",
-              cursor: "pointer",
-              marginLeft: "8px",
-            }}
-          >
+          <label htmlFor="excelFile" className="HaplotypeReducer-file-label">
             Choose File
           </label>
-          <span style={{ marginLeft: "8px" }}>
+          <span className="HaplotypeReducer-file-name">
             {excelFile ? excelFile.name : "No file "}
           </span>
         </div>
 
         {/* Reduce quantity */}
-        <div style={{ marginBottom: "10px" }}>
+        <div className="HaplotypeReducer-input-container">
           <label>Reduce quantity: </label>
           <input
             type="number"
@@ -128,7 +109,7 @@ const HaplotypeReducer = () => {
         </div>
 
         {/* Output filename */}
-        <div style={{ marginBottom: "10px" }}>
+        <div className="HaplotypeReducer-input-container">
           <label>Output file name: </label>
           <input
             type="text"
@@ -138,7 +119,7 @@ const HaplotypeReducer = () => {
         </div>
 
         {/* Export button */}
-        <button type="submit" disabled={loading}>
+        <button type="submit" className="HaplotypeReducer-submit-button" disabled={loading}>
           {loading ? "Processing..." : "Export"}
         </button>
       </form>

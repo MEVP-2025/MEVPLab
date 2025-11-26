@@ -1,5 +1,5 @@
 import { useState, useMemo, useCallback, useEffect } from "react";
-import "./GeneTable.css";
+import "../styles/GeneTable.css";
 
 import GeneTableControls from "./GeneTableControls";
 import GeneTableContent from "./GeneTableContent";
@@ -213,7 +213,6 @@ const GeneTable = ({
   // ======================================
   return (
     <div style={{ overflowX: "auto", padding: 10, width: "100%", justifyContent: "space-between" }}>
-      <h2>Gene information table</h2>
 
       {/* GeneTable Controls */}
       <div style={{ width: "40%" }}>
@@ -305,7 +304,7 @@ const GeneTable = ({
 
       </div>
 
-      {/* Pagination Controls */}
+      {/* Pagination Controls      
       {( viewMode === "detail") && (
         <div className="pagination">
           <button onClick={() => handlePageChange('prev')} disabled={currentPage === 1}>Prev</button>
@@ -313,6 +312,8 @@ const GeneTable = ({
           <button onClick={() => handlePageChange('next')} disabled={currentPage === totalPages}>Next</button>
         </div>
       )}
+      */}
+      
     </div>
   );
 };

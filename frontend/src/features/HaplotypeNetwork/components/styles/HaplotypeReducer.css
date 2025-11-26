@@ -1,0 +1,63 @@
+/* Container for the HaplotypeReducer form */
+.HaplotypeReducer-container {
+  padding: 1rem;
+  border: 1px solid var(--primary);
+  font-family: Arial, sans-serif;
+}
+
+/* Form input container */
+.HaplotypeReducer-input-container {
+  margin-bottom: 10px;
+  margin-top: 20px;
+}
+
+/* Labels for file inputs */
+.HaplotypeReducer-file-label {
+  background: var(--muted-foreground);
+  color: var(--primary);
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 8px;
+  
+}
+
+/* Display file name next to the input */
+.HaplotypeReducer-file-name {
+  margin-left: 8px;
+}
+
+/* Input fields for FASTA, Excel files, Reduce Quantity, Output Filename */
+.HaplotypeReducer-input-container input[type="file"],
+.HaplotypeReducer-input-container input[type="number"],
+.HaplotypeReducer-input-container input[type="text"] {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid var(--primary);
+  width: 60%;
+  margin-top: 5px;
+}
+
+/* Submit button styling */
+.HaplotypeReducer-submit-button {
+  background-color: var(--muted-foreground);
+  color: var(--primary);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.HaplotypeReducer-submit-button:disabled {
+  background-color: var(--muted-foreground);
+}
+
+.HaplotypeReducer-submit-button:hover:not(:disabled) {
+  background-color: var(--chart-3);
+}
+
+.HaplotypeReducer-submit-button:active {
+  background-color: var(--chart-3);
+}

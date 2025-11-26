@@ -4,6 +4,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as d3 from "d3";
 import "../components/AppStyles.css";
+import "./styles/HaplotypeNetwork.css";
 
 const HaplotypeNetwork = ({ width = 800, height = 800 }) => {
   const svgRef = useRef();
@@ -11,6 +12,8 @@ const HaplotypeNetwork = ({ width = 800, height = 800 }) => {
   const [cityColors, setCityColors] = useState({});
   const [apiPath, setApiPath] = useState("HaplotypeNetwork");
   const [scaleFactor, setScaleFactor] = useState(1); // 控制節點與距離的縮放
+
+  const [isConfigured, setIsConfigured] = useState(false); // 用來判斷是否完成設定
 
   // 載入資料
   useEffect(() => {
@@ -20,6 +23,10 @@ const HaplotypeNetwork = ({ width = 800, height = 800 }) => {
       .then(setData)
       .catch(() => setData({ error: true }));
   }, [apiPath]);
+
+       useEffect(() => {
+    console.log("data:", data);
+  }, [data]);
 
   // 初始化圖表
   useEffect(() => {
@@ -218,129 +225,91 @@ const HaplotypeNetwork = ({ width = 800, height = 800 }) => {
     });
   };
 
+  useEffect(() => {
+      const isAllConfigured =  data && Object.keys(data).length > 0 && !data.error;
+      setIsConfigured(isAllConfigured);
+    }, [data]);
+
+
   return (
-    <div className="flex" style={{ gap: 20, fontFamily: "sans-serif" }}>
-      <div>
-        <h2 style={{ margin: "10px 0" }}>Haplotype Network</h2>
-        {!data && <p>Loading...</p>}
-        {data?.error && (
-          <p style={{ color: "red" }}>Unable to load data</p>
-        )}
+    <div className="HaplotypeNetwork-container">
 
-        
-
-        <div style={{ marginBottom: 10 }}>
-          <button
-            className="button"
-            style={{
-              marginRight: 10,
-              backgroundColor:
-                apiPath === "HaplotypeNetwork" ? "#007bff" : "#ccc",
-              color: "#fff",
-            }}
-            onClick={() => setApiPath("HaplotypeNetwork")}
-          >
-            All information
-          </button>
-          <button
-            className="button"
-            style={{
-              backgroundColor:
-                apiPath === "SimplifiedHaplotypeNetwork"
-                  ? "#007bff"
-                  : "#ccc",
-              color: "#fff",
-              marginRight: 10,
-            }}
-            onClick={() => setApiPath("SimplifiedHaplotypeNetwork")}
-          >
-            reduce
-          </button>
-          <button
-            className="button"
-            style={{
-              backgroundColor: "#1976d2",
-              color: "#fff",
-              marginRight: 10,
-            }}
-            onClick={() => handleResize("in")}
-          >
-            🔍 zoom in
-          </button>
-          <button
-            className="button"
-            style={{ backgroundColor: "#424242", color: "#fff" }}
-            onClick={() => handleResize("out")}
-          >
-            🔎 zoom out
-          </button>
+      {/* 如果沒有完成設定，顯示提示 */}
+      {!isConfigured && (
+        <div className="MapMainView-warning-box">
+          <p>⚠️ Complete the following settings：</p>
+          <ul>
+            {(!data || Object.keys(data).length === 0 || data.error) && (
+              <li> Set FA_table</li>
+            )}
+          </ul>
         </div>
+      )}
 
-        <svg
-          ref={svgRef}
-          viewBox={`0 0 ${width} ${height}`}
-          width={width}
-          height={height}
-          style={{
-            border: "1px solid #ccc",
-            borderRadius: 10,
-            boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
-            backgroundColor: "#fafafa",
-          }}
-        />
-      </div>
+      {/* 如果設定完成，顯示原本的內容 */}
+      {isConfigured && (
+        <>
+          <div>
+            <h2 className="HaplotypeNetwork-title">Haplotype Network</h2>
+            {!data && <p>Loading...</p>}
+            {data?.error && <p style={{ color: "red" }}>Unable to load data</p>}
+              
+            <div style={{ marginBottom: 10 }}>
+              <button
+                className={`HaplotypeNetwork-button ${apiPath === "HaplotypeNetwork" ? "active" : ""}`}
+                onClick={() => setApiPath("HaplotypeNetwork")}
+              >
+                All information
+              </button>
+              <button
+                className={`HaplotypeNetwork-button ${apiPath === "SimplifiedHaplotypeNetwork" ? "active" : ""}`}
+                onClick={() => setApiPath("SimplifiedHaplotypeNetwork")}
+              >
+                reduce
+              </button>
+              <button
+                className="HaplotypeNetwork-button HaplotypeNetwork-zoom-button"
+                onClick={() => handleResize("in")}
+              >
+                🔍 zoom in
+              </button>
+              <button
+                className="HaplotypeNetwork-button HaplotypeNetwork-zoom-out-button"
+                onClick={() => handleResize("out")}
+              >
+                🔎 zoom out
+              </button>
+            </div>
 
-      {/* 城市圖例 */}
-      {Object.keys(cityColors).length > 0 && (
-        <div
-          style={{
-            padding: 50,
-            border: "1px solid #ccc",
-            borderRadius: 80,
-            backgroundColor: "#fff",
-            boxShadow: "0 2px 60px rgba(0,0,0,0.1)",
-            height: "fit-content",
-             marginTop: "100px"
-          }}
-          >
-            <h3 style={{ marginTop: 10 }}>location</h3>
-            <div
-              style={{
-                maxHeight: "600px", // 设置最大高度
-                overflowY: "auto", // 使其可以滚动
-              }}
-            >
-            <ul
-              style={{
-                listStyle: "none",
-                paddingLeft: 0,
-                margin:0,
-              }}
-            >
-              {Object.entries(cityColors).map(([city, color]) => (
-                <li
-                  key={city}
-                  style={{
-                    marginBottom: 6,
-                    display: "flex",
-                    alignItems: "center",
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 50,
-                      height: 50,
-                      backgroundColor: color,
-                      marginRight: 8,
-                      border: "1px solid #000",
-                    }}
-                  />
-                  {city}
-                </li>
-              ))}
-            </ul>
+            <svg
+              ref={svgRef}
+              viewBox={`0 0 ${width} ${height}`}
+              width={width}
+              height={height}
+              className="HaplotypeNetwork-svg-container"
+            />
           </div>
-        </div>
+
+          {/* 城市圖例 */}
+          {Object.keys(cityColors).length > 0 && (
+            <div className="HaplotypeNetwork-city-legend">
+              <h3>Location</h3>
+              <div>
+                <ul className="HaplotypeNetwork-city-list">
+                  {Object.entries(cityColors).map(([city, color]) => (
+                    <li key={city} className="HaplotypeNetwork-city-item">
+                      <div
+                        className="HaplotypeNetwork-city-color-box"
+                        style={{ backgroundColor: color }}
+                      />
+                      {city}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

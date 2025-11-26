@@ -40,32 +40,6 @@
   border: 1px solid var(--border);
 }
 
-/* 地圖容器 */
-.map-container {
-  position: relative;
-  /* 相對定位 */
-  width: 100px;
-  /* 設置容器寬度 */
-  height: 100px;
-  /* 設置容器高度 */
-}
-
-/* 地圖容器 */
-.map-containerFiltered {
-  position: relative;
-  /* 相對定位 */
-  width: 300px;
-  /* 設置容器寬度 */
-  height: 300px;
-  /* 設置容器高度 */
-}
-
-.map-container svg {
-  position: absolute;
-  z-index: 9999 !important;
-  pointer-events: none;
-}
-
 
 /* 使地圖圖片居中 */
 .map-container img {

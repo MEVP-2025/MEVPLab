@@ -1,12 +1,15 @@
 /* ============================ */
 /* 外層容器，啟用水平滾動 */
 .gene-table-container {
+
   width: 100%;
   overflow-x: auto;
   margin-bottom: 20px;
 }
 
+
 .gene-table-wrapper {
+
   width: 100%;
   overflow-x: auto;
 }
@@ -25,6 +28,26 @@
 
 .GeneTable-warning-box ul  {
   padding-left: 50px; /* Adjust this value to move the dot further to the right */
+}
+
+/* Button styling */
+.GeneTable-button {
+  margin-right: 10px;
+  padding: 6px 12px;
+  border: 1px solid var(--primary);
+  border-radius: 4px;
+  cursor: pointer;
+  background: var(--background);
+  color: var(--primary);
+}
+
+.GeneTable-button.active {
+   padding: 6px 12px;
+  border: 1px solid var(--primary);
+  border-radius: 4px;
+  cursor: pointer;
+  background: var(--success);
+  color: var(--primary);
 }
 
 /* ============================ */

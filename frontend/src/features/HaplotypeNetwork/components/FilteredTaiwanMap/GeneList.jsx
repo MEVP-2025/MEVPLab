@@ -137,139 +137,168 @@ const GeneList = ({
     });
   };
 
+  const [isConfigured, setIsConfigured] = useState(false); // 用來判斷是否完成設定
+     
+  // 檢查是否所有設定都已完成
+  useEffect(() => {
+    const isAllConfigured =  filteredCityGeneData && Object.keys(filteredCityGeneData).length > 0;
+    setIsConfigured(isAllConfigured);
+  }, [ filteredCityGeneData]);
+
   return (
     <div style={{ minWidth: "20%" }}>
-      {/* 切換按鈕區 */}
-      <div style={{ display: "flex", gap: "10px", marginBottom: "15px" }}>
-        <button onClick={() => setShowGenes(true)} style={{ padding: "5px 10px" }}>
-          Select display Genes
-        </button>
-        <button onClick={() => setShowGenes(false)} style={{ padding: "5px 10px" }}>
-          Select display City
-        </button>
-      </div>
 
-      {/* 根據 showGenes 狀態顯示對應區域 */}
-      {showGenes ? (
+      {/* 如果沒有完成設定，顯示提示 */}
+      {!isConfigured && (
+        <div className="MapMainView-warning-box">
+          <p>⚠️ Complete the following settings：</p>
+          <ul>
+            {(!filteredCityGeneData || Object.keys(filteredCityGeneData).length === 0) && (
+              <li> Set Compare components</li>
+            )}
+          </ul>
+        </div>
+      )}
+
+
+      {/* 如果設定完成，顯示原本的內容 */}
+      {isConfigured && (
         <>
-          {/* Gene List Header */}
-          <h4 style={{ whiteSpace: "nowrap" }}>Select display Genes：</h4>
 
-          {/* Search Input */}
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search"
-            className="search-input"
-            style={{ width: "100%", padding: "6px", marginBottom: "8px" }}
-          />
 
-          {/* 新增縮減按鈕 */}
-          <button
-            onClick={() => setIsReduced(!isReduced)}
-            style={{
-              marginBottom: "10px",
-              backgroundColor: isReduced ? "#ffcccb" : "#d0f0c0",
-              padding: "5px 10px",
-              border: "1px solid #aaa",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
-          >
-            {isReduced ? "Cancel reduction" : "Enable reduction"}
+        {/* 切換按鈕區 */}
+        <div style={{ display: "flex", gap: "10px", marginBottom: "15px" }}>
+          <button onClick={() => setShowGenes(true)} style={{ padding: "5px 10px" }}>
+            Select display Genes
           </button>
+          <button onClick={() => setShowGenes(false)} style={{ padding: "5px 10px" }}>
+            Select display City
+          </button>
+        </div>
 
-          {/* Gene Selection Buttons */}
-          <div className="flex flex-gap-5" style={{ marginBottom: "8px" }}>
-            <button onClick={handleSelectAll}>Select All</button>
-            <button onClick={handleClearAll}>Clear All</button>
-          </div>
+        {/* 根據 showGenes 狀態顯示對應區域 */}
+        {showGenes ? (
+          <>
+            {/* Gene List Header */}
+            <h4 style={{ whiteSpace: "nowrap" }}>Select display Genes：</h4>
 
-          {/* Genes List */}
-          <div style={{ maxHeight: "800px", overflowY: "auto", paddingRight: "5px" }}>
-            {currentGenes.map((name) => {
-              const isEnabled =
-                name === selectedGene ||
-                (Array.isArray(activeSimilarityGroup) && activeSimilarityGroup.includes(name));
-              return (
-                <label
-                  key={name}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                    opacity: isEnabled ? 1 : 0.3,
-                  }}
-                >
-                  <input
-                    type="checkbox"
-                    checked={selectedGenes.includes(name)}
-                    onChange={() => toggleGene(name)}
-                    disabled={!isEnabled}
-                    style={{ cursor: isEnabled ? "pointer" : "not-allowed" }}
-                  />
-                  <span style={{ color: geneColors[name] || "black" }}>
-                    {reduceGeneName(name)}
-                  </span>
-                </label>
-              );
-            })}
-          </div>
-
-          {/* Pagination */}
-          <div className="pagination-controls" style={{ marginTop: "8px" }}>
-            <button onClick={goToPrevPage} disabled={currentPage === 1}>
-              Prev
-            </button>
-            <span>
-              {currentPage} / {totalPages}
-            </span>
-            <button onClick={goToNextPage} disabled={currentPage === totalPages}>
-              Next
-            </button>
-          </div>
-        </>
-      ) : (
-        <>
-          {/* City Pie Chart Visibility Control */}
-          <div style={{ marginTop: "20px" }}>
-            <h4 style={{ whiteSpace: "nowrap" }}>Select display City</h4>
-
-            {/* City Search Input */}
+            {/* Search Input */}
             <input
               type="text"
-              value={citySearchTerm}
-              onChange={(e) => setCitySearchTerm(e.target.value)}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               placeholder="Search"
               className="search-input"
               style={{ width: "100%", padding: "6px", marginBottom: "8px" }}
             />
 
-            {/* City Select All / Clear All */}
-            <div style={{ marginBottom: "8px" }}>
-              <button onClick={handleCitySelectAll}>Select All</button>
-              <button onClick={handleCityClearAll}>Clear All</button>
+            {/* 新增縮減按鈕 */}
+            <button
+              onClick={() => setIsReduced(!isReduced)}
+              style={{
+                marginBottom: "10px",
+                backgroundColor: isReduced ? "#ffcccb" : "#d0f0c0",
+                padding: "5px 10px",
+                border: "1px solid #aaa",
+                borderRadius: "5px",
+                cursor: "pointer",
+              }}
+            >
+              {isReduced ? "Cancel reduction" : "Enable reduction"}
+            </button>
+
+            {/* Gene Selection Buttons */}
+            <div className="flex flex-gap-5" style={{ marginBottom: "8px" }}>
+              <button onClick={handleSelectAll}>Select All</button>
+              <button onClick={handleClearAll}>Clear All</button>
             </div>
 
-            {/* City List */}
-            <div style={{ maxHeight: "300px", overflowY: "auto" }}>
-              {filteredCities.map((city) => (
-                <label
-                  key={city}
-                  style={{ display: "flex", alignItems: "center", gap: "6px" }}
-                >
-                  <input
-                    type="checkbox"
-                    checked={cityVisibility[city] || false}
-                    onChange={() => toggleCityVisibility(city)}
-                  />
-                  <span>{city}</span>
-                </label>
-              ))}
+            {/* Genes List */}
+            <div style={{ maxHeight: "800px", overflowY: "auto", paddingRight: "5px" }}>
+              {currentGenes.map((name) => {
+                const isEnabled =
+                  name === selectedGene ||
+                  (Array.isArray(activeSimilarityGroup) && activeSimilarityGroup.includes(name));
+                return (
+                  <label
+                    key={name}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      opacity: isEnabled ? 1 : 0.3,
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedGenes.includes(name)}
+                      onChange={() => toggleGene(name)}
+                      disabled={!isEnabled}
+                      style={{ cursor: isEnabled ? "pointer" : "not-allowed" }}
+                    />
+                    <span style={{ color: geneColors[name] || "black" }}>
+                      {reduceGeneName(name)}
+                    </span>
+                  </label>
+                );
+              })}
             </div>
-          </div>
-        </>
+
+            {/* Pagination */}
+            <div className="pagination-controls" style={{ marginTop: "8px" }}>
+              <button onClick={goToPrevPage} disabled={currentPage === 1}>
+                Prev
+              </button>
+              <span>
+                {currentPage} / {totalPages}
+              </span>
+              <button onClick={goToNextPage} disabled={currentPage === totalPages}>
+                Next
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            {/* City Pie Chart Visibility Control */}
+            <div style={{ marginTop: "20px" }}>
+              <h4 style={{ whiteSpace: "nowrap" }}>Select display City</h4>
+
+              {/* City Search Input */}
+              <input
+                type="text"
+                value={citySearchTerm}
+                onChange={(e) => setCitySearchTerm(e.target.value)}
+                placeholder="Search"
+                className="search-input"
+                style={{ width: "100%", padding: "6px", marginBottom: "8px" }}
+              />
+
+              {/* City Select All / Clear All */}
+              <div style={{ marginBottom: "8px" }}>
+                <button onClick={handleCitySelectAll}>Select All</button>
+                <button onClick={handleCityClearAll}>Clear All</button>
+              </div>
+
+              {/* City List */}
+              <div style={{ maxHeight: "300px", overflowY: "auto" }}>
+                {filteredCities.map((city) => (
+                  <label
+                    key={city}
+                    style={{ display: "flex", alignItems: "center", gap: "6px" }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={cityVisibility[city] || false}
+                      onChange={() => toggleCityVisibility(city)}
+                    />
+                    <span>{city}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
+      </>
       )}
     </div>
   );

@@ -1,0 +1,94 @@
+/* Main container for Haplotype Network */
+.HaplotypeNetwork-container {
+  display: flex;
+  gap: 20px;
+  font-family: sans-serif;
+}
+
+/* Title for Haplotype Network */
+.HaplotypeNetwork-title {
+  margin: 10px 0;
+}
+
+/* Button styling */
+.HaplotypeNetwork-button {
+  margin-right: 10px;
+  padding: 6px 12px;
+  border: 1px solid var(--primary);
+  border-radius: 4px;
+  cursor: pointer;
+  background: var(--background);
+  color: var(--primary);
+}
+
+.HaplotypeNetwork-button.active {
+   padding: 6px 12px;
+  border: 1px solid var(--primary);
+  border-radius: 4px;
+  cursor: pointer;
+  background: var(--success);
+  color: var(--primary);
+}
+
+.HaplotypeNetwork-zoom-button {
+   padding: 6px 12px;
+  border: 1px solid var(--primary);
+  border-radius: 4px;
+  cursor: pointer;
+  background: var(--background);
+  color: var(--primary);
+}
+
+.HaplotypeNetwork-zoom-out-button {
+  padding: 6px 12px;
+  border: 1px solid var(--primary);
+  border-radius: 4px;
+  cursor: pointer;
+  background: var(--background);
+  color: var(--primary);
+}
+
+/* SVG container */
+.HaplotypeNetwork-svg-container {
+  border: 1px solid var(--primary);
+  border-radius: 10px;
+  
+  background-color:   oklch(100% 0.00011 271.152);
+}
+
+/* City legend container */
+.HaplotypeNetwork-city-legend {
+  padding: 50px;
+  border: 1px solid  var(--primary);
+  border-radius: 80px;
+  background-color:  var(--background);
+  
+  height: fit-content;
+  margin-top: 100px;
+}
+
+.HaplotypeNetwork-city-legend h3 {
+  margin-top: 10px;
+}
+
+/* City legend list styling */
+.HaplotypeNetwork-city-list {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+  max-height: 600px; /* Set max height */
+  overflow-y: auto; /* Enable scrolling */
+}
+
+.HaplotypeNetwork-city-item {
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+}
+
+.HaplotypeNetwork-city-color-box {
+  width: 50px;
+  height: 50px;
+  margin-right: 8px;
+  border: 1px solid var(--primary);
+}

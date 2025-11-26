@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CityPieChart from "./CityPieChart";
+import "../styles/TaiwanMapComponent.css";
 
 const MapMainView = ({
   conW,
@@ -40,21 +41,11 @@ const MapMainView = ({
 
   const handleMouseOut = () => {};
 
-
-
   return (
     <div style={{ flex: 1, display: "flex", gap: 16, flexDirection: "column" }}>
       {/* 如果沒有完成設定，顯示提示 */}
       {!isConfigured && (
-        <div style={{
-          padding: 16, 
-          backgroundColor: "#ffcc00", 
-          color: "#333", 
-          borderRadius: 8, 
-          marginBottom: 16,
-          fontSize: "16px",
-          fontWeight: "bold"
-        }}>
+        <div className="MapMainView-warning-box">
           <p>⚠️ Complete the following settings：</p>
           <ul>
             {!mapImage && <li> Select or Upload a MapImage </li>}
@@ -85,33 +76,17 @@ const MapMainView = ({
           <div style={{ display: "flex", gap: 16, flex: 1, marginTop: "25px" }}>
             {/* 選中城市基因分布 */}
             {selectedCity && filteredCityGeneData[selectedCity] && (
-              <div
-                style={{
-                  marginTop: 50,
-                  marginRight: 1, // 與地圖間距
-                  minWidth: "25%",
-                  maxWidth: "40%",
-                  padding: 5,
-                  border: "5px solid #ccc",
-                  borderRadius: 10,
-                  height: imgH + 100, // 固定高度
-                  overflowY: "auto"
-                }}
-              >
-                <h4 style={{ whiteSpace: "nowrap" }}>{selectedCity} Area</h4>
+              <div className="MapMainView-city-info">
+                <h4>{selectedCity} Area</h4>
                 <ul>
                   {filteredCityGeneData[selectedCity].data
                     .sort((a, b) => b.value - a.value)
                     .map((g) => (
                       <li
                         key={g.name}
-                        style={{ display: "flex", alignItems: "center", gap: 3 }}
                       >
                         <div
                           style={{
-                            width: 14,
-                            height: 14,
-                            borderRadius: "50%",
                             background: geneColors[g.name] || "#fff7f7ff"
                           }}
                         />
@@ -119,7 +94,7 @@ const MapMainView = ({
                       </li>
                     ))}
                 </ul>
-                <div style={{ marginTop: 6, fontSize: 12, color: "#555" }}>
+                <div className="total-count">
                   Total quantity: {filteredCityGeneData[selectedCity].totalCount}
                 </div>
               </div>
@@ -143,15 +118,7 @@ const MapMainView = ({
                     alt="Map"
                     width={imgW}
                     height={imgH}
-                    style={{
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      transform: "translate(-50%, -50%)",
-                      zIndex: 0,
-                      pointerEvents: "none",
-                      border: "2px solid #ccc"
-                    }}
+                    className="MapMainView-map-image"
                   />
                 )}
 
@@ -159,13 +126,7 @@ const MapMainView = ({
                 <svg
                   width={conW}
                   height={conH}
-                  style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    pointerEvents: "none",
-                    zIndex: 2
-                  }}
+                  className="MapMainView-arrow-svg"
                 >
                   <defs>
                     <marker
@@ -242,16 +203,7 @@ const MapMainView = ({
               </div>
 
               {/* 📍 經緯度顯示 */}
-              <div
-                style={{
-                  marginTop: 5,
-                  padding: 6,
-                  border: "1px solid #ff0000ff",
-                  borderRadius: 6,
-                  background: "rgba(255, 255, 255, 0.6)",
-                  fontSize: 20
-                }}
-              >
+              <div className= "MapMainView-latlon-display">
                 longitude: {decimalToDegreeMinuteWithDir(parseFloat(latLon.lon), "lon")}
                 <br />
                 latitude: {decimalToDegreeMinuteWithDir(parseFloat(latLon.lat), "lat")}

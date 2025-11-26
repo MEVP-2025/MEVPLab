@@ -1,4 +1,6 @@
 import { mapImages } from "../../data/mapImages.js";
+import "../styles/TaiwanMapComponent.css";
+
 
 const MapControls = ({
   imgW, imgH,
@@ -25,32 +27,23 @@ const MapControls = ({
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "row",
-        gap: 12, // 三欄間距縮小
-        alignItems: "stretch",
-        width: "60%",
-      }}
-    >
+    <div className="map-settings-container">
       {/* 📁 上傳 & 地圖清單 */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 12, flex: 1}}>
-        <div style={{ display: "flex", flexDirection: "column", gap: 6  }}>
-          <label >Select Map Image: 
+      <div className="map-upload-column">
+        <div className="map-select-container">
+          <label>Select Map Image: 
             <select
               value={activeMapId ?? ""}
               onChange={(e) => {
                 const value = e.target.value;
                 if (value === "") {
-                  // 選擇空白
                   setActiveMapId("");
                   setMapImage(null);
-                  resetMapSettings();  // 清空設定
+                  resetMapSettings();  // Clear settings
                 } else if (value === "Customize") {
                   setActiveMapId("Customize");
                   setMapImage(null);
-                  resetMapSettings();  // 清空設定
+                  resetMapSettings();  // Clear settings
                 } else {
                   const map = mapImages.find((m) => m.id === value);
                   if (map) handleSwitchMap(map);
@@ -68,35 +61,25 @@ const MapControls = ({
           </label>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        <div className="map-upload-container">
           <label style={{ whiteSpace: "nowrap" }}>Upload Map Image(.png):
             <input type="file" accept="image/png" onChange={handleImageUpload} />
           </label>
         </div>
 
         {/* 提醒框 */}
-        {(activeMapId === "" )&& (
-          <div
-            style={{
-              marginTop: "10px",
-              padding: "10px",
-              backgroundColor: "#fff3f3",
-              border: "1px solid #f2b1b1",
-              borderRadius: "5px",
-              color: "#d32f2f",
-              fontSize: "14px",
-            }}
-          >
+        {(activeMapId === "" ) && (
+          <div className="warning-box">
             <strong>⚠️ Please select or upload a Map Image.</strong>
           </div>
         )}
       </div>
 
       {/* 🖼️ 圖片尺寸設定 */}
-      <div style={{ display: "flex", flexDirection: "column", gap: 8, flex: 1 }}>
-        {(activeMapId && activeMapId !== "")  && (
+      <div className="map-image-settings-column">
+        {(activeMapId && activeMapId !== "") && (
           <>
-            <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+            <div className="size-settings">
               <label style={{ whiteSpace: "nowrap" }}>Image Width: </label>
               <input
                 type="number"
@@ -133,9 +116,9 @@ const MapControls = ({
             </div>
 
             {/* 經度和緯度範圍設定 */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <div className="range-settings">
               {/* 經度 */}
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <div className="range-input-row">
                 <label style={{ whiteSpace: "nowrap" }}>Longitude Range: </label>
                 <select
                   value={lonDirMin}
@@ -177,7 +160,7 @@ const MapControls = ({
               </div>
 
               {/* 緯度 */}
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <div className="range-input-row">
                 <label style={{ whiteSpace: "nowrap" }}>Latitude Range: </label>
                 <select
                   value={latDirMin}

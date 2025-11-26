@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import "../GeneTable.css";
+import "../../styles/GeneTable.css";
 
 const FATable = ({
   paginatedGenes,

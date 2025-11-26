@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "../GeneTable.css";
+import "../../styles/GeneTable.css";
 
 // 生成基因的颜色，保证每个基因都有独特的颜色
 const generateColors = (num) =>

@@ -1,0 +1,274 @@
+/* General container */
+.map-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 100%;
+  height: 40%;
+}
+
+/* MapControls container */
+.map-controls {
+  min-width: 100%;
+  
+  background: var(--background);
+  padding: 15px;
+  box-shadow: 0 2px 6px var(--primary);
+  overflow: auto;
+  border: 2px solid  var(--primary);
+  border-radius: 12px;
+}
+
+/* MapMainView container */
+.map-main-view {
+  min-width: 100%;
+  flex: 2;
+  background: var(--background);
+  padding: 6px;
+  box-shadow: 0 2px 6px var(--background);
+  overflow: auto;
+  border: 2px solid var(--primary);
+  border-radius: 12px;
+}
+
+.map-main-view-Filtered {
+  min-width: 70%;
+  flex: 2;
+  background: var(--background);
+  padding: 6px;
+  box-shadow: 0 2px 6px var(--background);
+  overflow: auto;
+  border: 2px solid var(--primary);
+  border-radius: 12px;
+}
+.map-main-view-List {
+  width: 10%;
+  flex: 2;
+  background: var(--background);
+  padding: 6px;
+  box-shadow: 0 2px 6px var(--background);
+  overflow: auto;
+  border: 2px solid var(--primary);
+  border-radius: 12px;
+}
+
+/* PieChart 圓餅圖容器 */
+.city-pie-chart {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+
+/* MapMainView */
+.map-settings-container {
+  display: flex;
+  flex-direction: row;
+  gap: 12px; 
+  align-items: stretch;
+  width: 60%;
+}
+
+
+.map-upload-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.map-select-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.map-select-container select
+{
+  margin-left: 10px; 
+  width: 40%;
+  height: 120%;
+  text-align: center;
+}
+
+.map-select-container select option {
+  text-align: center;  /* Centers the text inside each option */
+}
+
+.map-upload-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.map-upload-container input[type="file"] {
+  margin-left: 10px;  
+  
+}
+
+.warning-box {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: var(--warning);
+  border: 1px solid var(--primary);
+  border-radius: 5px;
+  color: var(--primary);
+  font-size: 14px;
+}
+
+.map-image-settings-column {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+
+.size-settings {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.range-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.range-input-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.range-input-row select
+{
+  width: 50px;
+  font-size: 20px;
+  padding: 2px 4px;
+  background: var(--input);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+}
+
+.range-input-row input {
+  width: 100px;
+}
+
+.small-input {
+  width: 100px;
+  font-size: 20px;
+  padding: 2px 4px;
+  background: var(--input);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+}
+
+
+
+/* MapMainView */
+.MapMainView-container {
+  flex: 1;
+  display: flex;
+  gap: 16px;
+  flex-direction: column;
+  min-width: 100%;
+  height: 100%;
+}
+
+/* Warning message box */
+.MapMainView-warning-box {
+  padding: 16px;
+  background-color: var(--warning);
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  border-radius: 8px;
+  margin-bottom: 16px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.MapMainView-warning-box ul  {
+  padding-left: 50px; /* Adjust this value to move the dot further to the right */
+}
+
+
+/* City gene data display */
+.MapMainView-city-info {
+  margin-top: 50px;
+  margin-right: 1px; /* Distance between map */
+  min-width: 25%;
+  max-width: 40%;
+  padding: 5px;
+  border: 2px solid var(--primary);
+  border-radius: 10px;
+  height: 100%; /* Fixed height based on image */
+  overflow-y: auto;
+}
+
+.MapMainView-city-info h4 {
+  white-space: nowrap;
+}
+
+.MapMainView-city-info ul {
+  padding: 10;
+}
+
+.MapMainView-city-info li {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.MapMainView-city-info li div {
+  padding: 10px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  
+}
+
+.MapMainView-city-info .total-count {
+  margin-top: 30px;
+  font-size: 20px;
+  color: var(--primary);
+}
+
+/* Map container */
+.MapMainView-map-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  user-select: none;
+}
+
+/* Map image styles */
+.MapMainView-map-image {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  pointer-events: none;
+  border: 1px solid var(--primary);
+}
+
+/* Arrow SVG layer */
+.MapMainView-arrow-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Latitude and Longitude display */
+.MapMainView-latlon-display {
+  margin-top: 5px;
+  padding: 6px;
+  border: 1px solid var(--primary);
+  border-radius: 6px;
+  background: var(--background);
+  font-size: 20px;
+}

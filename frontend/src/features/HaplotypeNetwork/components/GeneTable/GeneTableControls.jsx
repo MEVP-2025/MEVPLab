@@ -1,4 +1,4 @@
-import "./GeneTable.css";
+import "../styles/GeneTable.css";
 
 const GeneTableControls = ({
   viewMode,
@@ -19,16 +19,16 @@ const GeneTableControls = ({
   return (
     <div style={{ position: "relative" }}>
       {/* 表格切換：上方的兩個按鈕 */}
-      <div className="button-groupS top" style={{ marginBottom: 10, display: "flex", justifyContent: "flex-start" }}>
+      <div  style={{ marginBottom: 10, display: "flex", justifyContent: "flex-start" }}>
         <button
           onClick={() => setViewMode("total")}
-          className="btn btn-summary"
+          className={`GeneTable-button ${viewMode === "total" ? "active" : ""}`}
         >
-          ***Summary_table
+          Summary_table
         </button>
         <button
           onClick={() => setViewMode("count")}
-          className="btn btn-fa"
+          className={`GeneTable-button ${viewMode === "count" ? "active" : ""}`}
         >
           FA_table
         </button>
@@ -48,20 +48,21 @@ const GeneTableControls = ({
           
           <button
             onClick={() => setViewMode("formatted")}
-            className="btn btn-merge"
+            className={`GeneTable-button ${viewMode === "formatted" ? "active" : ""}`}
           >
             MergeFA_table
           </button>
           <button
             onClick={() => setViewMode("detail")}
             className="btn btn-info1"
+            style={{ display: "none" }}
           >
             Information_table
           </button>
         </div>
       )}
 
-      {/* 搜尋 & 篩選：只在 count 和 detail 模式下顯示 */}
+      {/* 搜尋 & 篩選：只在 count 和 detail 模式下顯示 
       {( viewMode === "detail") && (
         <div className="flex" style={{ marginBottom: 15, gap: 15, alignItems: "center" }}>
           <input
@@ -74,6 +75,7 @@ const GeneTableControls = ({
           />
         </div>
       )}
+      */}
       
     </div>
   );
