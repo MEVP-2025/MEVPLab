@@ -36,8 +36,8 @@
   width: 32px;
   height: 32px;
   border-radius: 6px;
-  border: none;
-  background: var(--primary);
+  border: 1px solid var(--border);
+  background: var(--muted-foreground);
   color: var(--primary-foreground);
   cursor: pointer;
   font-size: 1.4em;

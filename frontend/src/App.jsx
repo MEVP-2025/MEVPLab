@@ -16,7 +16,7 @@ import TitleBar from './components/TitleBar.jsx';
 import Navbar from './components/Navbar.jsx';
 
 // import css
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import './styles/components/Navbar.css';
 // import './styles/components.css'; // Toolkit

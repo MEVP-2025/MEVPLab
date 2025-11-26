@@ -7,6 +7,7 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-top: 31.5px;
   border-bottom: 1px solid var(--border);
+  transition: margin-right 0.3s ease, width 0.3s ease;
 }
 
 .navbar-logo {
@@ -16,35 +17,129 @@
   cursor: pointer;
 }
 
-/* .navbar-brand{
+.nav-links {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.nav-item {
+  position: relative;
   color: var(--foreground);
-  font-size: 22px;
+  text-decoration: none;
+  font-size: 0.95rem;
   font-weight: 500;
-  margin-right: 25px;
+  cursor: pointer;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.nav-item:hover {
+  background-color: var(--secondary);
+  border-color: var(--muted-foreground);
+}
+
+.nav-item.active {
+  color: var(--primary);
+  background-color: var(--secondary);
+}
+
+/* Dropdown */
+.dropdown {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  min-width: 200px;
+  padding: 5px 0;
+  display: none;
+  flex-direction: column;
+  z-index: 1001;
+}
+
+/* .dropdown:hover .dropdown-menu {
+  display: flex;
 } */
 
-.navbar a {
-  font-size: 18px;
-  color: var(--muted-foreground);
+.dropdown-menu.show {
+  display: flex;
 }
 
-.file-upload {
-  margin-left: 25px;
-}
-
-.file-upload label {
-  margin: 0px 5px;
-}
-
-.custom-upload-label {
-  display: block;
-  width: 100%;
-  cursor: pointer;
-  color: var(--muted-foreground);
-}
-
-.custom-upload-label:hover {
+.dropdown-item {
+  padding: 10px 15px;
   color: var(--foreground);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dropdown-item:hover {
+  background-color: var(--secondary);
+}
+
+.dropdown-item.active {
+  color: var(--primary);
+  background-color: var(--secondary);
+}
+
+/* File Upload Section */
+.file-upload-section {
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+  padding-left: 20px;
+  border-left: 1px solid var(--border);
+  gap: 15px;
+}
+
+.upload-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  background-color: var(--secondary);
+  color: var(--foreground);
+  font-size: 0.85rem;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  transition: all 0.2s;
+}
+
+.upload-btn:hover {
+  background-color: var(--muted);
+  border-color: var(--muted-foreground);
+}
+
+.file-status {
+  font-size: 0.8rem;
+  color: var(--muted-foreground);
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-name {
+  color: var(--primary);
+  font-weight: 500;
+}
+
+.theme-toggle-container {
+  margin-left: auto;
 }
 
 .file-name {
