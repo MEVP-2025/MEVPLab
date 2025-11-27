@@ -24,6 +24,7 @@ function MainNavbar({ theme, toggleTheme }) {
 
   const [isToolsOpen, setIsToolsOpen] = useState(false);
   const [isFileOpen, setIsFileOpen] = useState(false);
+  const [isFastaDropdownOpen, setIsFastaDropdownOpen] = useState(false);
   const toolsDropdownRef = useRef(null);
   const fileDropdownRef = useRef(null);
 
@@ -53,25 +54,74 @@ function MainNavbar({ theme, toggleTheme }) {
   const renderFileMenuContent = () => {
     const path = location.pathname;
 
+    // Common Fasta Selector Component
+    const FastaSelector = () => (
+      haplotypeFiles.length > 0 && (
+        <div style={{ padding: '5px 15px' }}>
+          <div 
+            onClick={(e) => { e.stopPropagation(); setIsFastaDropdownOpen(!isFastaDropdownOpen); }}
+            style={{ 
+              padding: '6px 10px', 
+              backgroundColor: '#e6f0ff',
+              borderRadius: '4px', 
+              color: '#0066cc',
+              cursor: 'pointer',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              fontSize: '0.9rem',
+              fontWeight: 500
+            }}
+          >
+            <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '180px' }}>
+              {haplotypeFiles[selectedHaplotypeIndex]?.name || "Select Fasta"}
+            </span>
+            <span style={{ fontSize: '0.7rem', marginLeft: '5px' }}>▼</span>
+          </div>
+          
+          {isFastaDropdownOpen && (
+            <div style={{ 
+              border: '1px solid var(--border)', 
+              marginTop: '4px', 
+              borderRadius: '4px', 
+              backgroundColor: 'var(--card)',
+              boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+              maxHeight: '200px',
+              overflowY: 'auto'
+            }}>
+              {haplotypeFiles.map((file, idx) => (
+                 <div 
+                   key={idx}
+                   className="dropdown-item"
+                   onClick={() => { setSelectedHaplotypeIndex(idx); setIsFastaDropdownOpen(false); }}
+                   style={{ 
+                     padding: '8px 10px', 
+                     fontSize: '0.85rem',
+                     backgroundColor: selectedHaplotypeIndex === idx ? 'var(--secondary)' : 'transparent',
+                     color: selectedHaplotypeIndex === idx ? 'var(--primary)' : 'var(--foreground)'
+                   }}
+                 >
+                   {file.name}
+                 </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )
+    );
+
     // Phylotree Page
     if (path === '/phylotree') {
       return (
-        <>
-          <label className="dropdown-item">
-            Upload Newick
-            <input
-              type="file"
-              accept=".nwk,.newick,.txt"
-              onChange={(e) => { handlePhylotreeFileChange(e); closeMenu(); }}
-              style={{ display: "none" }}
-            />
-          </label>
-          {phylotreeFileName && (
-            <div className="dropdown-item" style={{ cursor: 'default', color: 'var(--primary)' }}>
-              Current: {phylotreeFileName}
-            </div>
-          )}
-        </>
+        <label className="dropdown-item">
+          {phylotreeFileName ? `Current: ${phylotreeFileName}` : "Upload Newick"}
+          <input
+            type="file"
+            accept=".nwk,.newick,.txt"
+            onChange={(e) => { handlePhylotreeFileChange(e); closeMenu(); }}
+            style={{ display: "none" }}
+          />
+        </label>
       );
     }
 
@@ -80,7 +130,7 @@ function MainNavbar({ theme, toggleTheme }) {
       return (
         <>
           <label className="dropdown-item">
-            Upload Fasta
+            {haplotypeFiles.length > 0 ? `Fasta Files: ${haplotypeFiles.length} uploaded` : "Upload Fasta"}
             <input
               type="file"
               accept=".fa,.fasta,.txt"
@@ -89,11 +139,7 @@ function MainNavbar({ theme, toggleTheme }) {
               style={{ display: "none" }}
             />
           </label>
-          {haplotypeFiles.length > 0 && (
-            <div className="dropdown-item" style={{ cursor: 'default', color: 'var(--primary)' }}>
-              {haplotypeFiles.length} files uploaded
-            </div>
-          )}
+          <FastaSelector />
         </>
       );
     }
@@ -103,7 +149,7 @@ function MainNavbar({ theme, toggleTheme }) {
       return (
         <>
           <label className="dropdown-item">
-            Upload Fasta
+            {haplotypeFiles.length > 0 ? `Fasta Files: ${haplotypeFiles.length} uploaded` : "Upload Fasta"}
             <input
               type="file"
               accept=".fa,.fasta,.txt"
@@ -112,9 +158,10 @@ function MainNavbar({ theme, toggleTheme }) {
               style={{ display: "none" }}
             />
           </label>
+          <FastaSelector />
           
           <label className="dropdown-item">
-            Upload CSV
+            {csvFileName ? `CSV: ${csvFileName}` : "Upload CSV"}
             <input
               type="file"
               accept=".csv"
@@ -124,7 +171,7 @@ function MainNavbar({ theme, toggleTheme }) {
           </label>
 
           <label className="dropdown-item">
-            Upload EDNA Sample Station
+            {eDnaSampleFileName ? `eDNA: ${eDnaSampleFileName}` : "Upload eDNA Sample Station (XLSX)"}
             <input
               type="file"
               accept=".xlsx"
@@ -132,44 +179,6 @@ function MainNavbar({ theme, toggleTheme }) {
               style={{ display: "none" }}
             />
           </label>
-
-          {/* File Status Display */}
-          {(haplotypeFiles.length > 0 || csvFileName || eDnaSampleFileName) && (
-            <>
-              <div className="dropdown-item" style={{ cursor: 'default', fontWeight: 600, borderTop: '1px solid var(--border)', marginTop: 5, paddingTop: 10 }}>
-                Loaded Files
-              </div>
-              
-              {haplotypeFiles.length > 0 && (
-                 <div className="dropdown-item" style={{ cursor: 'default', fontSize: '0.85rem', color: 'var(--muted-foreground)' }}>
-                    Fasta Files ({haplotypeFiles.length})
-                 </div>
-              )}
-              
-              {haplotypeFiles.map((file, idx) => (
-                <div 
-                  key={idx} 
-                  className={`dropdown-item ${selectedHaplotypeIndex === idx ? 'active' : ''}`}
-                  onClick={() => { setSelectedHaplotypeIndex(idx); closeMenu(); }}
-                  style={{ paddingLeft: 25 }}
-                >
-                  {file.name}
-                </div>
-              ))}
-
-              {csvFileName && (
-                <div className="dropdown-item active" style={{ cursor: 'default' }}>
-                  CSV: {csvFileName}
-                </div>
-              )}
-              
-              {eDnaSampleFileName && (
-                <div className="dropdown-item active" style={{ cursor: 'default' }}>
-                  EDNA: {eDnaSampleFileName}
-                </div>
-              )}
-            </>
-          )}
         </>
       );
     }
