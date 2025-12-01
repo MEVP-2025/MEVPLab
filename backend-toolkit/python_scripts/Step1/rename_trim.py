@@ -109,7 +109,7 @@ class BarcodeDatabase:
                     continue
                     
                 fields = line.split(',')
-                if len(fields) >= 7:
+                if len(fields) >= 5:
                     location = fields[0]
                     total_entries += 1
                     
@@ -119,7 +119,7 @@ class BarcodeDatabase:
                     # 只載入目標物種的條碼
                     if species_prefix == self.target_species:
                         # Store: barcode_f, primer_f, barcode_r, primer_r
-                        self.tags[location] = fields[3:7]
+                        self.tags[location] = fields[1:5]
                         self.species_prefixes.add(species_prefix)
                         filtered_entries += 1
         
