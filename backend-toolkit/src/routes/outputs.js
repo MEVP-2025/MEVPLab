@@ -166,7 +166,7 @@ router.get("/download-species/:species", async (req, res, next) => {
       for (const file of separatedFiles) {
         if (path.extname(file) === ".list") continue; // -- skip .list file
         const filePath = path.join(separatedDir, file);
-        archive.file(filePath, { name: `separated/${file}` });
+        archive.file(filePath, { name: file });
       }
     } catch (error) {
       console.log(`No separated files for species: ${species}`);
@@ -180,7 +180,7 @@ router.get("/download-species/:species", async (req, res, next) => {
 
       for (const file of tableFiles) {
         const filePath = path.join(tableDir, file);
-        archive.file(filePath, { name: `table/${file}` });
+        archive.file(filePath, { name: file });
       }
     } catch (error) {
       console.log(`No table files for species: ${species}`);
