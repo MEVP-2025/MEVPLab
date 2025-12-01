@@ -323,23 +323,23 @@ class IntegratedPipeline:
     
     def run(self) -> None:
         """Run the complete rename and trim pipeline."""
-        print("Starting rename and trim DNA analysis pipeline...", flush=True)
+        print("Starting data pre-processing...", flush=True)
         print(f"Input files: {self.r1_file}, {self.r2_file}", flush=True)
         print(f"Barcode file: {self.barcode_file}", flush=True)
         print(f"Target species: {self.target_species} (quality standard: {self.quality_standard})", flush=True)
         
         try:
-            # Step 1: Rename R1 reads
-            print("\n=== Step 1: Renaming R1 reads ===", flush=True)
+            print("\n>> [1/4] Pre-processing: Renaming R1 reads...", flush=True)
             rename_fastq_file(self.r1_file, self.r1_renamed)
             
-            # Step 2: Rename R2 reads
-            print("\n=== Step 2: Renaming R2 reads ===", flush=True)
+            print("\n>> [2/4] Pre-processing: Renaming R2 reads...", flush=True)
             rename_fastq_file(self.r2_file, self.r2_renamed)
             
-            # Step 3: Trim using renamed files
-            print("\n=== Step 3: Barcode trimming ===", flush=True)
+            print("\n>> [3/4] Core Analysis: Barcode trimming & Demultiplexing...", flush=True)
             self._run_trim_analysis()
+
+            print("\n>> [4/4] Quality Control: Validating output results...", flush=True)
+            self.validate_outputs()
             
             print(f"\nRename and trim completed successfully!", flush=True)
             print(f"Output files for {self.target_species} in: outputs/trim/", flush=True)
@@ -445,6 +445,43 @@ class IntegratedPipeline:
                     written_count += 1
         
         print(f"Successfully wrote {written_count} trimmed read pairs for project '{self.target_species}'", flush=True)
+
+    def validate_outputs(self) -> None:
+        """
+        Validate that the output files exist and contain enough sequences.
+        Simulates the logic of validate_filter_results but for FASTQ files.
+        """
+        output_dir = Path("/app/data/outputs/trim")
+        
+        target_file = output_dir / f"{self.target_species}.f.fq"
+        
+        # Check if the file exists
+        if not target_file.exists():
+            print(f"Validation Error: Output file not found: {target_file}", file=sys.stderr, flush=True)
+            sys.exit(1)
+            
+        # Count the number of sequences (FASTQ format: every 4 lines is one sequence)
+        line_count = 0
+        try:
+            with open(target_file, 'r', encoding='utf-8') as f:
+                for i, _ in enumerate(f):
+                    line_count = i + 1
+        except Exception as e:
+            print(f"Validation Error: Could not read output file: {e}", file=sys.stderr, flush=True)
+            sys.exit(1)
+
+        total_sequences = line_count // 4
+        print(f"Validation: Found {total_sequences} sequences in {target_file.name}", flush=True)
+
+        # Validate the number of sequences (at least 2)
+        if total_sequences < 2:
+            error_message = (
+                f"Validation Error: Not enough sequences remained after trimming for species '{self.target_species}' "
+                f"(found {total_sequences}, require at least 2). "
+                f"This implies either the barcode matching failed or the quality standard is too strict."
+            )
+            print(error_message, file=sys.stderr, flush=True)
+            sys.exit(1)
 
 
 def load_quality_config(config_file: str) -> Dict[str, int]:
