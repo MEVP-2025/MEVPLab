@@ -43,9 +43,16 @@ const ResultsPanel = ({ onReset }) => {
 
   const previewFile = async (category, species, fileName) => {
     try {
-      alert(`Preview functionality for ${fileName} in ${category}/${species} - to be implemented`)
+      const response = await api.outputs.previewFile(category, species, fileName)
+
+      const data = response.data
+
+      if (!data.success) {
+        throw new Error(data.error || "Failed to open file")
+      }
     } catch (error) {
-      alert('Preview failed: ' + error.message)
+      console.error(error)
+      alert('Failed to preview file: ' + error.message)
     }
   }
 

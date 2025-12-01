@@ -426,9 +426,11 @@ app.on("before-quit", () => {
 
     const uploadsPath = path.join(homedir, ".dna-barcode-toolkit", "uploads");
     const outputsPath = path.join(homedir, ".dna-barcode-toolkit", "outputs");
+    const previewTempPath = path.join(os.tmpdir(), "dna-toolkit-preview");
 
     cleanFolderContents(uploadsPath);
     cleanFolderContents(outputsPath);
+    cleanFolderContents(previewTempPath);
   }
 });
 

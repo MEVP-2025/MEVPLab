@@ -1,6 +1,7 @@
 import archiver from "archiver";
 import express from "express";
 import fs from "fs/promises";
+import open from "open";
 import os from "os";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -68,6 +69,42 @@ router.get("/list", async (req, res, next) => {
     next(error);
   }
 });
+
+router.post("/preview/:category/:species/:filename", async (req, res, next) => {
+  try {
+    const { category, species, filename } = req.params;
+
+    const outputsRoot = getOutputsRoot();
+    const filePath = safeJoin(outputsRoot, category, species, filename);
+
+    if (!filePath.startsWith(path.join(outputsRoot, category, species))) {
+      return res.status(400).json({ success: false, error: "Invalid file path" });
+    }
+
+    try {
+      await fs.access(filePath);
+    } catch (error) {
+      return res.status(404).json({ success: false, error: "File not found" });
+    }
+
+    const tempDir = path.join(os.tmpdir(), "dna-toolkit-preview");
+    await fs.mkdir(tempDir, { recursive: true });
+
+    const tempFilename = `${filename}.txt`;
+    const tempFilePath = path.join(tempDir, tempFilename);
+
+    await fs.copyFile(filePath, tempFilePath);
+
+    await open(tempFilePath);
+
+    res.json({ success: true, message: "File opened for preview" });
+
+  } catch (error) {
+    console.error("Preview error:", error);
+
+    res.status(500).json({ success: false, error: "Failed to open file: " + error.message });
+  }
+})
 
 router.get("/download/:category/:species/:filename", async (req, res, next) => {
   try {
@@ -181,7 +218,7 @@ router.get("/download-species/:species", async (req, res, next) => {
       for (const file of tableFiles) {
         const filePath = path.join(tableDir, file);
         archive.file(filePath, { name: file });
-      }
+      }ㄡ
     } catch (error) {
       console.log(`No table files for species: ${species}`);
     }

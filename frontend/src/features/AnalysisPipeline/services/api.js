@@ -125,6 +125,10 @@ export const api = {
   outputs: {
     list: () => apiClient.get("outputs/list"),
 
+    previewFile: (category, species, fileName) => {
+      return apiClient.post(`outputs/preview/${category}/${species}/${fileName}`)
+    },
+
     getDownloadUrl: (category, species, fileName) => {
       return `${API_BASE_URL}/outputs/download/${category}/${species}/${fileName}`;
     },
