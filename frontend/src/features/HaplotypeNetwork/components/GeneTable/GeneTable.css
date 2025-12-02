@@ -152,7 +152,7 @@
 }
 
 .view-total .gene-table-wrapper {
-  max-height: 800px;
+  height: 100px;
   /* 設定最大高度以觸發滾動 */
   overflow-y: auto;
   /* 垂直滾動 */
@@ -189,4 +189,126 @@
   display: inline-block;
   margin-right: 6px;
   border: 1px solid var(--destructive);
+  display: "inline-block",
+}
+
+
+/* ============================ */
+/* General container styles */
+.CVSTable-container {
+  margin-top: 30px;
+}
+
+.CVSTable-search-container {
+  margin-bottom: 10px;
+}
+
+.CVSTable-search-input {
+  padding: 5px;
+  width: 800px;
+}
+
+/* Button group */
+.CVSTable-filter-buttons {
+  margin-right: 50px;
+}
+
+.CVSTable-button {
+  margin-left: 8px;
+  margin-right: 8px;
+  padding: 3px 6px;
+  cursor: pointer;
+}
+
+/* Percentage toggle button */
+.CVSTable-percentage-toggle {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.CVSTable-toggle-button button {
+  cursor: pointer;
+}
+
+/* Percentage range inputs */
+.CVSTable-percentage-range {
+  margin-top: 10px;
+}
+
+.CVSTable-percentage-input {
+  margin-left: 10px;
+  padding: 5px;
+  font-size: 16px;
+  width: 80px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Gene table container */
+.CVSTable-gene-table-container {
+  margin-top: 10px;
+}
+
+.CVSTable-gene-table-wrapper {
+  height: 100px;
+  overflow-y: auto;
+  display: block;
+  max-width: 100%;
+}
+
+.CVSTable-gene-table {
+  border-collapse: collapse;
+  width: max-content;
+  min-width: fit-content;
+  table-layout: auto;
+}
+
+.CVSTable-gene-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: var(--muted);
+}
+
+.CVSTable-gene-table td:first-child,
+.CVSTable-gene-table th:first-child {
+  position: sticky;
+  left: 0;
+  background: var(--secondary);
+  min-width: 100px;
+  text-align: left;
+}
+
+/* Header haplotype color box */
+.CVSTable-header-hap {
+  display: inline-flex;
+  align-items: center;
+}
+
+.CVSTable-color-box {
+  width: 12px;
+  height: 12px;
+  background-color: #101010ff;
+  margin-right: 6px;
+  border-radius: 2px;
+}
+
+/* ============================ */
+/* Table cell styles */
+.CVSTable-gene-table td {
+  text-align: center;
+}
+
+.CVSTable-gene-table td {
+  padding: 5px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+}
+
+.CVSTable-gene-table th {
+  padding: 8px;
+  font-size: 16px;
+  background-color: var(--muted);
 }

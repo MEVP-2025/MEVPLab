@@ -1,230 +1,220 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../styles/GeneTable.css";
 
 const CVSTable = ({
   displayedHeaders,
   displayedTableData,
   hapColors,
-  hapPage,
-  totalHapPages,
-  onHapPageChange,
+  selectedLocations,
+  onSelectedLocationsChange,
   setFilterMode,
   minPercentage,
   maxPercentage,
   setMinPercentage,
   setMaxPercentage,
 }) => {
-  // === 狀態搬進來：只屬於 CSV Table ===
-  const [showPercentage, setShowPercentage] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");  // 新增搜尋框的狀態
+  // === Location State ===
+  const [locations, setLocations] = useState([]);
+  const [selectedLocationsState, setSelectedLocationsState] = useState([]);
 
-   
-// 只在 headers 中搜尋，排除前兩列的 header（例如 location）
+
+  useEffect(() => {
+    // Extract locations from the first column of your table data (or any other source)
+    const locationNames = displayedTableData.map(row => row[0]); // Assuming first column is locations
+    setLocations(locationNames);
+  }, [displayedTableData]);
+
+  // Handle checkbox changes
+  const handleLocationChange = (location) => {
+    const updatedSelection = selectedLocationsState.includes(location)
+      ? selectedLocationsState.filter(loc => loc !== location)
+      : [...selectedLocationsState, location];
+
+    setSelectedLocationsState(updatedSelection);
+    onSelectedLocationsChange(updatedSelection); // Pass the updated selection to parent
+  };
+
+  // === Search and Filter Logic ===
+  const [showPercentage, setShowPercentage] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+
   const filteredHeaders = displayedHeaders.filter((header, index) =>
     index < 2 || header.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // 根據篩選過的 headers 显示相关的数据
   const filteredTableData = displayedTableData.map((row) =>
     row.filter((cell, colIndex) => filteredHeaders.includes(displayedHeaders[colIndex]))
   );
 
-
-
-  // 更新 filterMode 和 percentage
   const handleFilterModeChange = (mode) => {
     setFilterMode(mode);
   };
 
-  const handleMinPercentageChange = (e) => {
-    setMinPercentage(Number(e.target.value));
-  };
-
-  const handleMaxPercentageChange = (e) => {
-    setMaxPercentage(Number(e.target.value));
-  };
+    useEffect(() => {
+      if (locations.length > 0 && Object.keys(selectedLocations).length === 0) {
+        const initialSelected = locations.reduce((acc, loc) => {
+          acc[loc] = true;
+          return acc;
+        }, {});
+        onSelectedLocationsChange?.(initialSelected);
+      }
+    }, [locations, selectedLocations, onSelectedLocationsChange]);
 
   return (
-    <div style={{ marginTop: "30px" }}>
-      {/* 搜尋框 */}
-      <div style={{ marginBottom: "10px" }}>
+    <div className="CVSTable-container">
+      {/* Search Box */}
+      <div className="CVSTable-search-container">
         <input
           type="text"
-          placeholder="Search table headers"
+          placeholder="Search "
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          style={{ padding: "5px", width: "500px" }}
+          className="CVSTable-search-input"
         />
       </div>
 
-      <div style={{ marginRight: 50 }}>
-        Show on Map: 
-        <button onClick={() => handleFilterModeChange("all")}
-          style={{
-            marginLeft: 8,
-            marginRight: 8,
-            padding: "3px 6px", // 調整內邊距來控制按鈕的大小 
-          }}
-          >
+     
+
+      <div className="CVSTable-filter-buttons">
+        Show on Map:
+        <button onClick={() => handleFilterModeChange("all")} 
+          className={`CVSTable-button ${setFilterMode === "all" ? "active" : ""}`}
+        >
           Show all
-          
         </button>
-        <button onClick={() => handleFilterModeChange("range")}
-          style={{
-            marginLeft: 8,
-            marginRight: 8,
-            padding: "3px 6px", // 調整內邊距來控制按鈕的大小 
-          }}
-          >
+        <button onClick={() => handleFilterModeChange("range")} 
+          className={`CVSTable-button ${setFilterMode === "range" ? "active" : ""}`}
+        >
           Show {minPercentage} % ~ {maxPercentage} %
         </button>
       </div>
 
-      <h5
-        style={{
-          marginTop: "10px" ,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <div className="percentage-toggle">
+      <h5 className="CVSTable-percentage-toggle" style={{ whiteSpace: "nowrap" }}>
+        <div className="CVSTable-toggle-button">
           <button onClick={() => setShowPercentage((prev) => !prev)}>
             {showPercentage ? "Display Value" : "Display Percentage"}
           </button>
         </div>
       </h5>
 
-      {/* 設定百分比範圍 */}
-      <div>
+      {/* Set Percentage Range */}
+      <div className="CVSTable-percentage-range">
         <label>
-          Min Percentage: 
+          Min Percentage:
           <input
             type="number"
             value={minPercentage}
             onChange={(e) => setMinPercentage(Math.max(0.01, Number(e.target.value)))}
             min="0"
             max="100"
+            className="CVSTable-percentage-input"
           />
         </label>
         <label>
-          Max Percentage: 
+          Max Percentage:
           <input
             type="number"
             value={maxPercentage}
             onChange={(e) => setMaxPercentage(Number(e.target.value))}
             min="0"
             max="100"
+            className="CVSTable-percentage-input"
           />
         </label>
       </div>
 
-      <div className="gene-table-container view-total">
-        <div className="gene-table-wrapper">
-          <table className="gene-table">
-            <thead>
-              <tr>
-                {filteredHeaders.map((header, idx) => (
-                  <th key={idx}>
-                    {header.startsWith("hap_") ? (
+<div className="CVSTable-gene-table-container">
+  <div className="CVSTable-gene-table-wrapper">
+    <table className="CVSTable-gene-table">
+      <thead>
+        <tr>
+          
+          {filteredHeaders.map((header, idx) => (
+            <th key={idx}>
+              {header === "hap_total"
+                ? "total"
+                : header.startsWith("hap_") ? (
+                    <span className="CVSTable-header-hap">
                       <span
-                        style={{ display: "inline-flex", alignItems: "center" }}
-                      >
-                        <span
-                          style={{
-                            display: "inline-block",
-                            width: 12,
-                            height: 12,
-                            backgroundColor: hapColors[header] || "#101010ff",
-                            marginRight: 6,
-                            borderRadius: 2,
-                          }}
-                        />
-                        {header}
-                      </span>
-                    ) : (
-                      header
-                    )}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {filteredTableData.slice(1).map((row, rowIndex) => {
-                const total = parseInt(row[1]) || 0; // 第二欄是總數
-                const isRowTransparent = total === 0; // 如果總數為 0，整行變透明
+                        className="CVSTable-color-box"
+                        style={{
+                          backgroundColor: hapColors[header] || "#101010ff",
+                        }}
+                      />
+                      {header}
+                    </span>
+                  ) : (
+                    header
+                  )}
+            </th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {filteredTableData.slice(1).map((row, rowIndex) => {
+          const total = parseInt(row[1]) || 0;
+          const isRowTransparent = total === 0;
+          return (
+            <tr key={rowIndex} style={{ opacity: isRowTransparent ? 0.3 : 1 }}>
+              {/* Merge checkbox with location name in the same column */}
+              <td style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <input
+                  type="checkbox"
+                  checked={selectedLocationsState.includes(row[0])}
+                  onChange={() => handleLocationChange(row[0])}
+                />
+                <span>{row[0]}</span> {/* Location name next to checkbox */}
+              </td>
+
+              {row.slice(1).map((cell, colIndex) => {
+                const isHapCol = colIndex >= 1;
+                const rawValue = parseInt(cell) || 0;
+                const displayValue = isHapCol
+                  ? showPercentage
+                    ? total > 0
+                      ? `${((rawValue / total) * 100).toFixed(2)}%`
+                      : "0.00%"
+                    : rawValue
+                  : cell;
+
+                let bgColor = undefined;
+                if (isHapCol) {
+                  if (!showPercentage && rawValue > 0) {
+                    bgColor = "var(--chart-4)";
+                  } else if (showPercentage && total > 0) {
+                    const percent = (rawValue / total) * 100;
+                    if (percent >= minPercentage && percent <= maxPercentage) {
+                      bgColor = "var(--chart-4)";
+                    }
+                  }
+                }
 
                 return (
-                  <tr
-                    key={rowIndex}
+                  <td
+                    key={colIndex}
                     style={{
-                      opacity: isRowTransparent ? 0.3 : 1, // 根據 total 來設置透明度
+                      backgroundColor: bgColor,
+                      textAlign: "center",
                     }}
                   >
-                    {row.map((cell, colIndex) => {
-                      const isHapCol = colIndex >= 2;
-                      const rawValue = parseInt(cell) || 0;
-                      const displayValue = isHapCol
-                        ? showPercentage
-                          ? total > 0
-                            ? `${((rawValue / total) * 100).toFixed(2)}%`
-                            : "0.00%"
-                          : rawValue
-                        : cell;
-
-                      // ✅ 設定背景色
-                      let bgColor = undefined;
-                      if (isHapCol) {
-                        if (!showPercentage && rawValue > 0) {
-                          bgColor = "yellow";
-                        } else if (showPercentage && total > 0) {
-                          const percent = (rawValue / total) * 100;
-                          if (percent >= minPercentage && percent <= maxPercentage) {
-                            bgColor = "yellow";
-                          }
-                        }
-                      }
-
-                      return (
-                        <td
-                          key={colIndex}
-                          style={{
-                            backgroundColor: bgColor,
-                            textAlign: "center",
-                          }}
-                        >
-                          {displayValue}
-                        </td>
-                      );
-                    })}
-                  </tr>
+                    {displayValue}
+                  </td>
                 );
               })}
-            </tbody>
-          </table>
-        </div>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  </div>
+</div>
 
-        {/* CVS table 翻頁按鈕 */}
-        <div className="pagination" style={{ marginTop: "10px" }}>
-          <button
-            onClick={() => onHapPageChange?.(Math.max(1, hapPage - 1))}
-            disabled={hapPage === 1}
-          >
-            Prev
-          </button>
-          <span>
-            {hapPage} / {totalHapPages}
-          </span>
-          <button
-            onClick={() =>
-              onHapPageChange?.(Math.min(totalHapPages, hapPage + 1))
-            }
-            disabled={hapPage === totalHapPages}
-          >
-            Next
-          </button>
-        </div>
-      </div>
+
+
+
+
+
+
     </div>
   );
 };

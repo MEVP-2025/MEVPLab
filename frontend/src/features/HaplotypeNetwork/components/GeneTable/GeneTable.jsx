@@ -37,7 +37,7 @@ const GeneTable = ({
   // ==== CSV ====
   selectedGenes: externalSelectedGenes = [],
   onSelectedGenesChange,
-  selectedLocations = {},
+  selectedLocations = [],
   onSelectedLocationsChange,
 
   // ==== Editing ====
@@ -90,20 +90,9 @@ const GeneTable = ({
   const [totalTableData, setTotalTableData] = useState([]);  // 存储所有表格数据
   
   const totalHeaders = totalTableData[0] || [];  // 总表头
-  const staticHeaders = totalHeaders.slice(0, 2);  // 固定的表头（例如：基因名称）
-  const hapHeaders = useMemo(() => totalHeaders.slice(2), [totalHeaders]);  // Haplotype表头
+  const hapHeaders = useMemo(() => totalHeaders.slice(0), [totalHeaders]);  // Haplotype表头
 
-  // 计算总页数
-  const totalHapPages = Math.ceil(hapHeaders.length / hapsPerPage);
-  const startHapIdx = (hapPage - 1) * hapsPerPage;
-  const endHapIdx = startHapIdx + hapsPerPage;
-  const currentHapHeaders = hapHeaders.slice(startHapIdx, endHapIdx);  // 当前显示的haplotype表头
-  const displayedHeaders = [...staticHeaders, ...currentHapHeaders];  // 合并显示的表头
   
-  // 显示的数据行
-  const displayedTableData = totalTableData.map((row) =>
-    displayedHeaders.map((header) => row[totalHeaders.indexOf(header)] || "")
-  );
 
   // ====== Gene Filtering & Pagination ======
   const filteredGenes = useMemo(() => {
@@ -121,28 +110,7 @@ const GeneTable = ({
     return result;
   }, [genes, searchTerm, showOnlySelected, selectedGenesSet, viewMode, currentSpecies, fileName]);
 
-  // 分页后的基因数据
-  const paginatedGenes = useMemo(() => {
-    const startIdx = (currentPage - 1) * itemsPerPage;
-    return filteredGenes.slice(startIdx, startIdx + itemsPerPage);
-  }, [filteredGenes, currentPage, itemsPerPage]);
-
-  // 计算总页数
-  const totalPages = Math.ceil(genes.length / itemsPerPage);
-
-  // 格式化的基因分页
-  const formattedGenesPaginated = useMemo(() => {
-    const startIdx = (currentPage - 1) * itemsPerPage;
-    return genes.slice(startIdx, startIdx + itemsPerPage);  // 这里假设 `formattedGenes` 已经有过滤过的数据
-  }, [genes, currentPage, itemsPerPage]);
-
-  // 分页控制UI
-  const handlePageChange = (direction) => {
-    setCurrentPage((prevPage) => {
-      const nextPage = direction === 'next' ? prevPage + 1 : prevPage - 1;
-      return Math.min(Math.max(1, nextPage), totalPages);
-    });
-  };
+  
 
  // Memoize the `handleFormattedGenesChange` callback to avoid infinite loop
   const handleFormattedGenesChange = useCallback((genes, colors, counts) => {
@@ -241,7 +209,7 @@ const GeneTable = ({
           viewMode={viewMode}
           
           // 基因數據
-          paginatedGenes={viewMode === "total" ? formattedGenesPaginated : paginatedGenes}
+          
           geneColors={geneColors}
           genes={genes}
 
@@ -281,12 +249,12 @@ const GeneTable = ({
           fileName={fileName}
           
           // 表格顯示相關
-          displayedHeaders={displayedHeaders}
-          displayedTableData={displayedTableData}         
+          displayedHeaders={hapHeaders}
+          displayedTableData={totalTableData}        
           
           // 分頁控制
           hapPage={hapPage}
-          totalHapPages={totalHapPages}
+          
           onHapPageChange={setHapPage}
           
           // 過濾條件

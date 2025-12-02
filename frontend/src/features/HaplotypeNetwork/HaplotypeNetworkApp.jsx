@@ -42,7 +42,7 @@ const HaplotypeNetworkApp = ({
   const [FormattedCityGeneData, setFormattedCityGeneData] = useState({});
   const [viewMode, setViewMode] = useState("total");
   
-  const [cityVisibility, setCityVisibility] = useState({});
+  const [cityVisibility, setCityVisibility] = useState([]);
 
   const [mapSettings, setMapSettings] = useState({ imgW: 465, imgH: 658.5, lonRange: [120, 122], latRange: [21.5, 25.5], });
 
@@ -55,6 +55,8 @@ const HaplotypeNetworkApp = ({
   // =======================
   // 新增的 State (方案 1)
   // =======================
+  const [selectedLocations] = useState([]);
+
   const [selectedGeneTaiwanMap, setSelectedGeneTaiwanMap] = useState(null);
   const [selectedGenesTaiwanMap, setSelectedGenesTaiwanMap] = useState([]);
   const [selectedGeneGeneComponents, setSelectedGeneGeneComponents] = useState(null);

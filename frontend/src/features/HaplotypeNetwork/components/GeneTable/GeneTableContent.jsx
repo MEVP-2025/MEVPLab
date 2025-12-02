@@ -80,7 +80,7 @@ const GeneTableContent = ({
             {(!locations || Array.isArray(locations) && locations.length === 0)&& <li> Upload eDNA Sample Station (xlsx)</li>}
           </>
         )}
-        
+        {/*
         {viewMode === "detail" && (
           <>
             {(!paginatedGenes || Array.isArray(paginatedGenes) && paginatedGenes.length === 0) && <li> Upload Fa File</li>}
@@ -88,6 +88,7 @@ const GeneTableContent = ({
             {(!tagMapping || (typeof tagMapping === "object" && Object.keys(tagMapping).length === 0)) && <li> Upload eDNA_tags (xlsx, cvs)</li>}
           </>
         )}
+        */}
         {viewMode === "total" && (
           <>
             {(!displayedHeaders || Array.isArray(displayedHeaders) && displayedHeaders.length === 0) && <li> Upload Cvs File</li>}
@@ -107,13 +108,13 @@ const GeneTableContent = ({
   if (viewMode === "count") {
     return (
       <FATable
-        paginatedGenes={paginatedGenes}
+       
         geneColors={geneColors}
         locations={locations}
         selectedGenesSet={selectedGenesSet}
-        selectedLocations={selectedLocations}
         externalSelectedGenes={externalSelectedGenes}
         onSelectedGenesChange={onSelectedGenesChange}
+        selectedLocations={selectedLocations}
         onSelectedLocationsChange={onSelectedLocationsChange}
         onEditGeneCount={onEditGeneCount}
         onEditGeneCountBulk={onEditGeneCountBulk}
@@ -143,6 +144,7 @@ const GeneTableContent = ({
     );
   }
 
+  {/*  
   if (viewMode === "detail") {
     return (
       <InformationTable
@@ -157,6 +159,7 @@ const GeneTableContent = ({
       />
     );
   }
+  */}
 
   if (viewMode === "total" && displayedTableData.length > 0) {
     return (
@@ -164,9 +167,8 @@ const GeneTableContent = ({
         displayedHeaders={displayedHeaders}
         displayedTableData={displayedTableData}
         hapColors={hapColors}
-        hapPage={hapPage}
-        totalHapPages={totalHapPages}
-        onHapPageChange={onHapPageChange}
+        selectedLocations={selectedLocations}
+        onSelectedLocationsChange={onSelectedLocationsChange}       
         filterMode={filterMode}
         setFilterMode={setFilterMode}
         minPercentage={minPercentage}

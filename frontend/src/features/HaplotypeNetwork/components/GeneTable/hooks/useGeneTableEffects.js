@@ -1,13 +1,9 @@
 import { useEffect, useRef } from "react";
 
-// 用於將字符串哈希化為數字，生成穩定的色相
-const hashStringToNumber = (str) => {
-  let hash = 0;
-  for (let i = 0; i < str.length; i++) {
-    hash = (hash << 5) - hash + str.charCodeAt(i);
-    hash = hash & hash; // 強制轉為 32 位整數
-  }
-  return Math.abs(hash); // 返回正數
+const generateColors = (num) => {
+  return Array.from({ length: num }, (_, i) => 
+    `hsl(${(i * 137) % 360}, ${Math.floor(Math.random() * 50) + 25}%, ${Math.floor(Math.random() * 50) + 25}%)`
+  );
 };
 
 export const useGeneTableEffects = ({
@@ -78,33 +74,29 @@ export const useGeneTableEffects = ({
     }
   }, [hapHeaders, onHapHeadersChange]);
 
-  // 4️⃣ Hap 顏色設定
-  useEffect(() => {
-    if (viewMode == "total" || hapHeaders.length === 0) return;
 
-    // 使用 hap 的名稱生成穩定的顏色
-    const colors = Array.from({ length: hapHeaders.length }, (_, i) => {
-      const seed = hapHeaders[i];  // 根據 hap 名稱生成穩定的色相
-      const hue = (hashStringToNumber(seed) * 137) % 360;  // 哈希值轉為色相
-      const saturation = Math.floor(Math.random() * 51) + 25;  // 隨機飽和度（25%-75%）
-      const lightness = Math.floor(Math.random() * 51) + 25;  // 隨機亮度（25%-75%）
-      return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+  // 4️⃣ Hap 顏色設定
+  const hapColorsInitialized = useRef(false);
+
+  useEffect(() => {
+    if (hapHeaders.length === 0 || hapColorsInitialized.current) return;
+
+    // Generate colors for the hapHeaders if they are updated or when the component first mounts
+    const colors = generateColors(hapHeaders.length);
+
+    // Map each haplotype to its color
+    const colorMapping = {};
+    hapHeaders.forEach((hap, idx) => {
+      colorMapping[hap] = colors[idx];
     });
 
-    const mapping = {};
-    hapHeaders.forEach((hap, idx) => (mapping[hap] = colors[idx]));
+    // Set hapColors only once
+    setHapColors(colorMapping);  // Set the color mapping for the first time
+    onHapColorsChange?.(colorMapping);  // Trigger external callback if needed
 
-    // 檢查顏色是否需要更新
-    const isSame =
-      Object.keys(mapping).length === Object.keys(hapColors).length &&
-      Object.keys(mapping).every((key) => mapping[key] === hapColors[key]);
-
-    // 只在顏色有變化時才更新狀態，避免觸發無限渲染
-    if (!isSame) {
-      setHapColors(mapping); // 只在顏色更新時觸發 setState
-      onHapColorsChange?.(mapping);
-    }
-  }, [hapHeaders, viewMode, setHapColors, onHapColorsChange]);  // 刪除了 hapColors，不讓其觸發更新
+    // Mark that hapColors have been initialized
+    hapColorsInitialized.current = true;
+  }, [hapHeaders, hapColors, onHapColorsChange]);
 
 
   // 5️⃣ 更新 genes counts
@@ -270,7 +262,7 @@ export const useGeneTableEffects = ({
 }, [filterMode]);  // 這會在 filterMode 改變時觸發
 
 
-
+ 
 
 
   // 7️⃣ eDNA Mapping
@@ -281,12 +273,12 @@ export const useGeneTableEffects = ({
     const ids = new Set();
 
     eDnaSampleContent.forEach((row) => {
-      const id = String(row["eDNA_ID"]).trim();
+      const id = String(row["eDNA_ID"] || row[0]).trim();
       if (!id) return;
       ids.add(id);
 
-      const parsedLon = parseFloat(row["Celong1"]) || null;
-      const parsedLat = parseFloat(row["Celat2"]) || null;
+      const parsedLon = parseFloat(row["Celong1"] || row[2]) || null;
+      const parsedLat = parseFloat(row["Celat2"] || row[1]) || null;
 
       mapping[id] = {
         river: row["river"] || "No information",

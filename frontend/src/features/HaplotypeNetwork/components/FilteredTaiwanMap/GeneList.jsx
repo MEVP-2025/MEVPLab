@@ -141,9 +141,10 @@ const GeneList = ({
      
   // 檢查是否所有設定都已完成
   useEffect(() => {
-    const isAllConfigured =  filteredCityGeneData && Object.keys(filteredCityGeneData).length > 0;
+    const isAllConfigured =  filteredCityGeneData;
     setIsConfigured(isAllConfigured);
   }, [ filteredCityGeneData]);
+
 
   return (
     <div style={{ minWidth: "20%" }}>

@@ -13,7 +13,7 @@
 /* ===== 按鈕群組 ===== */
 .button-group {
   display: flex;
-  gap: 12px;
+  gap: 5px;
   padding: 12px;
   background: var(--background);
   border: 1px solid var(--foreground);

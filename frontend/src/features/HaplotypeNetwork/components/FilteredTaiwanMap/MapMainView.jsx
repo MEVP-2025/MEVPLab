@@ -31,8 +31,8 @@ const MapMainView = ({
      // 檢查是否所有設定都已完成
      useEffect(() => {
        const isAllConfigured = conW && conH && mapImage && imgW && imgH && 
-       filteredCityGeneData && Object.keys(filteredCityGeneData).length > 0 &&
-       filteredCityGeneData && filteredCityGeneData.totalCount > 0;
+       filteredCityGeneData && Object.keys(filteredCityGeneData).length > 0 
+       ;
        setIsConfigured(isAllConfigured);
      }, [conW, conH, mapImage, imgW, imgH, filteredCityGeneData]);
    
@@ -60,7 +60,7 @@ const MapMainView = ({
             {!imgW && <li> Set image Width</li>}
             {!imgH && <li> Set image Height</li>}
             {(!filteredCityGeneData || Object.keys(filteredCityGeneData).length === 0) && (
-              <li> Set FA_table</li>             
+              <li> Set FA_table(Set the values ​​in the table)</li>             
             )}
             {(!filteredCityGeneData || Object.keys(filteredCityGeneData).length === 0) && (
               <li> Set Compare components</li>             

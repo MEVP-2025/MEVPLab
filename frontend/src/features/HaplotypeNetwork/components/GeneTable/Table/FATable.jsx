@@ -6,9 +6,9 @@ const FATable = ({
   geneColors,
   locations,
   selectedLocations,
+  onSelectedLocationsChange,
   externalSelectedGenes = [],
   onSelectedGenesChange,
-  onSelectedLocationsChange,
   onEditGeneCount,
   onEditGeneCountBulk,
   updateMapData,
@@ -46,15 +46,7 @@ const FATable = ({
   const indexOfFirstGene = indexOfLastGene - genesPerPage;
   const currentGenes = searchFilteredGenes.slice(indexOfFirstGene, indexOfLastGene);
 
-  // === Automatically Select Genes ===
-  useEffect(() => {
-    if ((viewMode === "count" || viewMode === "formatted" || viewMode === "detail") && genes.length > 0) {
-      if (!clearClicked.current) {
-        handleSelectAllGenes(); // Automatically select all genes, but not if "Clear" was clicked
-      }
-    }
-  }, [genes.length, externalSelectedGenes.length, viewMode]);
-
+  
   useEffect(() => {
     if (locations.length > 0 && Object.keys(selectedLocations).length === 0) {
       const initialSelected = locations.reduce((acc, loc) => {
@@ -64,6 +56,12 @@ const FATable = ({
       onSelectedLocationsChange?.(initialSelected);
     }
   }, [locations, selectedLocations, onSelectedLocationsChange]);
+
+  useEffect(() => {
+      if (genes.length > 0) {
+        handleSelectAllGenes();
+      }
+    }, [genes]);
 
   const toggleGeneSelection = (geneName) => {
     const currentSelected = externalSelectedGenes || [];
@@ -81,9 +79,13 @@ const FATable = ({
 
     
   const handleSelectAllGenes = () => {
+    const currentlySelected = new Set(externalSelectedGenes);
     const genesToSelect = searchFilteredGenes.map((gene) => gene.name);
-    onSelectedGenesChange?.(genesToSelect);
+    const allSelectedGenes = [...currentlySelected, ...genesToSelect];
+    const uniqueSelectedGenes = [...new Set(allSelectedGenes)];
+    onSelectedGenesChange?.(uniqueSelectedGenes);
   };
+
 
   
   const handleClearAllGenes = () => {
@@ -191,7 +193,7 @@ const FATable = ({
           <thead>
             <tr>
               <th></th>
-              <th>Gene name</th>
+              <th>Gene ID</th>
               {locations.map((loc) => (
                 <th key={loc}>
                   <label
@@ -264,3 +266,6 @@ const FATable = ({
 };
 
 export default FATable;
+
+
+
