@@ -7,6 +7,27 @@ import { findNodeById, replaceNodeWithSubtree, rerootTree } from '../../utils/tr
 import Phylotree from '../tree/Phylotree.jsx';
 import ContextMenu from '../ui/ContextMenu.jsx';
 
+// Pure helper: walk a child-index path from a tree root node.
+const walkPath = (root, pathIndices) => {
+  let node = root;
+  for (const idx of pathIndices) {
+    if (!node.children || idx >= node.children.length) return null;
+    node = node.children[idx];
+  }
+  return node;
+};
+
+// Pure helper: DFS find by data.name. Used after subtree-restore when a
+// previously-merged node reappears as a named leaf in the Newick.
+const findNodeByName = (root, name) => {
+  if (root.data?.name === name) return root;
+  for (const child of (root.children || [])) {
+    const found = findNodeByName(child, name);
+    if (found) return found;
+  }
+  return null;
+};
+
 const TreeViewer = () => {
   const { state, loadNewick, loadNewFile, loadWithState, updateMergedKeys, toggleCollapse, unmergeNode, closeContextMenu, setMergedNode, renameNode } = useTree();
   const { treeInstance, contextMenu } = state;
@@ -17,16 +38,9 @@ const TreeViewer = () => {
   // Phase 2: set by phase 1 handler, consumed after loadWithState + handleMerged render.
   // At that point useTreeLayout has assigned the correct X|Y id to the merged node.
   const pendingKeyFix = useRef(null);
-
-  // Helper: walk child-index path from tree root, return node or null.
-  const walkPath = (root, pathIndices) => {
-    let node = root;
-    for (const idx of pathIndices) {
-      if (!node.children || idx >= node.children.length) return null;
-      node = node.children[idx];
-    }
-    return node;
-  };
+  // Set by handleCollapseSubtree when unmerging a node that has nested merged children.
+  // Consumed in useEffect Phase U1 after loadNewFile gives all nodes fresh IDs.
+  const pendingNestedRestore = useRef(null);
 
   // After reroot: two-phase useEffect to correctly remap merged-node state.
   //
@@ -41,48 +55,105 @@ const TreeViewer = () => {
   useEffect(() => {
     if (!treeInstance) return;
 
-    // ── Phase 2 ──────────────────────────────────────────────────────────────
+    // ── Phase 2: fix merged keys after handleMerged has assigned X|Y ids ────────
+    // Two sub-modes:
+    //   (no mode / 'path') Reroot path-map approach
+    //   'rename'           Unmerge nested-restore name-lookup approach
     if (pendingKeyFix.current) {
-      const { mergedPathMap, originalOldMerged } = pendingKeyFix.current;
+      const pf = pendingKeyFix.current;
       pendingKeyFix.current = null;
 
       const fixedMerged = {};
       const fixedCollapsed = new Set();
       const fixedRenamed = new Map();
 
-      for (const [origId, data] of Object.entries(originalOldMerged)) {
-        const pathIndices = mergedPathMap[String(origId)] ?? mergedPathMap[Number(origId)];
-        if (!pathIndices) continue;
+      if (pf.mode === 'rename') {
+        // Find each restored entry by its rename name (it's a leaf named after the rename).
+        for (const { rename, origData } of pf.allToRestore) {
+          const node = findNodeByName(treeInstance.nodes, rename);
+          if (!node || node.unique_id == null) { console.warn(`[Phase U2] not found: ${rename}`); continue; }
 
-        const node = walkPath(treeInstance.nodes, pathIndices);
-        if (!node || node.unique_id == null) continue;
+          const newId = String(node.unique_id);
+          const newParentId = node.parent?.unique_id != null
+            ? String(node.parent.unique_id)
+            : origData.parent;
+          const newSiblingIndex = node.parent?.children?.findIndex(c => c === node) ?? origData.siblingIndex;
 
-        const newId = String(node.unique_id);
+          fixedMerged[newId] = { ...origData, parent: newParentId, siblingIndex: newSiblingIndex, children: new Set() };
+          fixedCollapsed.add(newId);
+          if (origData.rename) fixedRenamed.set(newId, origData.rename);
+        }
+      } else {
+        // Reroot path-walk mode.
+        const { mergedPathMap, originalOldMerged } = pf;
+        for (const [origId, data] of Object.entries(originalOldMerged)) {
+          const pathIndices = mergedPathMap[String(origId)] ?? mergedPathMap[Number(origId)];
+          if (!pathIndices) continue;
+
+          const node = walkPath(treeInstance.nodes, pathIndices);
+          if (!node || node.unique_id == null) continue;
+
+          const newId = String(node.unique_id);
+          const newParentId = node.parent?.unique_id != null
+            ? String(node.parent.unique_id)
+            : data.parent;
+          const newSiblingIndex = node.parent?.children?.findIndex(c => c === node) ?? data.siblingIndex;
+
+          fixedMerged[newId] = { ...data, parent: newParentId, siblingIndex: newSiblingIndex, children: new Set() };
+          fixedCollapsed.add(newId);
+          if (data.rename) fixedRenamed.set(newId, data.rename);
+        }
+      }
+
+      console.group('── pendingKeyFix: fixed merged keys ──');
+      for (const [id, data] of Object.entries(fixedMerged)) {
+        console.log(`  merged id=${id} rename=${data.rename}`);
+      }
+      console.groupEnd();
+
+      updateMergedKeys(fixedMerged, fixedCollapsed, fixedRenamed);
+      return;
+    }
+
+    // ── Phase U1: restore nested + sibling merged nodes after loadNewFile parse ─
+    // loadNewFile forced initialize → all nodes have fresh IDs, so parent.unique_id
+    // is valid and can be passed to handleMerged in the next re-parse.
+    if (pendingNestedRestore.current) {
+      const { nestedMerged, siblingMerged, updatedNewick } = pendingNestedRestore.current;
+      pendingNestedRestore.current = null;
+
+      // Build a flat list of all entries to restore, keyed by rename.
+      // nestedMerged   = entries that were inside the unmerged node's subtree.
+      // siblingMerged  = other top-level merged entries (lost when loadNewFile cleared state).
+      const allToRestore = [
+        ...Object.entries(nestedMerged),
+        ...Object.values(siblingMerged).map(data => [data.rename, data]),
+      ];
+
+      for (const [rename, data] of allToRestore) {
+        const node = findNodeByName(treeInstance.nodes, rename);
+        if (!node || node.unique_id == null) {
+          console.warn(`[Phase U1] node not found for rename: ${rename}`);
+          continue;
+        }
         const newParentId = node.parent?.unique_id != null
           ? String(node.parent.unique_id)
           : data.parent;
         const newSiblingIndex = node.parent?.children?.findIndex(c => c === node) ?? data.siblingIndex;
 
-        // Children IDs are threshold|index values assigned by useTreeLayout.
-        // After reroot the whole tree is re-laid-out (entirely new abstract_x/y values),
-        // so the old child IDs have no valid mapping to the new ID space.
-        // They are only used as a blocklist by assignThresholdIds; clearing them is safe:
-        // - The collapsed node still gets its X|Y id via parent+siblingIndex (setNodeAsNonLeaf)
-        // - Unmerge uses subtreeNewick → loadNewick → initialize rebuilds IDs from scratch
-        const newChildren = new Set();
-
-        fixedMerged[newId] = { ...data, parent: newParentId, siblingIndex: newSiblingIndex, children: newChildren };
-        fixedCollapsed.add(newId);
-        if (data.rename) fixedRenamed.set(newId, data.rename);
+        // Use the plain leaf id as a temporary key; Phase U2 will fix it to X|Y.
+        // getNodeByName finds the node, setMergedNode + renameNode register it.
+        // handleMerged only needs parent+siblingIndex (not the key) to call setNodeAsNonLeaf.
+        setMergedNode(String(node.unique_id), { ...data, parent: newParentId, siblingIndex: newSiblingIndex, children: new Set() });
+        renameNode(String(node.unique_id), data.rename);
       }
 
-      console.group('── pendingKeyFix: fixed merged keys ──');
-      for (const [id, data] of Object.entries(fixedMerged)) {
-        console.log(`  merged id=${id} rename=${data.rename} children=[${[...data.children].join(', ')}]`);
-      }
-      console.groupEnd();
-
-      updateMergedKeys(fixedMerged, fixedCollapsed, fixedRenamed);
+      // Phase U2 will run after handleMerged assigns X|Y ids in the next re-parse.
+      pendingKeyFix.current = {
+        mode: 'rename',
+        allToRestore: allToRestore.map(([rename, origData]) => ({ rename, origData })),
+      };
+      loadNewick(updatedNewick);
       return;
     }
 
@@ -122,7 +193,7 @@ const TreeViewer = () => {
     pendingKeyFix.current = { mergedPathMap, originalOldMerged: oldMerged };
 
     loadWithState(newNewick, newMerged, newCollapsed, newRenamed);
-  }, [treeInstance, loadWithState, updateMergedKeys]);
+  }, [treeInstance, loadWithState, updateMergedKeys, loadNewick, setMergedNode, renameNode]);
   
   if (!treeInstance) {
     return (
@@ -140,16 +211,34 @@ const TreeViewer = () => {
     if (isNodeCollapsed) {
       // Expand (Unmerge)
       if (state.merged[nodeId]) {
-        const subtreeNewick = state.merged[nodeId].subtreeNewick;
+        const mergedEntry = state.merged[nodeId];
+        const subtreeNewick = mergedEntry.subtreeNewick;
+        const nestedMerged = mergedEntry.nestedMerged || {};
+
         const updatedNewick = replaceNodeWithSubtree(
-          treeInstance, 
+          treeInstance,
           nodeId,
           subtreeNewick
         );
-        
+
         if (updatedNewick) {
-          unmergeNode(nodeId);
-          loadNewick(updatedNewick);
+          if (Object.keys(nestedMerged).length > 0) {
+            // Subtree contains nested merged nodes. Use loadNewFile to force
+            // initialize so ALL nodes (including newly-restored ones) receive
+            // fresh IDs. Phase U1 will then re-register nested + sibling merged
+            // entries with the correct parent/siblingIndex before Phase U2 fixes
+            // the keys from plain-leaf ids to X|Y ids.
+            const siblingMerged = Object.fromEntries(
+              Object.entries(state.merged).filter(([id]) => id !== nodeId)
+            );
+            pendingNestedRestore.current = { nestedMerged, siblingMerged, updatedNewick };
+            loadNewFile(updatedNewick);
+          } else {
+            // No nested merged nodes: simple restore.
+            // handleMerged handles any sibling merged nodes automatically.
+            unmergeNode(nodeId);
+            loadNewick(updatedNewick);
+          }
         }
       } else {
         toggleCollapse(nodeId);
@@ -257,13 +346,24 @@ const TreeViewer = () => {
         siblingIndex = targetNode.parent.children.findIndex(child => child.unique_id === targetNode.unique_id);
     }
 
-    // 4. Create merged data object
+    // 4. Collect nested merged nodes: any entry in state.merged whose id is
+    //    inside this subtree. Keyed by rename (not by id) because ids are
+    //    reassigned on every re-parse and the rename is the stable identity.
+    const nestedMerged = {};
+    for (const [mergedId, mergedEntry] of Object.entries(state.merged)) {
+      if (childrenIds.has(mergedId)) {
+        nestedMerged[mergedEntry.rename] = mergedEntry;
+      }
+    }
+
+    // 5. Create merged data object
     const mergedData = {
         children: childrenIds,
         subtreeNewick: subtreeNewick,
         rename: newName,
         parent: targetNode.parent ? targetNode.parent.unique_id : null,
-        siblingIndex: siblingIndex
+        siblingIndex: siblingIndex,
+        nestedMerged: nestedMerged,
     };
 
     // 5. Update state: Set merged data, add to collapsed, and set rename

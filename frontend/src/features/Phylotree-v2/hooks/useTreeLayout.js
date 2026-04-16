@@ -66,6 +66,11 @@ const assignThresholdIds = (tree, mergedChildrenIds) => {
     nodes.forEach((node, index) => {
       if (index < availableIds.length) {
         node.unique_id = String(availableIds[index]);
+      } else {
+        // Extra node: this threshold group grew beyond what persistentThresholdIdMap
+        // recorded (e.g. a merged leaf was converted back to non-leaf by setNodeAsNonLeaf).
+        // Assign a stable overflow ID so the node always has a unique key.
+        node.unique_id = `${threshold}|x${index}`;
       }
     });
   }
@@ -208,7 +213,20 @@ const ThresholdIdManager = {
       }
     });
 
-    // Step 3: Final ID assignment with all nodes properly categorized
+    // Step 3: Final ID assignment with all nodes properly categorized.
+    // Before reassigning, clear any threshold|index IDs on non-leaf nodes so that
+    // stale values from Step 1 cannot survive as duplicates when setNodeAsNonLeaf
+    // added new members to a threshold group (shifting sort positions).
+    tree.traverse_and_compute((node) => {
+      if (
+        !tree.isLeafNode(node) &&
+        typeof node.unique_id === 'string' &&
+        node.unique_id.includes('|')
+      ) {
+        node.unique_id = undefined;
+      }
+      return true;
+    });
     assignThresholdIds(tree, mergedChildrenIds);
   },
 };
