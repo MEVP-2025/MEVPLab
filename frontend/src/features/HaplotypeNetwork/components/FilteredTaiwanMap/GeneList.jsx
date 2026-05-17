@@ -138,7 +138,7 @@ const GeneList = ({
       {showGenes ? (
         <>
           {/* Gene List Header */}
-          <h4 style={{ whiteSpace: "nowrap" }}>Select display Genes：</h4>
+          <h4 style={{ whiteSpace: "nowrap" }}>Select display ASVs:</h4>
 
           {/* Gene Search Input */}
           <input
