@@ -40,6 +40,7 @@ const AppContent = () => {
     const initialTheme = savedTheme || (prefersDark ? 'dark' : 'light')
     setTheme(initialTheme)
     document.documentElement.setAttribute('data-theme', initialTheme)
+    document.documentElement.setAttribute('data-platform', window.electronAPI?.platform || 'web')
   }, [])
 
   const toggleTheme = () => {
