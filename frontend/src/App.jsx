@@ -8,7 +8,6 @@ import AnalysisPipelinePage from './pages/AnalysisPipelinePage.jsx';
 import HaplotypePage from './pages/HaplotypeNetworkPage.jsx';
 import HomePage from './pages/HomePage.jsx';
 import PhylotreePage from './pages/PhylotreePage.jsx';
-import PhylotreeV2Page from './pages/PhylotreeV2.jsx';
 import SequenceAlignmentPage from './pages/SequenceAlignmentPage.jsx';
 
 import { AnalysisProvider } from './contexts/AnalysisContext';
@@ -32,7 +31,7 @@ const AppContent = () => {
 
   const location = useLocation();
   const isHomePage = location.pathname === "/";
-  const isPhylotreeV2 = location.pathname === "/phylotree-v2";
+  const isPhylotree = location.pathname === "/phylotree";
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme')
@@ -53,19 +52,18 @@ const AppContent = () => {
   return (
     <AnalysisProvider>
       <FileProvider>
-        <div className={`main-content ${isPhylotreeV2 ? 'fixed-layout' : ''}`}>
+        <div className={`main-content ${isPhylotree ? 'fixed-layout' : ''}`}>
           { isMac && <TitleBar /> }
 
           { !isHomePage && <Navbar theme={theme} toggleTheme={toggleTheme} /> }
 
-          <main className={`app-main ${isPhylotreeV2 ? 'fixed-layout' : ''}`}>
+          <main className={`app-main ${isPhylotree ? 'fixed-layout' : ''}`}>
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/analysis" element={<AnalysisPipelinePage />} />
               <Route path="/phylotree" element={<PhylotreePage />} />
               <Route path="/haplotype" element={<HaplotypePage />} />
               <Route path="/sequence-alignment" element={<SequenceAlignmentPage />} />
-              <Route path="/phylotree-v2" element={<PhylotreeV2Page />} />
             </Routes>
           </main>
 

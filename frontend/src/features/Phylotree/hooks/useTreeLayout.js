@@ -55,9 +55,11 @@ const assignThresholdIds = (tree, mergedChildrenIds) => {
     return true;
   });
 
+  // Collect all IDs that are already in use (across all thresholds) to avoid collisions
+  const allUsedIds = new Set();
+
   for (const [threshold, nodes] of thresholdGroups.entries()) {
     nodes.sort((a, b) => a.data.abstract_y - b.data.abstract_y);
-    // Step 1: Assign unique IDs to all nodes at this threshold, skipping merged children
     // originalIds are the IDs that were previously assigned to nodes at this threshold (from the persistent map)
     const originalIds = tree.thresholdIdMap?.[threshold] || [];
     // availableIds are the IDs that are not currently taken by merged children at this threshold
@@ -66,7 +68,17 @@ const assignThresholdIds = (tree, mergedChildrenIds) => {
     nodes.forEach((node, index) => {
       if (index < availableIds.length) {
         node.unique_id = String(availableIds[index]);
+      } else {
+        // Generate a new unique ID for overflow nodes (more nodes than pool IDs)
+        let newIndex = index;
+        let newId = `${threshold}|${newIndex}`;
+        while (allUsedIds.has(newId) || mergedChildrenIds.has(newId)) {
+          newIndex++;
+          newId = `${threshold}|${newIndex}`;
+        }
+        node.unique_id = newId;
       }
+      allUsedIds.add(node.unique_id);
     });
   }
   return thresholdGroups;
@@ -210,6 +222,21 @@ const ThresholdIdManager = {
 
     // Step 3: Final ID assignment with all nodes properly categorized
     assignThresholdIds(tree, mergedChildrenIds);
+
+    // Step 4: Sync persistentThresholdIdMap so subsequent renders have the full pool
+    const updatedMap = {};
+    tree.traverse_and_compute((node) => {
+      if (!tree.isLeafNode(node) && typeof node.unique_id === "string") {
+        const [threshold] = String(node.unique_id).split("|");
+        if (!updatedMap[threshold]) {
+          updatedMap[threshold] = [];
+        }
+        updatedMap[threshold].push(node.unique_id);
+      }
+      return true;
+    });
+    persistentThresholdIdMap = updatedMap;
+    tree.thresholdIdMap = updatedMap;
   },
 };
 

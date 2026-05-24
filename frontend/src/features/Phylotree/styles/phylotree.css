@@ -1,104 +1,157 @@
 path.rp-branch {
-  transition: all 0.2s;
-  fill: none;
-  shape-rendering: crispEdges;
+    transition: all 0.2s;
+    fill: none;
+    shape-rendering: crispEdges;
 }
 
 text.rp-label {
-  font-family: Courier;
-  font-size: 14px;
-  transition: all 0.2s;
-  fill: var(--text);
+    font-family: Courier;
+    font-size: var(--rp-font-size, 14px);
+    transition: all 0.2s;
+    fill: var(--text);
 }
 
 .rp-branch-tracer {
-  stroke: var(--border);
-  stroke-dasharray: 3, 4;
-  stroke-width: 1px;
+    stroke: var(--border);
+    stroke-dasharray: 3, 4;
+    stroke-width: 1px;
 }
 
 path.rp-branch:hover {
-  stroke-width: 10px;
+    stroke-width: 10px;
 }
 
-.phylotree-application {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  /* Center align items horizontally */
-  margin-top: 15px;
+/* ── Tree nodes ───────────────────────────────────────────── */
+/*
+  Adjust circle sizes here:
+    --node-r-internal : radius for internal nodes
+    --node-r-leaf     : radius for leaf nodes
+    --node-r-collapsed: radius for collapsed (merged) nodes
+*/
+:root {
+    --rp-font-size:     14px;
+    --node-r-internal:  4px;
+    --node-r-leaf:      3px;
+    --node-r-collapsed: 5px;
 }
 
-.size-control-and-export {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 6px
+.rp-node {
+    cursor: pointer;
+    stroke: var(--detail);
+    stroke-width: 1.2;
+    transition: r 0.15s, fill 0.15s;
+    transform-origin: center;
 }
 
-.width-control {
-  margin-bottom: 6px;
+.rp-node--internal {
+    r: var(--node-r-internal);
 }
 
-.export-container {
-  display: flex;
-  margin: 10px;
-  /* Adjust spacing as needed */
+.rp-node--leaf {
+    r: var(--node-r-leaf);
+    fill: var(--bg-page);
 }
 
-.export-container button {
-  border-radius: 3px;
-  padding: 1px 10px;
-  border: 1px solid var(--detail);
-  background-color: var(--bg-surface-raised);
-  cursor: pointer;
-  margin-left: 15px;
-  color: var(--text);
+.rp-node--collapsed {
+    r: var(--node-r-collapsed);
+    fill: var(--warning);
+    stroke: var(--warning);
 }
 
-.export-container button:hover {
-  border: 1px solid var(--text);
-  background-color: var(--muted);
+.rp-node:hover {
+    r: calc(var(--node-r-internal) * 1.5);
+    fill: var(--detail);
 }
 
-.button-group-container {
-  margin: 10px;
+.rp-node--collapsed:hover {
+    fill: var(--warning);
+    stroke: var(--warning);
 }
 
-.search-container input {
-  border-radius: 5px;
-  margin-left: 40px;
-  background-color: var(--input);
-  color: var(--text);
-  border: 1px solid var(--border);
+/* ── Leaf label highlight (search match) ──────────────────── */
+.rp-label-highlight {
+    fill: yellow;
+    stroke: none;
 }
 
-.search-container button {
-  border-radius: 5px;
-  margin-left: 10px;
-  background-color: var(--bg-surface-raised);
-  color: var(--text);
-  border: 1px solid var(--border);
+/* ── Tooltip ───────────────────────────────────────────────── */
+.rp-tooltip {
+    pointer-events: none;
 }
 
-.search-results-count {
-  margin-left: 10px;
-  color: var(--detail);
+.rp-tooltip rect {
+    fill: var(--bg-surface-raised);
+    stroke: var(--border);
+    stroke-width: 1;
+    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.13));
 }
 
-.search-container button:hover {
-  background-color: var(--muted);
+.rp-tooltip text {
+    font-size: 11px;
+    font-family: Courier, monospace;
+    fill: var(--text);
 }
 
-circle {
-  fill: var(--bg-page);
-  cursor: pointer;
-  stroke: var(--detail);
-  stroke-width: 1.2;
-  z-index: 10;
-  transition: 0.2s;
+.rp-tooltip .tooltip-label {
+    fill: var(--detail);
 }
 
-circle.hovered {
-  fill: var(--detail);
+.rp-tooltip .tooltip-value {
+    font-weight: 600;
+    fill: var(--text);
+}
+
+/* ── Tracer line transition ─────────────────────────────────── */
+.align-dash .rp-branch-tracer {
+    transition: all 0.2s;
+}
+
+/* ── Inline label editing input (shared by Node + LeafLabel) ── */
+.rp-label-input {
+    width: 100%;
+    font-size: 14px;
+    font-family: Courier, monospace;
+    padding: 2px 4px;
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    outline: none;
+    background: var(--bg-surface-raised);
+    color: var(--text);
+}
+/* ── Context menu ─────────────────────────────────────── */
+/* position: fixed + top/left set inline (dynamic values) */
+.rp-context-menu {
+    position: fixed;
+    z-index: 1000;
+    min-width: 200px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: var(--bg-surface);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    font-family: Arial, sans-serif;
+    user-select: none;
+    overflow: hidden;
+}
+
+.rp-context-menu__item {
+    display: block;
+    width: 100%;
+    padding: 10px 15px;
+    text-align: left;
+    font-size: 16px;
+    font-family: inherit;
+    color: var(--text);
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.rp-context-menu__item:last-child {
+    border-bottom: none;
+}
+
+.rp-context-menu__item:hover {
+    background-color: var(--bg-surface-raised);
 }

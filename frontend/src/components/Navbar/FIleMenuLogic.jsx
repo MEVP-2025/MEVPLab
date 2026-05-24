@@ -18,17 +18,6 @@ export const FileMenuContent = ({ closeMenu }) => {
     );
   }
 
-  // Phylotree V2 Page
-  if (path === '/phylotree-v2') {
-    return (
-      <UploadMenuItem
-        label={context.phylotreeFileName ? `Current: ${context.phylotreeFileName}` : "Upload Newick"}
-        accept=".nwk,.newick,.txt"
-        onChange={(e) => { context.handlePhylotreeFileChange(e); closeMenu(); }}
-      />
-    );
-  }
-
   // Sequence Alignment Page
   if (path === '/sequence-alignment') {
     return (
