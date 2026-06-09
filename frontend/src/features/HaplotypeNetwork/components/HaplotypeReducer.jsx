@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { getVizApiUrl } from "../../../config/api.js";
 import "./styles/HaplotypeReducer.css";
 
 const HaplotypeReducer = () => {
@@ -30,7 +31,7 @@ const HaplotypeReducer = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:3000/api/haplotypes/reduceHaplotypes", {
+      const response = await fetch(`${getVizApiUrl()}/haplotypes/reduceHaplotypes`, {
         method: "POST",
         body: formData,
       });

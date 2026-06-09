@@ -7,6 +7,7 @@ const {
   screen,
   shell,
 } = require("electron");
+const net = require("net");
 const path = require("path");
 const fs = require("fs");
 const os = require("os");
@@ -16,6 +17,57 @@ const isDev = !app.isPackaged;
 let mainWindow;
 let AnalysisBackendProcess;
 let VizBackendProcess;
+
+// Track actual ports used by backends
+let analysisBackendPort = 3001;
+let vizBackendPort = 3000;
+
+/**
+ * Check if a port is available by attempting to listen on it.
+ * Returns true if port is free, false if occupied.
+ */
+function isPortAvailable(port) {
+  return new Promise((resolve) => {
+    const server = net.createServer();
+    server.once("error", () => resolve(false));
+    server.once("listening", () => {
+      server.close(() => resolve(true));
+    });
+    // Do not specify host — matches Express/Node default (::) so the check
+    // accurately reflects whether app.listen(port) would succeed.
+    server.listen(port);
+  });
+}
+
+/**
+ * Find an available port starting from preferredPort.
+ * Tries up to maxAttempts sequential ports.
+ * @param {number} preferredPort
+ * @param {number[]} excludePorts - ports to skip (already assigned to other backends)
+ * @param {number} maxAttempts
+ */
+async function findAvailablePort(
+  preferredPort,
+  excludePorts = [],
+  maxAttempts = 20
+) {
+  for (let i = 0; i < maxAttempts; i++) {
+    const port = preferredPort + i;
+    if (excludePorts.includes(port)) {
+      console.log(`Port ${port} is reserved by another backend, skipping...`);
+      continue;
+    }
+    if (await isPortAvailable(port)) {
+      return port;
+    }
+    console.log(`Port ${port} is occupied, trying ${port + 1}...`);
+  }
+  throw new Error(
+    `No available port found in range ${preferredPort}-${
+      preferredPort + maxAttempts - 1
+    }`
+  );
+}
 
 // create the main application window
 function createWindow() {
@@ -165,7 +217,6 @@ function createEnhancedEnvironment() {
   }
 
   env.NODE_ENV = "production";
-  env.PORT = "3001";
 
   // If we bundled a Python runtime in resources, point PYTHON_CMD to it so
   // child processes use the packaged Python rather than relying on system python.
@@ -184,7 +235,15 @@ function createEnhancedEnvironment() {
 
 // -- Start Backend Server
 function startAnalysisBackend() {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Find available port
+      analysisBackendPort = await findAvailablePort(3001);
+      console.log(`Analysis backend will use port ${analysisBackendPort}`);
+    } catch (err) {
+      return reject(err);
+    }
+
     const platform = process.platform;
     const arch = process.arch;
 
@@ -219,6 +278,7 @@ function startAnalysisBackend() {
     console.log("Server script:", serverScript);
 
     const enhancedEnv = createEnhancedEnvironment();
+    enhancedEnv.PORT = String(analysisBackendPort);
 
     AnalysisBackendProcess = spawn(nodeBinary, [serverScript], {
       cwd: path.join(process.resourcesPath, "backend-toolkit"),
@@ -226,28 +286,55 @@ function startAnalysisBackend() {
       stdio: ["pipe", "pipe", "pipe"],
     });
 
+    let settled = false;
+
     AnalysisBackendProcess.stdout.on("data", (data) => {
-      console.log(`Backend: ${data.toString().trim()}`);
+      const msg = data.toString().trim();
+      console.log(`Backend: ${msg}`);
+      // Verify backend is actually listening
+      if (!settled && msg.includes("Server running on port")) {
+        settled = true;
+        resolve();
+      }
     });
 
     AnalysisBackendProcess.stderr.on("data", (data) => {
-      console.error(`Backend Error: ${data.toString().trim()}`);
+      const msg = data.toString().trim();
+      console.error(`Backend Error: ${msg}`);
+      if (!settled && msg.includes("EADDRINUSE")) {
+        settled = true;
+        reject(
+          new Error(
+            `Analysis backend port ${analysisBackendPort} is already in use`
+          )
+        );
+      }
     });
 
     AnalysisBackendProcess.on("error", (error) => {
       console.error("Failed to start backend:", error);
-      reject(error);
+      if (!settled) {
+        settled = true;
+        reject(error);
+      }
     });
 
-    // -- Wait the backend start
-    setTimeout(() => {
-      if (AnalysisBackendProcess && !AnalysisBackendProcess.killed) {
-        console.log("Backend process started");
-        resolve();
-      } else {
-        reject(new Error("Backend failed to start"));
+    AnalysisBackendProcess.on("exit", (code) => {
+      if (!settled) {
+        settled = true;
+        reject(
+          new Error(`Analysis backend exited unexpectedly with code ${code}`)
+        );
       }
-    }, 3000);
+    });
+
+    // Timeout fallback — if no signal received within 10 seconds
+    setTimeout(() => {
+      if (!settled) {
+        settled = true;
+        reject(new Error("Analysis backend failed to start within 10 seconds"));
+      }
+    }, 10000);
   });
 }
 
@@ -270,7 +357,15 @@ function stopAnalysisBackend() {
 
 // -- Start Viz backend (backend-viz)
 function startVizBackend() {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // Find available port, excluding the port already used by analysis backend
+      vizBackendPort = await findAvailablePort(3000, [analysisBackendPort]);
+      console.log(`Viz backend will use port ${vizBackendPort}`);
+    } catch (err) {
+      return reject(err);
+    }
+
     const platform = process.platform;
     const arch = process.arch;
 
@@ -304,8 +399,7 @@ function startVizBackend() {
     console.log("Viz server script:", serverScript);
 
     const enhancedEnv = createEnhancedEnvironment();
-    // ensure different port for viz backend (default 3000)
-    enhancedEnv.PORT = "3000";
+    enhancedEnv.PORT = String(vizBackendPort);
 
     enhancedEnv.RESOURCES_PATH = process.resourcesPath;
 
@@ -315,27 +409,51 @@ function startVizBackend() {
       stdio: ["pipe", "pipe", "pipe"],
     });
 
+    let settled = false;
+
     VizBackendProcess.stdout.on("data", (data) => {
-      console.log(`Viz Backend: ${data.toString().trim()}`);
+      const msg = data.toString().trim();
+      console.log(`Viz Backend: ${msg}`);
+      // Verify viz backend is actually listening
+      if (!settled && msg.includes("Server running at")) {
+        settled = true;
+        resolve();
+      }
     });
 
     VizBackendProcess.stderr.on("data", (data) => {
-      console.error(`Viz Backend Error: ${data.toString().trim()}`);
+      const msg = data.toString().trim();
+      console.error(`Viz Backend Error: ${msg}`);
+      if (!settled && msg.includes("EADDRINUSE")) {
+        settled = true;
+        reject(
+          new Error(`Viz backend port ${vizBackendPort} is already in use`)
+        );
+      }
     });
 
     VizBackendProcess.on("error", (error) => {
       console.error("Failed to start viz backend:", error);
-      reject(error);
+      if (!settled) {
+        settled = true;
+        reject(error);
+      }
     });
 
-    setTimeout(() => {
-      if (VizBackendProcess && !VizBackendProcess.killed) {
-        console.log("Viz backend process started");
-        resolve();
-      } else {
-        reject(new Error("Viz backend failed to start"));
+    VizBackendProcess.on("exit", (code) => {
+      if (!settled) {
+        settled = true;
+        reject(new Error(`Viz backend exited unexpectedly with code ${code}`));
       }
-    }, 3000);
+    });
+
+    // Timeout fallback
+    setTimeout(() => {
+      if (!settled) {
+        settled = true;
+        reject(new Error("Viz backend failed to start within 10 seconds"));
+      }
+    }, 10000);
   });
 }
 
@@ -377,11 +495,10 @@ function cleanFolderContents(folderPath) {
 // Application ready
 app.whenReady().then(async () => {
   try {
-    // Start backend server first
+    // Start backends sequentially to avoid port race conditions
     if (!isDev) {
-      // await startAnalysisBackend();
-      // await startVizBackend();
-      await Promise.all([startAnalysisBackend(), startVizBackend()]);
+      await startAnalysisBackend();
+      await startVizBackend();
     }
 
     createWindow();
@@ -442,10 +559,23 @@ ipcMain.handle("reinitialize-backend", async () => {
     await startAnalysisBackend();
     await startVizBackend();
 
-    return { success: true };
+    return {
+      success: true,
+      ports: {
+        analysis: analysisBackendPort,
+        viz: vizBackendPort,
+      },
+    };
   } catch (error) {
     return { success: false, error: error.message };
   }
+});
+
+ipcMain.handle("get-backend-ports", () => {
+  return {
+    analysis: analysisBackendPort,
+    viz: vizBackendPort,
+  };
 });
 
 // 錯誤處理

@@ -1,12 +1,18 @@
 // src/services/api.js
 import axios from "axios";
+import { getAnalysisApiUrl } from "../../../config/api.js";
 
-const API_BASE_URL =
-  import.meta.env.VITE_API_URL || "http://localhost:3001/api";
+// Use a getter so the URL is resolved after initApiConfig() completes
+const getBaseUrl = () => getAnalysisApiUrl();
 
 const apiClient = axios.create({
-  baseURL: API_BASE_URL,
   timeout: 600000, // 10 minutes for large file uploads
+});
+
+// Dynamic baseURL interceptor — resolves the URL at request time
+apiClient.interceptors.request.use((config) => {
+  config.baseURL = getBaseUrl();
+  return config;
 });
 
 // Simple API methods
@@ -22,7 +28,7 @@ export const api = {
      */
     pullImage: (callbacks = {}) => {
       const { onProgress, onDone, onError } = callbacks;
-      const es = new EventSource(`${API_BASE_URL}/docker/pull`);
+      const es = new EventSource(`${getBaseUrl()}/docker/pull`);
 
       es.onmessage = (event) => {
         try {
@@ -97,7 +103,7 @@ export const api = {
       // SSE listen
       watchProgress: (callbacks) => {
         const eventSource = new EventSource(
-          `${API_BASE_URL}/analysis/pipeline/progress`
+          `${getBaseUrl()}/analysis/pipeline/progress`
         );
 
         eventSource.onmessage = (event) => {
@@ -157,7 +163,7 @@ export const api = {
       },
 
       // 便利方法：取得 SSE URL (用於除錯)
-      getSSEUrl: () => `${API_BASE_URL}/analysis/pipeline/progress`,
+      getSSEUrl: () => `${getBaseUrl()}/analysis/pipeline/progress`,
     },
   },
 
@@ -172,15 +178,15 @@ export const api = {
     },
 
     getDownloadUrl: (category, species, fileName) => {
-      return `${API_BASE_URL}/outputs/download/${category}/${species}/${fileName}`;
+      return `${getBaseUrl()}/outputs/download/${category}/${species}/${fileName}`;
     },
 
     getDownloadAllSpeciesUrl: (species) => {
-      return `${API_BASE_URL}/outputs/download-species/${species}`;
+      return `${getBaseUrl()}/outputs/download-species/${species}`;
     },
 
     getDownloadAllFilesUrl: (project) => {
-      return `${API_BASE_URL}/outputs/download-all-files?project=${
+      return `${getBaseUrl()}/outputs/download-all-files?project=${
         project || ""
       }`;
     },

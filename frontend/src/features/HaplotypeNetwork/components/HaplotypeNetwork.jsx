@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { Canvg } from 'canvg';
 import * as d3 from "d3";
 import { saveAs } from "file-saver";
-import { Canvg } from 'canvg';
+import { useEffect, useRef, useState } from "react";
+import { getVizApiUrl } from "../../../config/api.js";
 
 import "./styles/HaplotypeNetwork.css";
 
@@ -57,7 +58,7 @@ const HaplotypeNetwork = ({ width = 850, height = 850 , genes ,eDnaSampleContent
     const min = countRange.min;
     const max = countRange.max;
 
-    fetch(`http://localhost:3000/api/haplotypes/${apiPath}?min=${min}&max=${max}`)
+    fetch(`${getVizApiUrl()}/haplotypes/${apiPath}?min=${min}&max=${max}`)
       .then((res) => res.json())
       .then((newData) => {
         setData(newData);
@@ -73,7 +74,7 @@ const HaplotypeNetwork = ({ width = 850, height = 850 , genes ,eDnaSampleContent
   // Fetch the count range data
   useEffect(() => {
     if (apiPath) {
-      fetch("http://localhost:3000/api/haplotypes/HaplotypeCountRange")
+      fetch(`${getVizApiUrl()}/haplotypes/HaplotypeCountRange`)
         .then((res) => res.json())
         .then((countRangeData) => {
           setCountRange(countRangeData.countRange);
@@ -93,7 +94,7 @@ const HaplotypeNetwork = ({ width = 850, height = 850 , genes ,eDnaSampleContent
     setLoading(true); 
     setData(null); 
 
-    fetch(`http://localhost:3000/api/haplotypes/${apiPath}?min=${countRange.min}&max=${countRange.max}`)
+    fetch(`${getVizApiUrl()}/haplotypes/${apiPath}?min=${countRange.min}&max=${countRange.max}`)
       .then((res) => res.json())
       .then((newData) => {
         setData(newData); 
@@ -433,7 +434,7 @@ const HaplotypeNetwork = ({ width = 850, height = 850 , genes ,eDnaSampleContent
   useEffect(() => {
     const checkGeneSequenceLengths = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/sequences/checkSequenceLengths");
+        const res = await fetch(`${getVizApiUrl()}/sequences/checkSequenceLengths`);
         const data = await res.json();
 
         if (!data.isConsistent) {

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { getVizApiUrl } from "../../../../../config/api.js";
 import "../../styles/GeneTable.css";
 
 // Utility function to generate random colors for genes
@@ -44,7 +45,7 @@ const FormattedGeneFATable = ({
   useEffect(() => {
     const fetchFormattedGenes = async () => {
       try {
-        const response = await fetch("http://localhost:3000/api/sequences/formattedCounts");
+        const response = await fetch(`${getVizApiUrl()}/sequences/formattedCounts`);
         const data = await response.json();
         setFormattedGenes(data.formattedGenes);
       } catch (error) {

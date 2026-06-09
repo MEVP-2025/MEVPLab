@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import TaiwanMapComponent from "./components/TaiwanMap/TaiwanMapComponent";
+import { getVizApiUrl } from "../../config/api.js";
 import FilteredTaiwanMapComponent from "./components/FilteredTaiwanMap/FilteredTaiwanMapComponent";
-import GeneTable from "./components/GeneTable/GeneTable";
 import GeneSelector from "./components/GeneSelector";
+import GeneTable from "./components/GeneTable/GeneTable";
 import HaplotypeNetwork from "./components/HaplotypeNetwork";
 import HaplotypeReducer from "./components/HaplotypeReducer";
+import TaiwanMapComponent from "./components/TaiwanMap/TaiwanMapComponent";
 import './HaplotypeNetworkApp.css';
 
 const generateColors = (num) =>
@@ -99,7 +100,7 @@ const HaplotypeNetworkApp = ({
 
   const saveGeneCountsToBackend = async (updatedGenes) => {
     try {
-      await fetch("http://localhost:3000/api/sequences/saveGeneCounts", {
+      await fetch(`${getVizApiUrl()}/sequences/saveGeneCounts`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ genes: updatedGenes }),
@@ -145,13 +146,13 @@ const HaplotypeNetworkApp = ({
       fileWorker.onmessage = async (event) => {
         const { sequences } = event.data;
         try {
-          await fetch("http://localhost:3000/api/sequences/uploadSequences", {
+          await fetch(`${getVizApiUrl()}/sequences/uploadSequences`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ sequences }),
           });
 
-          const res = await fetch("http://localhost:3000/api/sequences/Sequences");
+          const res = await fetch(`${getVizApiUrl()}/sequences/Sequences`);
           const data = await res.json();
 
           const generatedColors = generateColors(data.geneNames.length);
@@ -183,7 +184,7 @@ const HaplotypeNetworkApp = ({
   useEffect(() => {
     const clearBackendData = async () => {
       try {
-        await fetch("http://localhost:3000/api/sequences/clear", {
+        await fetch(`${getVizApiUrl()}/sequences/clear`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

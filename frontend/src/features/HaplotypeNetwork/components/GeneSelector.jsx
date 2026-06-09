@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FixedSizeList as List } from "react-window";
+import { getVizApiUrl } from "../../../config/api.js";
 import "./styles/GeneSelector.css";
 
 const GeneSelector = ({
@@ -126,10 +127,10 @@ const GeneSelector = ({
     setActiveSimilarityGroup([]); 
 
     try {
-      const res = await fetch("http://localhost:3000/api/sequences/sequences");
+      const res = await fetch(`${getVizApiUrl()}/sequences/sequences`);
       const { sequences } = await res.json();
 
-      const response = await fetch("http://localhost:3000/api/sequences/compare", {
+      const response = await fetch(`${getVizApiUrl()}/sequences/compare`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ targetName: selectedGene, sequences }),
@@ -175,7 +176,7 @@ const GeneSelector = ({
   useEffect(() => {
     const checkGeneSequenceLengths = async () => {
       try {
-        const res = await fetch("http://localhost:3000/api/sequences/checkSequenceLengths");
+        const res = await fetch(`${getVizApiUrl()}/sequences/checkSequenceLengths`);
         const data = await res.json();
 
         if (!data.isConsistent) {
