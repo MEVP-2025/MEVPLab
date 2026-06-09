@@ -45,6 +45,7 @@ path.rp-branch:hover {
 
 .rp-node--internal {
     r: var(--node-r-internal);
+    fill: var(--bg-page);
 }
 
 .rp-node--leaf {
