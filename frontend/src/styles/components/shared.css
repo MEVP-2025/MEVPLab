@@ -1,0 +1,96 @@
+/* ══════════════════════════════════════════════════════════════
+   Shared UI Components
+   Reusable styles across all features (Phylotree, SequenceAlignment, etc.)
+   Import in App.css or individual feature entry points.
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Button ─────────────────────────────────────────────────── */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 12px;
+  background: none;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+  user-select: none;
+}
+
+.btn:hover {
+  background: var(--bg-surface-raised);
+}
+
+/* Full-width (for sidebar use) */
+.btn--block {
+  width: 100%;
+}
+
+/* States */
+.btn--success {
+  border-color: var(--success);
+  color: var(--success);
+}
+
+.btn--error {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.btn--primary {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.btn--primary:hover {
+  background: var(--primary);
+  color: #fff;
+}
+
+/* ── Button Group ───────────────────────────────────────────── */
+
+.btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.btn-group--row {
+  flex-direction: row;
+}
+
+/* Grid variant (e.g. Thin / Medium / Thick) */
+.btn-group--grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+/* ── Toggle Button (for groups like density) ────────────────── */
+
+.btn-toggle {
+  padding: 6px 0;
+  background: none;
+  color: var(--detail);
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.btn-toggle:hover {
+  background: var(--bg-surface-raised);
+  color: var(--text);
+}
+
+.btn-toggle--active {
+  background: var(--bg-surface-raised);
+  border-color: var(--primary);
+  color: var(--primary);
+  font-weight: 600;
+}

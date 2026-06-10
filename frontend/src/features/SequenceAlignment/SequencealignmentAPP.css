@@ -29,11 +29,6 @@
 
 .search-container button {
   margin-left: 10px;
-  padding: 8px;
-  cursor: pointer;
-  background-color: var(--bg-surface-raised);
-  color: var(--text);
-  border: 1px solid var(--border);
 }
 
 /* 主內容容器 */

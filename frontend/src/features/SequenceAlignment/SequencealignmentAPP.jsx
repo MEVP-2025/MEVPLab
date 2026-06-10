@@ -240,19 +240,19 @@ const CustomInnerElement = React.forwardRef(({ children, ...rest }, ref) => (
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
-        <button onClick={() => setSearchTerm("")}>Clear</button>
+        <button className="btn" onClick={() => setSearchTerm("")}>Clear</button>
       </div>
 
       {/* 功能按鈕列 */}
       <div style={{ marginBottom: 10, display: "flex", gap: 10 }}>
-        <button onClick={handlePartialEdit} disabled={selectedPositions.size === 0} title="編輯所有選取位置字元">
+        <button className="btn" onClick={handlePartialEdit} disabled={selectedPositions.size === 0} title="編輯所有選取位置字元">
           Edit
         </button>
-        <button onClick={handlePartialDelete} disabled={selectedPositions.size === 0} title="刪除所有選取位置字元">
+        <button className="btn" onClick={handlePartialDelete} disabled={selectedPositions.size === 0} title="刪除所有選取位置字元">
           Delete
         </button>
-        <button onClick={handleUndo} disabled={history.length === 0}>Previous step</button>
-        <button onClick={handleRedo} disabled={redoStack.length === 0}>Recover</button>
+        <button className="btn" onClick={handleUndo} disabled={history.length === 0}>Previous step</button>
+        <button className="btn" onClick={handleRedo} disabled={redoStack.length === 0}>Recover</button>
       </div>
 
       {isEditing && (
@@ -268,10 +268,10 @@ const CustomInnerElement = React.forwardRef(({ children, ...rest }, ref) => (
         style={{ marginLeft: 10, fontSize: 16, width: 300 }}
       />
     </label>
-    <button onClick={applyEditInput} style={{ marginLeft: 10 }}>
+    <button className="btn" onClick={applyEditInput} style={{ marginLeft: 10 }}>
       Confirm
     </button>
-    <button onClick={() => setIsEditing(false)} style={{ marginLeft: 5 }}>
+    <button className="btn" onClick={() => setIsEditing(false)} style={{ marginLeft: 5 }}>
       Cancel
     </button>
   </div>
