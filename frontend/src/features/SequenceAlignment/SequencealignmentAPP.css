@@ -41,25 +41,73 @@
 
 /* 左側 List（序列 ID） */
 .left-list {
-  border-right: 1px solid var(--border);
-  overflow-x: hidden;
+  overflow-x: auto;
   user-select: none;
   background-color: var(--bg-surface);
+  scrollbar-width: thin;
+  scrollbar-color: var(--detail) var(--bg-surface);
+}
+
+.left-list::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  background: var(--bg-surface);
+}
+
+.left-list::-webkit-scrollbar-thumb {
+  background: var(--detail);
+  border-radius: 3px;
+}
+
+.left-list::-webkit-scrollbar-corner {
+  background: var(--bg-surface);
 }
 
 .shared-scroll-wrapper {
-  overflow-y: scroll;
-  border-right: 1px solid var(--border);
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-right: none;
+  flex: 0 0 auto; /* don't grow, don't shrink — take exact width */
+  scrollbar-width: thin;
+  scrollbar-color: var(--detail) var(--bg-surface);
+}
+
+.shared-scroll-wrapper::-webkit-scrollbar {
+  height: 6px;
+  background: var(--bg-surface);
+}
+
+.shared-scroll-wrapper::-webkit-scrollbar-thumb {
+  background: var(--detail);
+  border-radius: 3px;
+}
+
+/* Drag handle between ID panel and sequence panel */
+.resize-handle {
+  width: 5px;
+  cursor: col-resize;
+  background: var(--border);
+  flex-shrink: 0;
+  transition: background-color 0.15s;
+}
+
+.resize-handle:hover {
+  background: var(--detail);
+}
+
+.left-header-cell {
+  background-color: var(--muted);
 }
 
 .sequence-id-cell {
   display: flex;
   align-items: center;
-  height: 60px;
+  height: 30px;
   padding-left: 10px;
-  padding-right: 10px;
+  padding-right: 20px;
   text-align: right;
   white-space: nowrap;
+  overflow: visible;
   font-weight: bold;
   border-bottom: 1px solid var(--border);
   box-sizing: border-box;
@@ -69,23 +117,26 @@
 
 /* 右側序列容器 */
 .sequence-scroll-wrapper {
+  flex: 1 1 0;    /* fill remaining space, can shrink freely */
+  min-width: 0;   /* allow shrinking past content size */
   overflow-x: scroll !important;
   overflow-y: hidden;
   max-height: 600px;
   position: relative;
-  scrollbar-width: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--detail) var(--bg-page);
   -ms-overflow-style: auto;
   background-color: var(--bg-page);
 }
 
 .sequence-scroll-wrapper::-webkit-scrollbar {
-  height: 5px;
-  background: var(--muted);
+  height: 6px;
+  background: var(--bg-page);
 }
 
 .sequence-scroll-wrapper::-webkit-scrollbar-thumb {
   background: var(--detail);
-  border-radius: 5px;
+  border-radius: 3px;
 }
 
 .sequence-scroll-inner {
@@ -134,7 +185,7 @@
 .sequence-seq-cell {
   white-space: nowrap;
   font-size: 16px;
-  height: 60px;
+  height: 30px;
   display: flex;
   align-items: center;
   border-bottom: 1px solid var(--border);

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { FixedSizeList as List } from "react-window";
 import "./SequencealignmentAPP.css";
 
@@ -16,6 +16,13 @@ function SequencealignmentAPP({ haplotypeContent }) {
 
   const [isEditing, setIsEditing] = useState(false);
   const [editInput, setEditInput] = useState("");
+  const [manualIdWidth, setManualIdWidth] = useState(null);
+  const isDraggingRef = useRef(false);
+  const dragStartXRef = useRef(0);
+  const dragStartWidthRef = useRef(0);
+  const leftPanelRef = useRef(null);
+  const leftListOuterRef = useRef(null);
+  const maxIdWidthRef = useRef(0);
 
 
 
@@ -190,12 +197,73 @@ const handlePartialDelete = () => {
     0
   );
 
+  // Dynamically calculate left panel width based on longest ID
+  const CHAR_AVG_WIDTH = 9.5; // approximate px per character in monospace 16px
+  const ID_PADDING = 30;      // left + right padding
+  const MIN_ID_WIDTH = 120;
+  const COMFORTABLE_WIDTH = 250; // default comfortable initial width
+  const maxIdLength = Math.max(...filteredSequences.map((seq) => seq.id.length), 0);
+  const fullIdWidth = Math.max(MIN_ID_WIDTH, maxIdLength * CHAR_AVG_WIDTH + ID_PADDING)+10; // actual width for longest ID
+  const autoIdWidth = Math.min(fullIdWidth, COMFORTABLE_WIDTH); // initial: capped at comfortable
+  const MAX_ID_WIDTH = fullIdWidth; // drag limit = longest ID width
+  maxIdWidthRef.current = MAX_ID_WIDTH;
+  const idPanelWidth = manualIdWidth ?? autoIdWidth;
+
+  // Reset manual width when data changes
+  useEffect(() => { setManualIdWidth(null); }, [haplotypeContent]);
+
+  // Drag-to-resize handlers — manipulate DOM directly during drag for smooth performance
+  const handleResizeStart = useCallback((e) => {
+    e.preventDefault();
+    isDraggingRef.current = true;
+    dragStartXRef.current = e.clientX;
+    // Use actual DOM width, not React state — flex may have adjusted it
+    dragStartWidthRef.current = leftPanelRef.current
+      ? leftPanelRef.current.getBoundingClientRect().width
+      : idPanelWidth;
+
+    const handleMouseMove = (moveEvent) => {
+      if (!isDraggingRef.current) return;
+      const delta = moveEvent.clientX - dragStartXRef.current;
+      const newWidth = Math.min(maxIdWidthRef.current, Math.max(MIN_ID_WIDTH, dragStartWidthRef.current + delta));
+      // Direct DOM update — no React re-render during drag
+      if (leftPanelRef.current) {
+        leftPanelRef.current.style.width = `${newWidth}px`;
+      }
+      // Also resize react-window's outer container so content fills the width
+      if (leftListOuterRef.current) {
+        leftListOuterRef.current.style.width = `${newWidth}px`;
+      }
+    };
+
+    const handleMouseUp = (upEvent) => {
+      isDraggingRef.current = false;
+      // Commit final width to React state (single re-render)
+      const delta = upEvent.clientX - dragStartXRef.current;
+      const finalWidth = Math.min(maxIdWidthRef.current, Math.max(MIN_ID_WIDTH, dragStartWidthRef.current + delta));
+      // Clear direct DOM width so react-window's prop-based width takes over again
+      if (leftListOuterRef.current) {
+        leftListOuterRef.current.style.width = '';
+      }
+      setManualIdWidth(finalWidth);
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+  }, [idPanelWidth]);
+
   const RowHeight = 30;
   const charWidth = 20;
 
   // 左側每列顯示 ID
   const LeftRow = ({ index, style }) => {
-    if (index === 0) return <div style={{ ...style, backgroundColor: "#f0f0f0" }} />;
+    if (index === 0) return <div className="left-header-cell" style={style} />;
     return (
       <div className="sequence-id-cell" style={style}>
         {filteredSequences[index - 1]?.id}
@@ -224,6 +292,14 @@ const handleRightScroll = ({ scrollOffset }) => {
 
 const CustomInnerElement = React.forwardRef(({ children, ...rest }, ref) => (
   <div ref={ref} {...rest} style={{ ...rest.style, paddingBottom: "20px" }}>
+    {children}
+  </div>
+));
+
+// Right list needs extra 30px padding to match left list's total scroll height
+// (left has listCount items, right has listCount-1 items — difference = 1 row = RowHeight)
+const RightInnerElement = React.forwardRef(({ children, ...rest }, ref) => (
+  <div ref={ref} {...rest} style={{ ...rest.style, paddingBottom: `${20 + RowHeight}px` }}>
     {children}
   </div>
 ));
@@ -279,15 +355,16 @@ const CustomInnerElement = React.forwardRef(({ children, ...rest }, ref) => (
 
 
       {/* 主視圖容器 */}
-      <div className="alignment-wrapper" style={{ display: "flex", border: "1px solid #ccc" }}>
-         <div className="shared-scroll-wrapper">
+      <div className="alignment-wrapper">
+         <div className="shared-scroll-wrapper" ref={leftPanelRef} style={{ width: idPanelWidth }}>
         {/* 左側 ID List */}
         <List
           height={600}
           itemCount={listCount}
           itemSize={RowHeight}
-          width={700}
+          width={Math.max(fullIdWidth, idPanelWidth)}
           ref={leftListRef}
+          outerRef={leftListOuterRef}
           className="left-list"
           onScroll={handleLeftScroll}
           innerElementType={CustomInnerElement}
@@ -295,6 +372,9 @@ const CustomInnerElement = React.forwardRef(({ children, ...rest }, ref) => (
           {LeftRow}
         </List>
         </div>
+
+        {/* Drag handle to resize left panel */}
+        <div className="resize-handle" onMouseDown={handleResizeStart} />
 
         {/* 右側序列 List */}
         <div className="sequence-scroll-wrapper">
@@ -320,7 +400,7 @@ const CustomInnerElement = React.forwardRef(({ children, ...rest }, ref) => (
               ref={rightListRef}
               onScroll={handleRightScroll}
               className="right-list"
-              innerElementType={CustomInnerElement}
+              innerElementType={RightInnerElement}
             >
               {({ index, style }) => {
                 const seq = filteredSequences[index]?.sequence || "";
