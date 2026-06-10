@@ -89,7 +89,7 @@ git branch -d release/x.y.z
 ### 7. Build
 
 ```bash
-npm run dist
+npm run dist:all
 ```
 
 ---
