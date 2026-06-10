@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.1.0] - 2026-06-10
+
+### Added
+- HomePage: replace old asset images with new home-themed images and update CSS references
+
+### Fixed
+- SidebarRight: comment out Sort Order control for future use, simplifying the current UI
+
+---
+
 ## [1.0.0] - 2026-06-10
 
 Initial tagged release.
