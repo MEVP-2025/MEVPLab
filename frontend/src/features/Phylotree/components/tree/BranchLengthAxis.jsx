@@ -107,7 +107,9 @@ const BranchLengthAxis = ({ maxX, xScale, rightmost, onThresholdCollapse }) => {
             <circle
               cy={-15}
               r={isHovered ? 5 : 3}
-              fill={isHovered ? 'var(--accent, #4a9eff)' : 'var(--detail, #888)'}
+              fill={isHovered ? 'var(--accent, #4a9eff)' : 'var(--bg-page, #fff)'}
+              stroke={isHovered ? 'var(--accent, #4a9eff)' : 'var(--detail, #888)'}
+              strokeWidth={1.2}
               style={{ transition: 'r 0.1s, fill 0.1s' }}
             />
 
