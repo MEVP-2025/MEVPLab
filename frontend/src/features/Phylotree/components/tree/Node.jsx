@@ -125,7 +125,7 @@ const Node = ({ data, x, y, isCollapsed, renamedLabel, onRename, onContextMenu, 
         )
       )}
       {/* Threshold ID badge */}
-      {unique_id && (
+      {/* {unique_id && (
         isInternal ? (
           <text
             x={25}
@@ -155,7 +155,7 @@ const Node = ({ data, x, y, isCollapsed, renamedLabel, onRename, onContextMenu, 
             {unique_id}
           </text>
         )
-      )}
+      )} */}
     </g>
   );
 };

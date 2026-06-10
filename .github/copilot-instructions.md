@@ -12,13 +12,13 @@ This project follows **Git Flow**. All contributors (human and AI) must follow t
 
 ### Branch Structure
 
-| Branch | Purpose | Lifetime |
-|--------|---------|----------|
-| `main` | Production releases only. Every merge gets a version tag. | Permanent |
-| `develop` | Integration branch for all development work. | Permanent |
-| `feature/*` | Individual features, branched from `develop`. | Temporary |
-| `release/x.y.z` | Release preparation, branched from `develop`. | Temporary |
-| `hotfix/*` | Urgent production fixes, branched from `main`. | Temporary |
+| Branch          | Purpose                                                   | Lifetime  |
+| --------------- | --------------------------------------------------------- | --------- |
+| `main`          | Production releases only. Every merge gets a version tag. | Permanent |
+| `develop`       | Integration branch for all development work.              | Permanent |
+| `feature/*`     | Individual features, branched from `develop`.             | Temporary |
+| `release/x.y.z` | Release preparation, branched from `develop`.             | Temporary |
+| `hotfix/*`      | Urgent production fixes, branched from `main`.            | Temporary |
 
 ### Rules
 
@@ -34,6 +34,7 @@ This project follows **Git Flow**. All contributors (human and AI) must follow t
 When the user says "幫我準備 release" or "prepare release", follow these steps **in order**:
 
 ### 1. Create release branch
+
 ```bash
 git checkout develop
 git pull
@@ -41,30 +42,36 @@ git checkout -b release/x.y.z
 ```
 
 ### 2. Bump version
+
 - Update `version` in root `package.json`
 - Update `version` in `frontend/package.json` (if exists)
 
 ### 3. Generate release notes
+
 ```bash
 # Get all commits since last tag
 git log $(git describe --tags --abbrev=0)..HEAD --oneline
 ```
+
 - Read the commit log between the last tag and current HEAD.
 - Categorize changes into: **Added**, **Fixed**, **Changed**, **Removed**.
 - Write user-friendly descriptions (not raw commit messages).
 - Prepend the new version entry to `CHANGELOG.md`.
 
 ### 4. Commit release preparation
+
 ```bash
 git add -A
 git commit -m "chore(release): prepare v x.y.z"
 ```
 
 ### 5. Present summary
+
 - Show the user the generated release notes for review.
 - Ask if they want to proceed with merging to main.
 
 ### 6. Finalize (only after user confirms)
+
 ```bash
 # Merge to main
 git checkout main
@@ -80,6 +87,7 @@ git branch -d release/x.y.z
 ```
 
 ### 7. Build
+
 ```bash
 npm run dist
 ```
@@ -104,6 +112,7 @@ git branch -d hotfix/x.y.z
 ## Version Numbering
 
 Follow **Semantic Versioning** (semver):
+
 - **MAJOR** (x.0.0): Breaking changes or major overhauls
 - **MINOR** (0.x.0): New features, backward compatible
 - **PATCH** (0.0.x): Bug fixes, minor improvements
