@@ -43,7 +43,7 @@ const SidebarRight = ({ isOpen, onToggle }) => {
               Align Tips Right
             </label>
 
-            <label className="sidebar-panel__label" style={{ marginTop: '10px' }}>Sort Order</label>
+            {/* <label className="sidebar-panel__label" style={{ marginTop: '10px' }}>Sort Order</label>
             <select
               className="sidebar-panel__select"
               value={settings.sort || ''}
@@ -52,7 +52,7 @@ const SidebarRight = ({ isOpen, onToggle }) => {
               <option value="">None</option>
               <option value="ascending">Ascending</option>
               <option value="descending">Descending</option>
-            </select>
+            </select> */}
           </div>
 
           <hr className="sidebar-panel__divider" />

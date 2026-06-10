@@ -103,17 +103,17 @@
 }
 
 .analysis-entry .card-image {
-  background-image: url('../assets/DNA_light.png');
+  background-image: url('../assets/home-analysis-light.png');
 }
 [data-theme="dark"] .analysis-entry .card-image {
-  background-image: url('../assets/DNA_dark.png');
+  background-image: url('../assets/home-analysis-dark.png');
 }
 
 .visualization-entry .card-image {
-  background-image: url('../assets/viz_light_new.png');
+  background-image: url('../assets/home-visualization-light.png');
 }
 [data-theme="dark"] .visualization-entry .card-image {
-  background-image: url('../assets/viz_dark_new.png');
+  background-image: url('../assets/home-visualization-dark.png');
 }
 
 
@@ -126,6 +126,7 @@
   display: flex;
   flex-direction: column;
   padding: 20px 24px 22px;
+  border-top: 2px solid var(--border);
   gap: 10px;
   flex: 1;
 }
