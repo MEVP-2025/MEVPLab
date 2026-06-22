@@ -10,14 +10,12 @@ This tool visualizes how ASVs are distributed across sampling locations (**ASV D
 **Outputs:**
 Users can export image files, including legends, as PNG files when applicable.
 
-**What the tool can do:**
+**Configuration:**
 *   **ASVs Distribution Map:** Three ways to visualize the ASVs distribution across sampling sites, "By Location", "By Sequence", "By Similarity".
     *   **By Location:** rows are the sampling locations, columns are the amplicon variants
     *   **By Sequence:** rows are the amplicon variants, columns are the sampling locations
     *   **By Similarity:** users can filter out amplicon variants that fall within a specific similar range to the target sequence
 *   **Haplotype Networks:** View relationships between haplotypes.
-
-**Configuration:**
-*   To ensure that the geographic coordinates display correctly, users must upload or select a map image and enter its width and height.
+    *   **ASV reduce tool:** the total number of ASVs at each sampling site is reduced to approximately 30 (adjustable) representative haplotypes. First, the proportion of each distinct ASV was calculated; then these percentages were multiplied by 30. Second, starting with the largest haplotype group, representative amplicons were added until the total exceeded 30 or no more haplotype groups could be included. 
 *   Gray color text indicates zero ASV counts.
 *   If the Location ID cannot be matched with data in the Geographic Coordinates file, the entry will still appear in the table, but the map will not display a pie chart for that location. 
