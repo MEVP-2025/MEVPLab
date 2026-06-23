@@ -199,13 +199,13 @@ const CVSTable = ({
 
       <div style={{ marginBottom: "8px", display: "flex", justifyContent: "space-between" }}>         
         <div className="CVSTable-button-All-Clear">
-          <button onClick={handleSelectAllLocations}>All ASV</button>
-          <button onClick={handleClearAllLocations}>Clear</button>
+          <button onClick={handleSelectAllASVs}>All ASV</button>
+          <button onClick={handleClearAllASVs}>Clear</button>
         </div>
 
         <div className="CVSTable-button-All-Clear">
-          <button onClick={handleSelectAllASVs}>All Location</button>
-          <button onClick={handleClearAllASVs}>Clear</button>
+          <button onClick={handleSelectAllLocations}>All Location</button>
+          <button onClick={handleClearAllLocations}>Clear</button>
         </div>
       </div>
 
