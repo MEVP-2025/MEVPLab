@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [1.1.2] - 2026-06-23
 
 ### Changed
+
 - In-app user guides updated: `analysis.md`, `haplotype.md`, `phylotree.md`, `sequence-alignment.md` (clearer descriptions, refined workflow notes, and added ASV reduce tool explanation). (#36)
 
 ---
@@ -15,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [1.1.1] - 2026-06-23
 
 ### Fixed
+
 - Haplotype Network (CVSTable): "All ASV" and "All Location" buttons (and their adjacent Clear buttons) were swapped, causing each button to operate on the wrong selection. They now correctly select/clear ASVs and locations as labeled. (#41)
 
 ---
@@ -22,9 +24,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [1.1.0] - 2026-06-10
 
 ### Added
+
 - HomePage: replace old asset images with new home-themed images and update CSS references
 
 ### Fixed
+
 - SidebarRight: comment out Sort Order control for future use, simplifying the current UI
 
 ---
@@ -34,6 +38,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 Initial tagged release.
 
 ### Features
+
 - eDNA analysis pipeline with Docker-based 11-step processing
 - Sequence alignment viewer with editing, deletion, and undo/redo
 - Phylogenetic tree visualization (v2) with Newick export and PNG export
@@ -45,6 +50,7 @@ Initial tagged release.
 - Archive extraction support (ZIP, 7z, tar.gz)
 
 ### Fixed
+
 - Phylotree branch length and internal node fill colors
 - macOS navbar offset for hidden title bar
 - Windows/Linux x64 arch build configuration
