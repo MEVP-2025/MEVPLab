@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.1.1] - 2026-06-23
+
+### Fixed
+- Haplotype Network (CVSTable): "All ASV" and "All Location" buttons (and their adjacent Clear buttons) were swapped, causing each button to operate on the wrong selection. They now correctly select/clear ASVs and locations as labeled. (#41)
+
+---
+
 ## [1.1.0] - 2026-06-10
 
 ### Added
