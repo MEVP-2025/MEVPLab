@@ -76,7 +76,7 @@ export function AnalysisProvider({ children }) {
 
   const STEP_MAPPING = {
     "trim and rename": 1,
-    "pear": 2,
+    "flash": 2,
     "length filter": 2,
     "blast": 3,
     "assign species": 3,

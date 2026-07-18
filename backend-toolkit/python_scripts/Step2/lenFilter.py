@@ -5,17 +5,17 @@ import sys
 sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 1)
 sys.stderr = os.fdopen(sys.stderr.fileno(), 'w', 1)
 
-def process_assembled_fastq(directory = "/app/data/outputs/pear"):
+def process_assembled_fastq(directory = "/app/data/outputs/flash"):
     assembled_files = {}
 
-    pattern = os.path.join(directory, '*.assembled.fastq') # -- output/pear_output/*.assembled.fastq
-    files = glob.glob(pattern) # -- ['xxx.assembled.fastq', 'yyy.assembled.fastq', 'zzz.assembled.fastq']
+    pattern = os.path.join(directory, '*.extendedFrags.fastq') # -- output/flash_output/*.extendedFrags.fastq
+    files = glob.glob(pattern) # -- ['xxx.extendedFrags.fastq', 'yyy.extendedFrags.fastq', 'zzz.extendedFrags.fastq']
     print(pattern)
     print(files)
 
     for file_path in files:
         filename = os.path.basename(file_path)
-        sample_name = filename.replace('.assembled.fastq', '')
+        sample_name = filename.replace('.extendedFrags.fastq', '')
 
         assembled_files[sample_name] = file_path
         print(f"Find the archive: {sample_name} -> {file_path}", flush=True)

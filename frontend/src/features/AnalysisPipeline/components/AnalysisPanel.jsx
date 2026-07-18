@@ -353,7 +353,7 @@ const AnalysisPanel = ({ uploadedFiles, onAnalysisComplete, onReset }) => {
           <div className='steps'>
             <h3>2. Merge Paired-end Reads & Length Filtering</h3>
             <div className='detail'>
-              <p><Dot />Tool: PEAR v0.9.6 for assembly</p>
+              <p><Dot />Tool: FLASH v1.2.11 for assembly</p>
               <p><Dot />Merge overlapping paired-end reads (R1/R2) into single reads</p>
               <div className='input-container'>
                 <h3>Please define the minimum length</h3>

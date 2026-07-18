@@ -45,10 +45,10 @@ export class PythonExecutor {
         outputDirs: ["rename", "trim"],
       },
       {
-        name: "pear",
-        script: "Step2/joinPear.py",
+        name: "flash",
+        script: "Step2/joinFlash.py",
         requiredFiles: [],
-        outputDirs: ["pear"],
+        outputDirs: ["flash"],
       },
       {
         name: "length filter",

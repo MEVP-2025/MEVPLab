@@ -36,7 +36,7 @@ The pipeline produces summary and species-level files upon completion. Compresse
 *   **Identity %:** Default is 98% for species assignment.
 *   **Min Copies:** Default is 3 to determine an ASV.
 
-PEAR: https://doi.org/10.1093/bioinformatics/btt593
+FLASH: https://doi.org/10.1093/bioinformatics/btr507
 
 BLAST: https://blast.ncbi.nlm.nih.gov/Blast.cgi
 

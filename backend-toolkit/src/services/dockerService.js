@@ -7,7 +7,7 @@ const execAsync = promisify(exec);
 export class DockerService {
   constructor() {
     this.authorName = "uiskskkekekk";
-    this.imageName = "mevp-2025";
+    this.imageName = "edna-workbench";
     this.imageTag = "latest";
     this.fullImageName = `${this.authorName}/${this.imageName}:${this.imageTag}`;
   }
