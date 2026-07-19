@@ -8,7 +8,6 @@ export class DockerService {
   constructor() {
     this.authorName = "uiskskkekekk";
     this.imageName = "edna-workbench";
-    // this.imageName = "mevp-2025";
     this.imageTag = "latest";
     this.fullImageName = `${this.authorName}/${this.imageName}:${this.imageTag}`;
   }

@@ -134,7 +134,7 @@ export class PythonExecutor {
   async clearOutputDirectories() {
     try {
       const allOutputDirs = this.standardPipeline.flatMap(
-        (step) => step.outputDirs || []
+        (step) => step.outputDirs || [],
       );
       const uniqueDirs = [...new Set(allOutputDirs)];
 
@@ -166,7 +166,7 @@ export class PythonExecutor {
 
       logger.info(
         `Created quality config file: ${configFileName}`,
-        qualityConfig
+        qualityConfig,
       );
       return configFileName;
     } catch (error) {
@@ -181,7 +181,7 @@ export class PythonExecutor {
   async executePipeline(
     params,
     progressCallback = null,
-    processCallback = null
+    processCallback = null,
   ) {
     const {
       r1File,
@@ -203,9 +203,8 @@ export class PythonExecutor {
       await this.clearOutputDirectories();
 
       // -- create quality config json file
-      const qualityConfigFileName = await this._createQualityConfigFile(
-        qualityConfig
-      );
+      const qualityConfigFileName =
+        await this._createQualityConfigFile(qualityConfig);
 
       logger.info("Starting integrated pipeline with Docker", {
         r1File,
@@ -257,7 +256,7 @@ export class PythonExecutor {
             copyNumber,
           },
           progressCallback,
-          processCallback
+          processCallback,
         );
 
         stepResults[step.name] = stepResult;
@@ -350,7 +349,7 @@ export class PythonExecutor {
           break;
         case "ncbiReference":
           containerArgs.push(
-            `/app/data/uploads/${path.basename(ncbiReferenceFile)}`
+            `/app/data/uploads/${path.basename(ncbiReferenceFile)}`,
           );
           break;
         case "keyword":

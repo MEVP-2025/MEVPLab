@@ -21,7 +21,7 @@ function MainNavbar({ theme, toggleTheme }) {
     <nav className="navbar">
       {/* Logo */}
       <Link to='/'>
-        <img src={logo} alt="MEVP Logo" className="navbar-logo" />
+        <img src={logo} alt="eDNA WorkBench Logo" className="navbar-logo" />
       </Link>
 
       <div className="nav-links">
