@@ -5,6 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/),
 and this project adheres to [Semantic Versioning](https://semver.org/).
 
+## [1.2.0] - 2026-07-19
+
+### Added
+
+- Replaced PEAR with FLASH (v1.2.11) for merging paired-end reads, since PEAR's license is not compatible with the project's publication requirements.
+
+### Changed
+
+- FLASH is now configured to automatically match PEAR's merge behavior on amplicon data by detecting each dataset's read length and enabling outie-orientation overlaps, avoiding the silent under-merging that occurs with FLASH's out-of-the-box defaults on this project's data.
+- Completed the remaining "MEVP" branding cleanup to "eDNA WorkBench" (app logo, license header).
+- Local packaging (`dist`/`dist:all`) now automatically cleans previous build artifacts before building.
+
+### Fixed
+
+- Fixed a bug where non-fatal diagnostic output from the analysis container (e.g. tool version banners printed on startup) was incorrectly reported as a pipeline failure, causing the app to prematurely reset mid-analysis.
+
+---
+
 ## [1.1.2] - 2026-06-23
 
 ### Changed
