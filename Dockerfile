@@ -52,13 +52,18 @@ WORKDIR /app
 RUN mkdir -p /app/data /app/output
 
 # 建立測試腳本
+# 注意：歡迎訊息只在「沒有帶指令」的互動模式下才印出。
+# 若有帶指令（我們的後端每次都是 `python3 <script>`），直接 exec，不印任何東西。
+# 這是因為 MAFFT 的 --version 會寫到 stderr，若每次容器啟動都印這段歡迎訊息，
+# 後端會把這行 stderr 誤判為 pipeline 執行失敗（詳見 pythonExecutor.js 的修正）。
 RUN echo '#!/bin/bash\n\
+    if [ $# -eq 0 ]; then\n\
     echo "🧬 DNA 分析環境已準備就緒"\n\
     echo ""\n\
     echo "可用工具:"\n\
     echo "  Python: $(python --version)"\n\
     echo "  BLAST: $(blastn -version | head -1)"\n\
-    echo "  MAFFT: $(mafft --version)"\n\
+    echo "  MAFFT: $(mafft --version 2>&1)"\n\
     echo "  FLASH: $(flash -v 2>&1 | head -1 || echo \"FLASH 未找到\")"\n\
     echo ""\n\
     echo "系統資訊:"\n\
@@ -70,7 +75,6 @@ RUN echo '#!/bin/bash\n\
     echo "  📁 /app/output - 分析結果輸出"\n\
     echo "  📁 /app/scripts - 您的 Python 程式"\n\
     echo ""\n\
-    if [ $# -eq 0 ]; then\n\
     echo "進入互動模式..."\n\
     /bin/bash\n\
     else\n\

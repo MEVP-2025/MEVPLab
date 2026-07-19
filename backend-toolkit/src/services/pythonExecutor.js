@@ -385,11 +385,24 @@ export class PythonExecutor {
         }
       },
       onStderr: (chunk) => {
-        analysisLogger.error(`Docker ERROR: ${chunk.trim()}`);
+        // -- NOTE: stderr output does NOT necessarily mean the step failed.
+        // Some tools (e.g. MAFFT's --version) write informational text to
+        // stderr as a matter of course. The actual pass/fail signal for a
+        // step is its exit code, which is handled separately below via the
+        // runContainer() promise (rejects on non-zero exit -> propagates as
+        // a real "error" event from executePipeline()'s catch block).
+        // Broadcasting every stderr line as a fatal "error" here used to
+        // cause the frontend to abandon a still-running, healthy pipeline.
+        analysisLogger.warn(`Docker stderr: ${chunk.trim()}`);
         if (progressCallback) {
-          progressCallback({
-            type: "error",
-            message: `Docker error: ${chunk.trim()}`,
+          const lines = chunk.split(/\r?\n/);
+          lines.forEach((line) => {
+            if (line.trim()) {
+              progressCallback({
+                type: "progress",
+                message: `[stderr] ${line.trim()}`,
+              });
+            }
           });
         }
       },
