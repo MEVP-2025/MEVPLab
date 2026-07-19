@@ -84,12 +84,59 @@ git merge --no-ff release/x.y.z -m "chore: merge release/x.y.z back to develop"
 
 # Delete release branch
 git branch -d release/x.y.z
+
+# Push everything to remote
+git push origin main develop
+git push origin vx.y.z
 ```
 
 ### 7. Build
 
 ```bash
 npm run dist:all
+```
+
+> `dist` and `dist:all` automatically run `npm run clean` first, so `dist/` only contains artifacts of the current version after the build.
+
+Produces in `dist/`:
+
+- `eDNA WorkBench-x.y.z-arm64.dmg` (macOS Apple Silicon)
+- `eDNA WorkBench-x.y.z.AppImage` (Linux x64)
+- `eDNA WorkBench Setup x.y.z.exe` (Windows x64)
+
+### 8. Upload to GitHub Releases
+
+Attach the build artifacts to the version tag so users can download them directly from GitHub. GitHub Releases is the **source of truth** for distributable binaries — local `dist/` is only temporary.
+
+```bash
+# 1. Write release notes to a temp file (copy from the matching CHANGELOG entry)
+cat > /tmp/release-notes.md <<'EOF'
+### Fixed
+
+- (description here)
+EOF
+
+# 2. Create the release with all three platform artifacts
+GH_PAGER=cat gh release create vx.y.z \
+  --repo eDNA-Workbench/eDNA-Workbench \
+  --title "vx.y.z" \
+  --notes-file /tmp/release-notes.md \
+  "dist/eDNA WorkBench-x.y.z-arm64.dmg" \
+  "dist/eDNA WorkBench-x.y.z.AppImage" \
+  "dist/eDNA WorkBench Setup x.y.z.exe"
+```
+
+Requirements:
+
+- `gh` CLI installed (`brew install gh` on macOS).
+- Authenticated once (`gh auth login`); the token persists across sessions.
+
+### 9. (Optional) Clean local dist
+
+After the release artifacts are safely on GitHub, the local `dist/` can be wiped to free disk space (each build is ~1.3 GB across the three platforms):
+
+```bash
+npm run clean
 ```
 
 ---

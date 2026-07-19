@@ -45,10 +45,10 @@ export class PythonExecutor {
         outputDirs: ["rename", "trim"],
       },
       {
-        name: "pear",
-        script: "Step2/joinPear.py",
+        name: "flash",
+        script: "Step2/joinFlash.py",
         requiredFiles: [],
-        outputDirs: ["pear"],
+        outputDirs: ["flash"],
       },
       {
         name: "length filter",
@@ -134,7 +134,7 @@ export class PythonExecutor {
   async clearOutputDirectories() {
     try {
       const allOutputDirs = this.standardPipeline.flatMap(
-        (step) => step.outputDirs || []
+        (step) => step.outputDirs || [],
       );
       const uniqueDirs = [...new Set(allOutputDirs)];
 
@@ -166,7 +166,7 @@ export class PythonExecutor {
 
       logger.info(
         `Created quality config file: ${configFileName}`,
-        qualityConfig
+        qualityConfig,
       );
       return configFileName;
     } catch (error) {
@@ -181,7 +181,7 @@ export class PythonExecutor {
   async executePipeline(
     params,
     progressCallback = null,
-    processCallback = null
+    processCallback = null,
   ) {
     const {
       r1File,
@@ -203,9 +203,8 @@ export class PythonExecutor {
       await this.clearOutputDirectories();
 
       // -- create quality config json file
-      const qualityConfigFileName = await this._createQualityConfigFile(
-        qualityConfig
-      );
+      const qualityConfigFileName =
+        await this._createQualityConfigFile(qualityConfig);
 
       logger.info("Starting integrated pipeline with Docker", {
         r1File,
@@ -257,7 +256,7 @@ export class PythonExecutor {
             copyNumber,
           },
           progressCallback,
-          processCallback
+          processCallback,
         );
 
         stepResults[step.name] = stepResult;
@@ -350,7 +349,7 @@ export class PythonExecutor {
           break;
         case "ncbiReference":
           containerArgs.push(
-            `/app/data/uploads/${path.basename(ncbiReferenceFile)}`
+            `/app/data/uploads/${path.basename(ncbiReferenceFile)}`,
           );
           break;
         case "keyword":
@@ -385,11 +384,24 @@ export class PythonExecutor {
         }
       },
       onStderr: (chunk) => {
-        analysisLogger.error(`Docker ERROR: ${chunk.trim()}`);
+        // -- NOTE: stderr output does NOT necessarily mean the step failed.
+        // Some tools (e.g. MAFFT's --version) write informational text to
+        // stderr as a matter of course. The actual pass/fail signal for a
+        // step is its exit code, which is handled separately below via the
+        // runContainer() promise (rejects on non-zero exit -> propagates as
+        // a real "error" event from executePipeline()'s catch block).
+        // Broadcasting every stderr line as a fatal "error" here used to
+        // cause the frontend to abandon a still-running, healthy pipeline.
+        analysisLogger.warn(`Docker stderr: ${chunk.trim()}`);
         if (progressCallback) {
-          progressCallback({
-            type: "error",
-            message: `Docker error: ${chunk.trim()}`,
+          const lines = chunk.split(/\r?\n/);
+          lines.forEach((line) => {
+            if (line.trim()) {
+              progressCallback({
+                type: "progress",
+                message: `[stderr] ${line.trim()}`,
+              });
+            }
           });
         }
       },

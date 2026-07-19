@@ -7,7 +7,7 @@ const execAsync = promisify(exec);
 export class DockerService {
   constructor() {
     this.authorName = "uiskskkekekk";
-    this.imageName = "mevp-2025";
+    this.imageName = "edna-workbench";
     this.imageTag = "latest";
     this.fullImageName = `${this.authorName}/${this.imageName}:${this.imageTag}`;
   }
@@ -40,7 +40,7 @@ export class DockerService {
   async checkImageExists(imageName = this.fullImageName) {
     try {
       const { stdout } = await execAsync(
-        `docker images ${imageName} --format "{{.Repository}}:{{.Tag}}"`
+        `docker images ${imageName} --format "{{.Repository}}:{{.Tag}}"`,
       );
       const exists = stdout.trim().includes(imageName);
       logger.info(`Image ${imageName} exists: ${exists}`);
@@ -192,8 +192,8 @@ export class DockerService {
         } else {
           reject(
             new Error(
-              `Docker container exited with code ${code}: ${errorOutput}`
-            )
+              `Docker container exited with code ${code}: ${errorOutput}`,
+            ),
           );
         }
       });

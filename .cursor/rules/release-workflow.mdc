@@ -1,0 +1,80 @@
+---
+description: Release workflow for eDNA WorkBench (Electron desktop app) — use when the user asks to prepare a release, bump version, build/package the app for distribution, or publish to GitHub Releases
+alwaysApply: false
+---
+
+# eDNA WorkBench Release Workflow
+
+This is an Electron desktop app (React + Vite frontend, Express backends). Follows **Git Flow**.
+
+## Branch Structure
+
+| Branch          | Purpose                                                   | Lifetime  |
+| --------------- | ---------------------------------------------------------- | --------- |
+| `main`          | Production releases only. Every merge gets a version tag. | Permanent |
+| `develop`       | Integration branch for all development work.               | Permanent |
+| `feature/*`     | Individual features, branched from `develop`.              | Temporary |
+| `release/x.y.z` | Release preparation, branched from `develop`.               | Temporary |
+| `hotfix/*`      | Urgent production fixes, branched from `main`.              | Temporary |
+
+- **Never commit directly to `main`**. Only merge from `release/*` or `hotfix/*`.
+- Daily development happens on `develop` or `feature/*` branches.
+- Use **Conventional Commits**: `feat:`, `fix:`, `refactor:`, `style:`, `docs:`, `chore:`, `perf:`, `test:`.
+
+## When the user says "幫我準備 release" or "prepare release"
+
+1. **Create release branch**: `git checkout develop && git pull && git checkout -b release/x.y.z`
+2. **Bump version** in root `package.json` and `frontend/package.json` (if exists).
+3. **Generate release notes**: read `git log $(git describe --tags --abbrev=0)..HEAD --oneline`, categorize into Added/Fixed/Changed/Removed with user-friendly descriptions (not raw commit messages), prepend to `CHANGELOG.md`.
+4. **Commit**: `git commit -m "chore(release): prepare v x.y.z"`
+5. **Present the release notes to the user for review**, ask if they want to proceed with merging to `main`.
+6. **After user confirms**, merge to `main`, tag `vx.y.z`, merge back to `develop`, delete the release branch, push `main develop` and the tag.
+7. **Build**: `npm run dist:all` (builds macOS `.dmg`, Linux `.AppImage`, Windows `.exe`; auto-runs `npm run clean` first, so `dist/` only has the current version's artifacts).
+8. **Upload to GitHub Releases** (source of truth for distributable binaries — local `dist/` is temporary):
+   ```bash
+   gh release create vx.y.z \
+     --repo eDNA-Workbench/eDNA-Workbench \
+     --title "vx.y.z" \
+     --notes-file /tmp/release-notes.md \
+     "dist/eDNA WorkBench-x.y.z-arm64.dmg" \
+     "dist/eDNA WorkBench-x.y.z.AppImage" \
+     "dist/eDNA WorkBench Setup x.y.z.exe"
+   ```
+9. **(Optional)** After artifacts are safely on GitHub, `npm run clean` to free disk space (~1.3GB per build across platforms).
+
+## Quick local test build (no release/tag needed)
+
+To just build a local `.dmg`/`.exe`/`.AppImage` for manual testing (e.g. sending to an advisor) without going through the full release flow:
+
+```bash
+npm run dist        # current platform only
+npm run dist:all    # macOS + Linux + Windows
+```
+
+## Hotfix Workflow
+
+```bash
+git checkout main
+git checkout -b hotfix/x.y.z
+# ... make fixes ...
+git checkout main && git merge --no-ff hotfix/x.y.z && git tag vx.y.z
+git checkout develop && git merge --no-ff hotfix/x.y.z
+git branch -d hotfix/x.y.z
+```
+
+## Version Numbering (SemVer)
+
+- **MAJOR** (x.0.0): Breaking changes
+- **MINOR** (0.x.0): New features, backward compatible
+- **PATCH** (0.0.x): Bug fixes, minor improvements
+
+## Commit Message Format
+
+```
+type(scope): short description
+
+Examples:
+feat(phylotree): add Newick export support
+fix(alignment): correct scroll sync between panels
+chore(release): prepare v1.1.0
+```
