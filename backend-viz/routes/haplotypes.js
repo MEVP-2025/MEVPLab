@@ -70,7 +70,10 @@ function buildMST(nodes, distFn) {
   const mst = [];
   for (const e of allEdges) {
     if (union(e.source, e.target))
-      mst.push({ ...e, isMST: true, style: "solid", color: "#000" });
+      // Don't hardcode color: "#000" here — it's unreadable against the
+      // dark theme background. Leave color unset so the frontend falls
+      // back to the theme-aware `var(--primary)` color.
+      mst.push({ ...e, isMST: true, style: "solid" });
     if (mst.length === nodes.length - 1) break;
   }
   return { mst, allEdges };
@@ -230,11 +233,13 @@ router.get("/HaplotypeNetwork", (req, res) => {
     }
   }
 
-  const connectedEdges = [...mst, ...extraEdges].map(edge => ({
-    ...edge,
-    // color: "var(--primary)"  // 統一顏色設定
-     color: "black"
-  }));
+  // Note: previously this forced `color: "black"` on every edge, which
+  // overrode the theme-aware `var(--primary)` color set above for
+  // extraEdges and made all links unreadable against the dark theme
+  // background. Let each edge keep its own color (or fall back to
+  // `var(--primary)` on the frontend for edges without one) so links
+  // stay visible in both light and dark mode.
+  const connectedEdges = [...mst, ...extraEdges];
 
   const isolatedEdges = [];
   for (const node of nodes) {
@@ -344,11 +349,9 @@ router.get("/SimplifiedHaplotypeNetwork", (req, res) => {
     }
   }
 
-  const allEdges = [...mst, ...extraEdges].map(edge => ({
-    ...edge,
-     // color: "var(--primary)"  // 統一顏色設定
-     color: "black"
-  }));
+  // See note above: don't force-override edge color to "black", it makes
+  // links invisible against the dark theme background.
+  const allEdges = [...mst, ...extraEdges];
 
   res.json({ nodes: filteredNodes, edges: allEdges });
 });
