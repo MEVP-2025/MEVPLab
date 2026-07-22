@@ -356,8 +356,14 @@ const HaplotypeNetwork = ({ width = 850, height = 850 , genes ,eDnaSampleContent
       const v = await Canvg.from(ctx, svgContainer.outerHTML);
       await v.render();
 
+      // Render the graph at a higher pixel density than its CSS size so the
+      // exported PNG stays crisp (e.g. on Retina displays), instead of
+      // capturing at 1x which produced a low-resolution image.
+      const exportScale = Math.max(window.devicePixelRatio || 1, 2);
+
       const legendCanvas = await html2canvas(legendContainer, {
         ignoreElements: (el) => el.tagName === "IFRAME",
+        scale: exportScale,
       });
 
       if (!legendCanvas) {
@@ -383,13 +389,28 @@ const HaplotypeNetwork = ({ width = 850, height = 850 , genes ,eDnaSampleContent
       const legendHeight = padding * 2 + numRows * (fontSize + spacing);
 
       const marginRight = 50;
-      canvas.width = svgContainer.width.baseVal.value + legendWidth;
-      canvas.height = svgContainer.height.baseVal.value;
+      // CSS-pixel dimensions of the network graph (matches the SVG's
+      // viewBox/width/height attributes).
+      const graphWidth = svgContainer.width.baseVal.value;
+      const graphHeight = svgContainer.height.baseVal.value;
+
+      // Size the actual canvas buffer in *device* pixels (CSS size *
+      // exportScale) so the high-resolution `legendCanvas` capture isn't
+      // downscaled/cropped, then use ctx.scale() so all the manual drawing
+      // below can keep working in CSS-pixel coordinates.
+      canvas.width = (graphWidth + legendWidth) * exportScale;
+      canvas.height = Math.max(graphHeight, legendHeight) * exportScale;
+      ctx.scale(exportScale, exportScale);
 
       ctx.fillStyle = "white";
-      ctx.fillRect(0, 0, canvas.width , canvas.height);
+      ctx.fillRect(0, 0, graphWidth + legendWidth, Math.max(graphHeight, legendHeight));
 
-      ctx.drawImage(legendCanvas, 0, 0);
+      // `legendCanvas` was captured at `exportScale`, i.e. its pixel size is
+      // already graphWidth/graphHeight * exportScale. Drawing it into a
+      // CSS-pixel-sized destination rect (under the ctx.scale() above)
+      // preserves its full resolution instead of drawing 1:1 device pixels
+      // into a smaller canvas, which is what caused the earlier cropping bug.
+      ctx.drawImage(legendCanvas, 0, 0, graphWidth, graphHeight);
 
       ctx.font = font;
       ctx.textBaseline = "middle";
@@ -397,7 +418,7 @@ const HaplotypeNetwork = ({ width = 850, height = 850 , genes ,eDnaSampleContent
       legendItems.forEach((item, i) => {
         const col = Math.floor(i / itemsPerColumn);
         const row = i % itemsPerColumn;
-        const x = svgContainer.width.baseVal.value + col * 180 + padding ;
+        const x = graphWidth + col * 180 + padding;
         const y = padding + row * (fontSize + spacing) + fontSize / 2;
 
         ctx.fillStyle = item.color;
