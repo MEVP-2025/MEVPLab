@@ -47,7 +47,7 @@ export class PythonExecutor {
       {
         name: "flash",
         script: "Step2/joinFlash.py",
-        requiredFiles: [],
+        requiredFiles: ["maxOverlap"],
         outputDirs: ["flash"],
       },
       {
@@ -188,6 +188,7 @@ export class PythonExecutor {
       r2File,
       barcodeFile,
       qualityConfig = {},
+      maxOverlap = null,
       minLength = 200,
       maxLength = null,
       ncbiReferenceFile,
@@ -211,6 +212,7 @@ export class PythonExecutor {
         r2File,
         barcodeFile,
         qualityConfig,
+        maxOverlap,
         minLength,
         maxLength,
         ncbiReferenceFile,
@@ -248,6 +250,7 @@ export class PythonExecutor {
             r2File,
             barcodeFile,
             qualityConfigFile: qualityConfigFileName,
+            maxOverlap,
             minLength,
             maxLength,
             ncbiReferenceFile,
@@ -315,6 +318,7 @@ export class PythonExecutor {
       r2File,
       barcodeFile,
       qualityConfigFile,
+      maxOverlap,
       minLength,
       maxLength,
       ncbiReferenceFile,
@@ -338,6 +342,11 @@ export class PythonExecutor {
           break;
         case "qualityConfig":
           containerArgs.push(`/app/data/uploads/${qualityConfigFile}`);
+          break;
+        case "maxOverlap":
+          if (maxOverlap !== null && maxOverlap !== undefined) {
+            containerArgs.push(parseInt(maxOverlap));
+          }
           break;
         case "minLength":
           containerArgs.push(parseInt(minLength));
