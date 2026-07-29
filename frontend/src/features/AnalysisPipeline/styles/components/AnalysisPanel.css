@@ -89,10 +89,30 @@
   gap: 5px;
 }
 
+.minimum-length {
+  width: 5.5em;
+  min-width: 5.5em;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
 .maximum-length-container {
   display: flex;
   align-items: center;
   gap: 5px;
+}
+
+.maximum-overlap-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.read-length-hint {
+  margin: 0 0 4px 0;
+  color: var(--text-muted, #666);
+  font-size: 0.9em;
 }
 
 /* Identity */

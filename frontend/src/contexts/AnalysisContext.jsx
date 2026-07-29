@@ -23,6 +23,8 @@ export function AnalysisProvider({ children }) {
   // Configuration State
   const [minLength, setMinLength] = useState(200);
   const [maxLength, setMaxLength] = useState();
+  const [maxOverlap, setMaxOverlap] = useState();
+  const [readLengthHint, setReadLengthHint] = useState(null);
   const [ncbiFile, setNcbiFile] = useState(null);
   const [keyword, setKeyword] = useState();
   const [identity, setIdentity] = useState(98);
@@ -194,6 +196,8 @@ export function AnalysisProvider({ children }) {
     setQualityConfig({});
     setMinLength(200);
     setMaxLength();
+    setMaxOverlap();
+    setReadLengthHint(null);
     setIsAnalyzing(false);
     setNcbiFile(null);
     setKeyword('');
@@ -249,6 +253,8 @@ export function AnalysisProvider({ children }) {
     showLogs,
     minLength,
     maxLength,
+    maxOverlap,
+    readLengthHint,
     ncbiFile,
     keyword,
     identity,
@@ -269,6 +275,8 @@ export function AnalysisProvider({ children }) {
     setShowLogs,
     setMinLength,
     setMaxLength,
+    setMaxOverlap,
+    setReadLengthHint,
     setNcbiFile,
     setKeyword,
     setIdentity,

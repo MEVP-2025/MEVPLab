@@ -19,6 +19,8 @@ const AnalysisPanel = ({ uploadedFiles, onAnalysisComplete, onReset }) => {
     showLogs,
     minLength,
     maxLength,
+    maxOverlap,
+    readLengthHint,
     ncbiFile,
     keyword,
     identity,
@@ -32,6 +34,8 @@ const AnalysisPanel = ({ uploadedFiles, onAnalysisComplete, onReset }) => {
     setShowLogs,
     setMinLength,
     setMaxLength,
+    setMaxOverlap,
+    setReadLengthHint,
     setNcbiFile,
     setKeyword,
     setIdentity,
@@ -60,14 +64,22 @@ const AnalysisPanel = ({ uploadedFiles, onAnalysisComplete, onReset }) => {
       addLog('Starting species detection...', 'info')
 
       const response = await api.analysis.pipeline.detectSpecies({
-        barcodeFile: `uploads/${uploadedFiles.barcode.filename}`
+        barcodeFile: `uploads/${uploadedFiles.barcode.filename}`,
+        r1File: uploadedFiles.R1
+          ? `uploads/${uploadedFiles.R1.filename}`
+          : undefined
       })
 
       if (response.data.success) {
         const species = response.data.data.species
+        const hint = response.data.data.readLengthHint ?? null
         setDetectedSpecies(species)
+        setReadLengthHint(hint)
         
         addLog(`Species detection completed. Found ${species.length} species: ${species.join(', ')}`, 'success')
+        if (hint != null) {
+          addLog(`Detected R1 read length ≈ ${hint} bp (may be shorter after trimming)`, 'info')
+        }
         setAnalysisStep('selecting')
       } else {
         addLog('Species detection failed', 'error')
@@ -90,6 +102,13 @@ const AnalysisPanel = ({ uploadedFiles, onAnalysisComplete, onReset }) => {
 
     if (uploadedFiles?.detectedSpecies && uploadedFiles?.defaultQualityConfig) {
       setDetectedSpecies(uploadedFiles.detectedSpecies)
+      if (uploadedFiles.readLengthHint != null) {
+        setReadLengthHint(uploadedFiles.readLengthHint)
+        addLog(
+          `Detected R1 read length ≈ ${uploadedFiles.readLengthHint} bp (may be shorter after trimming)`,
+          'info'
+        )
+      }
       setAnalysisStep('selecting') // selecting stage
       
       addLog(`Pre-detected projects loaded: ${uploadedFiles.detectedSpecies.join(', ')}`, 'success')
@@ -167,6 +186,7 @@ const AnalysisPanel = ({ uploadedFiles, onAnalysisComplete, onReset }) => {
         r2File: `uploads/${uploadedFiles.R2.filename}`,
         barcodeFile: `uploads/${uploadedFiles.barcode.filename}`,
         qualityConfig: currentRunConfig,
+        maxOverlap: maxOverlap || null,
         minLength: minLength,
         maxLength: maxLength || null,
         ncbiReferenceFile: `uploads/${uploadedFilename}`,
@@ -201,6 +221,11 @@ const AnalysisPanel = ({ uploadedFiles, onAnalysisComplete, onReset }) => {
     setMaxLength(parsedValue)
   }
 
+  const handleMaxOverlapChange = (value) => {
+    const parsedValue = parseInt(value)
+    setMaxOverlap(parsedValue)
+  }
+
   const handleNCBIFileChange = (event) => {
     const file = event.target.files[0]
     setNcbiFile(file)
@@ -229,6 +254,7 @@ const AnalysisPanel = ({ uploadedFiles, onAnalysisComplete, onReset }) => {
           qualityConfig && !isNaN(qualityConfig[selectedSpecies]) && 
           minLength && !isNaN(minLength) && 
           (!maxLength || (maxLength && !isNaN(maxLength))) &&
+          (!maxOverlap || (maxOverlap && !isNaN(maxOverlap))) &&
           ncbiFile && 
           identity && !isNaN(identity) && 
           copyNumber && !isNaN(copyNumber)
@@ -247,6 +273,14 @@ const AnalysisPanel = ({ uploadedFiles, onAnalysisComplete, onReset }) => {
     const maxLengthValid = !maxLength || 
       (maxLength > 0 && maxLength > minLength && maxLength <= 10000)
 
+    // optional; if set, >= FLASH default min-overlap (10). Soft UI upper
+    // bound is the R1 readLengthHint when available; FLASH still clamps
+    // against trimmed read length server-side.
+    const maxOverlapValid = !maxOverlap || (
+      maxOverlap >= 10 &&
+      (!readLengthHint || maxOverlap <= readLengthHint)
+    )
+
     // 0-100
     const identityValid = identity >= 0 && identity <= 100
 
@@ -257,7 +291,8 @@ const AnalysisPanel = ({ uploadedFiles, onAnalysisComplete, onReset }) => {
           minLengthValid && 
           identityValid && 
           copyNumberValid && 
-          maxLengthValid
+          maxLengthValid &&
+          maxOverlapValid
   }
 
   // Handle Reset
@@ -356,6 +391,33 @@ const AnalysisPanel = ({ uploadedFiles, onAnalysisComplete, onReset }) => {
               <p><Dot />Tool: FLASH v1.2.11 for assembly</p>
               <p><Dot />Merge overlapping paired-end reads (R1/R2) into single reads</p>
               <div className='input-container'>
+                <h3>Please define FLASH max overlap (optional)</h3>
+                {readLengthHint != null && (
+                  <p className="read-length-hint">
+                    Detected R1 read length ≈ {readLengthHint} bp
+                    (may be shorter after trimming)
+                  </p>
+                )}
+                <span className='maximum-overlap-container'>Maximum overlap of
+                  <span className="input-group">
+                    <input
+                      id="max-overlap"
+                      type="number"
+                      min="10"
+                      max={readLengthHint ?? undefined}
+                      defaultValue={maxOverlap}
+                      onChange={(e) => handleMaxOverlapChange(e.target.value)}
+                      className="minimum-length"
+                      placeholder="Auto"
+                    />
+                    <span className="input-suffix">
+                      bp
+                      {readLengthHint != null
+                        ? ` (leave blank for auto; max ${readLengthHint})`
+                        : ' (leave blank to auto-detect from read length)'}
+                    </span>
+                  </span>
+                </span>
                 <h3>Please define the minimum length</h3>
                 <span className='minimum-length-container'>Apply minimum length threshold of
                   <span className="input-group">
@@ -374,7 +436,7 @@ const AnalysisPanel = ({ uploadedFiles, onAnalysisComplete, onReset }) => {
                 <span className='maximum-length-container'>Apply maximum length threshold of
                   <span className="input-group">
                     <input
-                      id="length-filter"
+                      id="max-length-filter"
                       type="number"
                       min="1"
                       max="10000"

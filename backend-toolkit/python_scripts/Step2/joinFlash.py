@@ -49,7 +49,8 @@ class FLASHTools:
         except Exception:
             return None
 
-    def flash_join(self, forward_file, reverse_file, output_dir, output_prefix, threads=4):
+    def flash_join(self, forward_file, reverse_file, output_dir, output_prefix,
+                   threads=4, user_max_overlap=None):
         """
         Args:
             forward_file: R1 file path (*.f.fq)
@@ -57,6 +58,8 @@ class FLASHTools:
             output_dir: Directory to write output files into
             output_prefix: Output file prefix (e.g. species name)
             threads: Number of worker threads
+            user_max_overlap: Optional FLASH -M override from the user.
+                Clamped to [10, read length]. None = auto-detect from R1.
         """
         if not self.in_docker:
             self.logger.warning("FLASH can only be executed within Docker container")
@@ -69,8 +72,26 @@ class FLASHTools:
         # a classic ~180bp shotgun fragment library and will silently
         # under-merge amplicon data. Allow outies and size the max overlap to
         # the actual read length so the full overlap region is scored.
+        # Floor of 10 matches FLASH's default -m (min-overlap); hard ceiling
+        # is the detected read length (overlap cannot exceed a read).
+        MIN_OVERLAP = 10
         read_len = self._detect_read_length(forward_file)
-        max_overlap = read_len if read_len else 300
+
+        if user_max_overlap is not None:
+            upper = read_len if read_len else 1000
+            max_overlap = max(MIN_OVERLAP, min(int(user_max_overlap), upper))
+            if max_overlap != int(user_max_overlap):
+                print(
+                    f"Clamped max overlap from {user_max_overlap} to {max_overlap} "
+                    f"(allowed range: {MIN_OVERLAP}-{upper})",
+                    flush=True,
+                )
+            else:
+                print(f"Using user max overlap: {max_overlap} bp", flush=True)
+        else:
+            max_overlap = read_len if read_len else 300
+            source = f"detected read length ({read_len} bp)" if read_len else "fallback 300 bp"
+            print(f"Auto max overlap: {max_overlap} bp ({source})", flush=True)
 
         cmd = [
             'flash',
@@ -95,11 +116,15 @@ class FLASHTools:
             'histogram': f"{prefix_path}.histogram"
         }
 
-def run_flash_analysis():
+def run_flash_analysis(user_max_overlap=None):
     tools = FLASHTools()
 
     print("=" * 40, flush=True)
     print("FLASH v1.2.11", flush=True)
+    if user_max_overlap is not None:
+        print(f"User max overlap override: {user_max_overlap} bp", flush=True)
+    else:
+        print("Max overlap: auto-detect from read length", flush=True)
 
     print(f"\nFLASH output directory: {tools.flash_output_dir}", flush=True)
 
@@ -158,7 +183,8 @@ def run_flash_analysis():
                 forward_file=species_data['forward'],
                 reverse_file=species_data['reverse'],
                 output_dir=tools.flash_output_dir,
-                output_prefix=species
+                output_prefix=species,
+                user_max_overlap=user_max_overlap,
             )
 
             if flash_results:
@@ -225,9 +251,19 @@ def list_available_files():
         print(f"FLASH output directory: {flash_dir} (will be created)", flush=True)
 
 def main():
+    user_max_overlap = None
+    if len(sys.argv) > 1 and sys.argv[1]:
+        try:
+            user_max_overlap = int(sys.argv[1])
+        except ValueError:
+            print(
+                f"Warning: invalid max overlap '{sys.argv[1]}', using auto-detect",
+                flush=True,
+            )
+
     list_available_files()
     print(flush=True)
-    results = run_flash_analysis()
+    results = run_flash_analysis(user_max_overlap=user_max_overlap)
 
 if __name__ == "__main__":
     main()

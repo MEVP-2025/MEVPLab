@@ -88,11 +88,13 @@ const FileUpload = ({ onFilesUploaded }) => {
       setDetectingSpecies(true)
       
       const detectionResponse = await api.analysis.pipeline.detectSpecies({
-        barcodeFile: `uploads/${uploadResponse.data.files.barcode.filename}`
+        barcodeFile: `uploads/${uploadResponse.data.files.barcode.filename}`,
+        r1File: `uploads/${uploadResponse.data.files.R1.filename}`
       })
 
       if (detectionResponse.data.success) {
         const species = detectionResponse.data.data.species
+        const readLengthHint = detectionResponse.data.data.readLengthHint ?? null
         
         // Quality config (default)
         const defaultQualityConfig = {}
@@ -104,7 +106,8 @@ const FileUpload = ({ onFilesUploaded }) => {
         const filesWithSpecies = {
           ...uploadResponse.data.files,
           detectedSpecies: species,
-          defaultQualityConfig: defaultQualityConfig
+          defaultQualityConfig: defaultQualityConfig,
+          readLengthHint
         }
 
         onFilesUploaded(filesWithSpecies)

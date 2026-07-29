@@ -4,6 +4,7 @@ import fs from "fs-extra";
 import Joi from "joi";
 import path from "path";
 import { PythonExecutor } from "../services/pythonExecutor.js";
+import { detectReadLength } from "../utils/detectReadLength.js";
 import { logger } from "../utils/logger.js";
 
 const router = express.Router();
@@ -68,7 +69,7 @@ const handleDockerError = (error) => {
 // -- Project detect
 router.post("/pipeline/detect-species", async (req, res) => {
   try {
-    const { barcodeFile } = req.body;
+    const { barcodeFile, r1File } = req.body;
 
     if (!barcodeFile) {
       return res.status(400).json({
@@ -152,6 +153,22 @@ router.post("/pipeline/detect-species", async (req, res) => {
       });
     }
 
+    // Optional UI hint from raw R1 (first sequence). FLASH later clamps
+    // against trimmed read length, which may be shorter.
+    let readLengthHint = null;
+    if (r1File) {
+      const r1FilePath = path.join(
+        pythonExecutor.uploadsDir,
+        path.basename(r1File)
+      );
+      readLengthHint = detectReadLength(r1FilePath);
+      if (readLengthHint != null) {
+        logger.info(`Detected R1 read length hint: ${readLengthHint} bp`);
+      } else {
+        logger.warn(`Could not detect read length from R1: ${r1File}`);
+      }
+    }
+
     logger.info(
       `Species detection completed. Found ${speciesData.species.length} species`
     );
@@ -159,7 +176,10 @@ router.post("/pipeline/detect-species", async (req, res) => {
     // Returns successful result
     res.json({
       success: true,
-      data: speciesData,
+      data: {
+        ...speciesData,
+        readLengthHint,
+      },
       message: `Successfully detected ${speciesData.species.length} species`,
     });
   } catch (error) {
@@ -197,6 +217,12 @@ const pipelineSchema = Joi.object({
     .optional()
     .allow(null)
     .default(null),
+  maxOverlap: Joi.number()
+    .integer()
+    .min(10)
+    .optional()
+    .allow(null)
+    .default(null),
   ncbiReferenceFile: Joi.string().required(),
   keyword: Joi.string().optional().allow("").default(""),
   identity: Joi.number().integer().min(0).max(100).required().default(98),
@@ -228,6 +254,7 @@ router.post("/pipeline/start", async (req, res, next) => {
       r2File,
       barcodeFile,
       qualityConfig,
+      maxOverlap,
       minLength,
       maxLength,
       ncbiReferenceFile,
@@ -243,6 +270,11 @@ router.post("/pipeline/start", async (req, res, next) => {
       minLength,
       "bp"
     );
+    if (maxOverlap != null) {
+      logger.info("Starting pipeline with FLASH max overlap of ", maxOverlap, "bp");
+    } else {
+      logger.info("Starting pipeline with FLASH max overlap auto-detect");
+    }
 
     // Create progress callback for SSE
     const progressCallback = (progress) => {
@@ -257,6 +289,7 @@ router.post("/pipeline/start", async (req, res, next) => {
       r2File,
       barcodeFile,
       qualityConfig,
+      maxOverlap,
       minLength,
       maxLength,
       ncbiReferenceFile,
